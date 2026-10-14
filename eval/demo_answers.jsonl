@@ -1,0 +1,5 @@
+{"id": "demo-001", "answer": "DEMO-E-ST-99C Rev.1, 5.2.2a requires 100 % statement coverage for criticality category A software.", "tool_calls": [{"name": "search_requirements", "input": {"query": "statement coverage"}}]}
+{"id": "demo-002", "answer": "Both require unit testing of safety-critical software: DEMO-E-ST-99C 5.2.1a, and DEMO NPR 9999.1 SWE-950, which also requires recording the results.", "tool_calls": []}
+{"id": "demo-004", "answer": "DEMO-E-ST-98C 4.1.2b: the design ultimate factor of safety for composite sandwich panels is not less than 9.7.", "tool_calls": []}
+{"id": "demo-005", "answer": "DEMO-E-ST-98C 4.2.1a and 4.2.9a: the separation system is qualified by test, with shock measured at the payload interface.", "tool_calls": []}
+{"id": "demo-003", "answer": "The loaded standards do not cover radiation tolerance of flight processors.", "tool_calls": []}

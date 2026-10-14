@@ -1,0 +1,15 @@
+DEMO ECSS-style handbook. All text and numbers below are invented for testing and are not taken from any real handbook.
+
+4 Fairing structure design guidance
+4.1 Background on design factors
+Design factors of safety for fairing structures are chosen to cover scatter in loads, material properties and workmanship, and they are applied differently to metallic parts and to composite sandwich panels. Designers usually start from the factor given in the applicable standard and then check whether the verification approach of the project justifies a lower or a higher value.
+The invented practice described here is to record the reasoning behind every chosen factor in the design justification file, so that later reviews can follow it. Many projects also keep a short table of the factors used for each structural family together with the loads they were derived from.
+NOTE The factors named in this handbook are examples only and carry no authority.
+4.2 Qualification of the separation system
+4.2.1 Planning the qualification
+Qualification of a payload fairing separation system by test is usually planned around the separation event itself. The shock produced at the payload interface is measured with accelerometers placed close to the interface ring, and the measured spectrum is compared with the predicted environment for the launch configuration.
+Teams often discover late that the instrumentation plan was too sparse. A good habit is to review the sensor layout with the loads analysts before the first deployment test, and to repeat one deployment with a changed layout if the first results are doubtful.
+4.2.2 Acoustic exposure
+The acoustic test of a fairing with a payload simulator is typically run after the separation tests. Fairing panels respond strongly to broadband noise, and a payload simulator with realistic mass and stiffness gives a more representative response than an empty fairing would.
+4.2.3 Reporting
+A qualification report normally lists the test configuration, the achieved levels and any deviations from the plan. Reviewers expect to find the measured shock spectrum, the acoustic levels and a short statement of what each result means for the margin of the design.

@@ -1,0 +1,17 @@
+# Standards documents are never committed (ADR-0002)
+documents/*
+!documents/README.md
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+dist/
+build/
+.env
+eval/runs/
+.DS_Store
+.spacestd-cache/
+.claude/worktrees/
+uv.lock

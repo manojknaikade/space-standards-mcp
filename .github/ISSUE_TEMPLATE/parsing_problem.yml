@@ -1,0 +1,45 @@
+name: Parsing problem
+description: A standard you downloaded is parsed wrongly (missing or merged requirements, wrong IDs, broken tables).
+labels: [parsing]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the layout in your own words; do not paste text from the standard. The most useful
+        addition is a short **invented** example with the same shape (headings, numbering, tags, table layout)
+        and made-up words and numbers.
+  - type: input
+    id: document
+    attributes:
+      label: Document and issue
+      description: As shown by the `list_documents` tool or `python -m spacestd.catalogue documents`.
+      placeholder: e.g. document ID, issue/revision, PDF or Word
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: Page number(s) and the requirement, clause or table ID as printed.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What goes wrong
+      description: What the parser produced (record IDs, counts, health-report figures) and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: invented
+    attributes:
+      label: Invented reproduction (optional)
+      description: Made-up text with the same layout, suitable for `tests/fixtures/`.
+      render: text
+  - type: checkboxes
+    id: no-text
+    attributes:
+      label: Standards text
+      options:
+        - label: This issue contains no standards text (no sentences, table rows or figures copied from a standard).
+          required: true

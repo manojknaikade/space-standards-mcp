@@ -1,0 +1,19 @@
+DEMO ECSS-style standard. All text below is invented for testing and is not taken from any real standard.
+
+5 Requirements
+5.1 Software development plan
+5.1.1 Plan content
+a. The supplier shall produce a software development plan covering the full life cycle.
+b. The software development plan shall identify the methods and tools used,
+including the configuration management tool.
+NOTE The plan can be merged with the project management plan.
+5.1.2 Plan update
+a. The supplier shall update the software development plan at each review milestone.
+5.2 Verification
+5.2.1 Unit testing
+a. The supplier shall perform unit testing of all safety-critical software components.
+NOTE 1 Coverage objectives are defined in ECSS-Q-ST-80 clause 6.3.5.
+NOTE 2 See also NASA-STD-8739.8 for an equivalent approach.
+b. Unit test results shall be recorded and kept under configuration control.
+5.2.2 Code coverage
+a. Statement coverage of 100 % shall be achieved for criticality category A software.

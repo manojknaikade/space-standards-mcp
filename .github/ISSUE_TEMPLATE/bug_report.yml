@@ -1,0 +1,34 @@
+name: Bug report
+description: Something in the server, agent, tools or evals does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not paste text from ECSS or NASA standards. Refer to document ID, issue, page and
+        requirement ID instead. For a document that parses badly, use the "Parsing problem" template.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: Commands, MCP tool call and arguments, or a minimal script. Use the invented fixtures in `tests/fixtures/` if you can.
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release or commit, Python version, operating system.
+  - type: checkboxes
+    id: no-text
+    attributes:
+      label: Standards text
+      options:
+        - label: This issue contains no standards text (no sentences, table rows or figures copied from a standard).
+          required: true

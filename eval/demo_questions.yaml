@@ -1,0 +1,33 @@
+# Demo evaluation questions against the invented fixtures in tests/fixtures.
+# Used by CI to exercise the eval runner without real standards.
+# Real questions live in eval/questions.yaml.
+
+- id: demo-001
+  type: lookup
+  question: What does DEMO-E-ST-99C 5.2.2a require?
+  expected_ids: ["DEMO-E-ST-99C|5.2.2a"]
+  answer_points: ["full statement coverage", "category A software"]
+
+- id: demo-002
+  type: compare
+  question: How do the demo ECSS and demo NASA documents each treat unit testing of safety-critical software?
+  expected_ids: ["DEMO-E-ST-99C|5.2.1a", "DEMO NPR 9999.1|SWE-950"]
+  answer_points: ["both require unit testing of safety-critical software", "NASA version also requires recording results"]
+
+- id: demo-004
+  type: numeric
+  question: What design ultimate factor of safety applies to composite sandwich panels in the demo structures standard?
+  expected_ids: ["DEMO-E-ST-98C|4.1.2b"]
+  answer_points: ["ultimate factor 9.8 (invented demo value)", "applies to composite sandwich panels"]
+
+- id: demo-005
+  type: search
+  question: How must the payload fairing separation system be qualified?
+  expected_ids: ["DEMO-E-ST-98C|4.2.1a"]
+  answer_points: ["qualified by test", "shock measured at the payload interface"]
+
+- id: demo-003
+  type: not_covered
+  question: What is the required radiation tolerance for flight processors?
+  expected_ids: []
+  answer_points: ["the loaded standards do not cover this"]

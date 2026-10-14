@@ -1,0 +1,22 @@
+name: Feature request
+description: A new tool, a standard or document family to support, or another improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need
+      description: The question you want answered or the workflow you want to support, and why the current tools fall short.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed solution (optional)
+  - type: checkboxes
+    id: no-text
+    attributes:
+      label: Standards text
+      options:
+        - label: This issue contains no standards text (no sentences, table rows or figures copied from a standard).
+          required: true

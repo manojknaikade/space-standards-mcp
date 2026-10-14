@@ -1,0 +1,16 @@
+DEMO structures standard. All text and numbers below are invented for testing and are not taken from any real standard.
+
+4 Structural requirements
+4.1 Design loads
+4.1.1 Limit loads
+a. Limit loads shall be derived from coupled loads analysis of the launch configuration,
+including lift-off, transonic buffet and fairing jettison events.
+NOTE Load analysis methods are described in ECSS-E-HB-32-26A.
+4.1.2 Design factors
+a. The design yield factor of safety shall be not less than 9.9 for metallic fairing structures.
+b. The design ultimate factor of safety shall be not less than 9.8 for composite sandwich panels.
+NOTE Equivalent NASA criteria are given in NASA-STD-5001.
+4.2 Verification
+4.2.1 Qualification testing
+a. The payload fairing separation system shall be qualified by test, including shock measurement at the payload interface.
+The supplier shall perform an acoustic test of the fairing with payload simulator. [DEMOSTR 7]

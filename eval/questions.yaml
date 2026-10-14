@@ -1,0 +1,915 @@
+# Evaluation set — launcher and payload-fairing structures
+#
+# Status: 68 questions. v1 (fs-001…fs-021) reviewed by the domain owner, 7 October 2026: all ok.
+# Hand-test questions (hand-01…hand-20): review waived. v2 additions (fs-022…fs-037), wave-1 additions
+# (w1-001…w1-011) and the six rewrites of 10 Oct: reviewed 10 Oct against the PDFs (Claude for the owner, B3), all ok
+# after four edits (hand-18, fs-025, fs-033, w1-003; see their review_note).
+# New questions: set `review: pending`, then `ok` or `fix` + `review_note` after review.
+#
+# Source documents (local, not committed):
+#   ECSS-E-ST-32-01C Rev.2 (30 July 2021)   Fracture control
+#   ECSS-E-ST-32-08C Rev.1 (15 October 2014) Materials
+#   NASA-STD-5001B w/Change 3 (2022-10-24)   Structural design and test factors of safety
+#   ECSS-E-ST-32-10C Rev.2 Corr.1 (1 August 2019) Structural factors of safety (PDF)
+#
+# Rules (ADR-0002, CLAUDE.md):
+# - expected_ids: "<doc_id>|<req_id>", must exist in the source documents.
+# - expected_tables: "<doc_id>|<table_id>" for questions whose numbers live in a table (retrieval eval
+#   scores whether a top-k hit matched a row of it or points to it).
+#   ECSS IDs = clause + letter (letters restart at each clause). NASA IDs = FSR n.
+# - reference_answer / answer_points are paraphrases, never verbatim standard text.
+# - numeric answers carry value + basis + condition.
+# - kind_note flags where the source is guidance/permission rather than a "shall".
+
+- id: fs-001
+  type: numeric
+  question: Under NASA-STD-5001B, what are the minimum design and test factors for a metallic structure verified with the prototype approach?
+  expected_ids: ["NASA-STD-5001B|FSR 24"]
+  expected_tables: ["NASA-STD-5001B|Table 1"]
+  reference_answer: >
+    Table 1: ultimate design factor 1.4, yield design factor 1.0 (structure must still be
+    assessed to prevent detrimental yielding in service, acceptance or proof testing),
+    qualification test factor 1.4. Proof test factor is not applicable, except 1.05 for
+    propellant tanks and SRM cases.
+  answer_points:
+    - "ultimate design factor 1.4"
+    - "yield design factor 1.0, with assessment against detrimental yielding"
+    - "qualification test factor 1.4"
+    - "proof factor 1.05 only for propellant tanks and SRM cases"
+  review: ok
+
+- id: fs-002
+  type: numeric
+  question: For a metallic payload-fairing structure qualified with a protoflight approach under NASA-STD-5001B, what yield design factor and test factor apply, and why is the yield factor higher than for prototype?
+  expected_ids: ["NASA-STD-5001B|FSR 24", "NASA-STD-5001B|FSR 14"]
+  expected_tables: ["NASA-STD-5001B|Table 1"]
+  reference_answer: >
+    Table 1 protoflight row: yield design factor 1.25, ultimate design factor 1.4,
+    qualification (protoflight) test factor 1.2. The flight article itself is tested above
+    limit load, so the higher yield factor protects it from detrimental yielding during
+    the test (FSR 14 requires design factors that prevent this).
+  answer_points:
+    - "yield design factor 1.25"
+    - "test factor 1.2 (ultimate stays 1.4)"
+    - "higher yield factor protects the flight article from yielding during the protoflight test"
+  kind_note: "The 'why' is explanatory guidance text in 4.1.1, plus FSR 14."
+  review: ok
+
+- id: fs-003
+  type: numeric
+  question: What ultimate design factor does NASA-STD-5001B require at a discontinuity area (e.g. a bolted joint or insert) of a composite structure verified by prototype test, and can it be reduced?
+  expected_ids: ["NASA-STD-5001B|FSR 29"]
+  expected_tables: ["NASA-STD-5001B|Table 2"]
+  reference_answer: >
+    Table 2: 2.0 on concentrated stresses at discontinuity areas, with qualification test
+    factor 1.4 and proof factor 1.05 for prototype. For non-safety-critical applications
+    the 2.0 may be reduced to 1.4 for prototype (1.5 for protoflight).
+  answer_points:
+    - "2.0 applied to concentrated stresses at discontinuities"
+    - "may drop to 1.4 (prototype) / 1.5 (protoflight) if not safety-critical"
+  review: ok
+
+- id: fs-004
+  type: numeric
+  question: Under NASA-STD-5001B, which design and test factors apply to uniform (non-discontinuity) composite structure verified with the protoflight approach, and does each flight article need a proof test?
+  expected_ids: ["NASA-STD-5001B|FSR 29"]
+  expected_tables: ["NASA-STD-5001B|Table 2"]
+  reference_answer: >
+    Table 2 protoflight, uniform material: ultimate design factor 1.5, protoflight test
+    factor 1.2, proof test factor 1.2. Each composite/bonded flight article is proof tested
+    unless the alternate-approach provisions of section 4.6 are met.
+  answer_points:
+    - "ultimate 1.5"
+    - "test factor 1.2, proof factor 1.2"
+    - "every flight article proof tested unless section 4.6 alternate approach applies"
+  kind_note: "Proof-test-every-article statement is guidance text under 4.2.3."
+  review: ok
+
+- id: fs-005
+  type: classification
+  question: A fairing uses aluminium honeycomb core with aluminium face sheets. Does NASA-STD-5001B treat it as composite/bonded or metallic structure for factors of safety?
+  expected_ids: ["NASA-STD-5001B|FSR 29"]
+  reference_answer: >
+    Metallic honeycomb (face sheets and core) is considered metallic structure, so Table 1
+    (metallic) factors apply rather than Table 2. Note that the bonds still make it a bonded
+    construction in other respects (e.g. fracture control under ECSS-E-ST-32-01 clause 8.4).
+  answer_points:
+    - "metallic honeycomb counts as metallic structure"
+    - "Table 1 factors, not Table 2"
+  kind_note: "Statement is guidance text directly under FSR 29, not a numbered requirement. The ECSS remark is Claude's addition — please confirm or delete."
+  review: ok
+
+- id: fs-006
+  type: lookup
+  question: What does NASA-STD-5001B require for buckling of thin-walled shell structures such as an interstage or fairing cylinder?
+  expected_ids: ["NASA-STD-5001B|FSR 53", "NASA-STD-5001B|FSR 55", "NASA-STD-5001B|FSR 56"]
+  reference_answer: >
+    Design loads for buckling are ultimate loads (FSR 53). Evaluation covers general and
+    local/panel instability, crippling and creep (FSR 55). Analyses of thin-walled shells
+    must account for differences between idealised and real geometry and boundary
+    conditions (FSR 56); guidance points to knockdown factors in NASA-SP-8007 and warns that
+    the 0.65 composite-shell KDF may be unconservative (NESC TB 16-01).
+  answer_points:
+    - "buckling designed to ultimate loads"
+    - "general, local/panel instability, crippling, creep"
+    - "account for imperfections/boundary conditions (knockdown factors)"
+  review: ok
+
+- id: fs-007
+  type: lookup
+  question: Can a metallic structure be qualified by analysis only ("no-test") under NASA-STD-5001B, and what is needed?
+  expected_ids: ["NASA-STD-5001B|FSR 15", "NASA-STD-5001B|FSR 16"]
+  reference_answer: >
+    Only metallic structures may use the no-test option. Analysis must come with an
+    acceptable engineering rationale (FSR 15), and project-specific criteria and rationale
+    must be approved by the delegated Technical Authority (FSR 16). Guidance: higher factors
+    alone do not justify no-test; typical justifications are simple determinate load paths,
+    close similarity to a test-verified structure, or tested critical elements.
+  answer_points:
+    - "metallic only"
+    - "engineering rationale + Technical Authority approval of project criteria"
+    - "higher factors alone are not sufficient justification"
+  review: ok
+
+- id: fs-008
+  type: classification
+  question: Under ECSS-E-ST-32-01C, can an expendable launcher (unmanned, single mission) apply a reduced fracture control programme, and which items must then be identified as PFCI?
+  expected_ids: ["ECSS-E-ST-32-01C|5.1e", "ECSS-E-ST-32-01C|11.2.2.1a"]
+  reference_answer: >
+    Yes — unmanned, single-mission space vehicles, their payloads and GSE may use the
+    reduced fracture control programme of clause 11 (5.1e). PFCI identification may then be
+    limited to: pressurized systems; rotating machinery; fasteners in safe-life
+    applications; welded, forged or cast items above 25 % of UTS at limit stress;
+    non-metallic structural items; and metallic safe-life items above 50 % of yield at
+    limit stress (11.2.2.1a). With customer approval the last category can be narrowed to
+    single-point-of-failure tension items such as lugs, isostatic mounts, struts and pins.
+  answer_points:
+    - "RFCP allowed for unmanned single-mission vehicles (5.1e)"
+    - "six PFCI categories incl. 25 % UTS (welded/forged/cast) and 50 % yield (metallic safe life)"
+    - "customer can narrow metallic category to single-load-path tension items"
+  kind_note: "Both are permissions ('may'), not mandatory requirements."
+  review: ok
+
+- id: fs-009
+  type: numeric
+  question: For a metallic safe-life item under ECSS-E-ST-32-01C, what life factor and initial crack-size detectability apply?
+  expected_ids: ["ECSS-E-ST-32-01C|6.3.2b", "ECSS-E-ST-32-01C|6.3.2c", "ECSS-E-ST-32-01C|7.2.8c"]
+  reference_answer: >
+    The worst crack must not grow to the point where minimum performance is lost using a
+    design life factor of at least 4 (6.3.2c); the load spectrum is applied at least four
+    times in sequence in the crack growth analysis (7.2.8c). Unless otherwise specified, the
+    NDT method used must find the assumed initial crack with at least 90 % probability at
+    95 % confidence (6.3.2b).
+  answer_points:
+    - "life factor 4"
+    - "spectrum applied 4 times in sequence"
+    - "initial crack detectable at 90 % probability / 95 % confidence"
+  review: ok
+
+- id: fs-010
+  type: numeric
+  question: What load enhancement factor and life factor does ECSS-E-ST-32-01C require for a safe-life composite or sandwich item, and what must the structure still achieve?
+  expected_ids: ["ECSS-E-ST-32-01C|6.3.2e", "ECSS-E-ST-32-01C|8.4.4.2e"]
+  reference_answer: >
+    Life factor 1 with a load enhancement factor of 1.15; the worst damage must not grow
+    within the safe-life interval and the structure must still carry ultimate load (6.3.2e).
+    The test programme must demonstrate ultimate load capability and no defect growth after
+    one service life with LEF 1.15, on articles representative of manufacturing,
+    environment and loading (8.4.4.2e).
+  answer_points:
+    - "LEF 1.15, life factor 1"
+    - "no damage growth and ultimate load capability retained"
+  review: ok
+
+- id: fs-011
+  type: numeric
+  question: In a fail-safe design under ECSS-E-ST-32-01C, what load must the remaining structure carry after one element fails, for metallic versus composite parts?
+  expected_ids: ["ECSS-E-ST-32-01C|6.3.3b"]
+  reference_answer: >
+    Limit load times 1.0 for metal and glass parts, or times 1.15 for composite, bonded
+    and sandwich parts, while still meeting the minimum specified performance (no
+    large-scale yielding). Under the reduced programme, where fatigue is
+    not significant, the customer may accept a factor between 1.0 and 1.15 for composites.
+  answer_points:
+    - "1.0 x limit load for metallic/glass"
+    - "1.15 x limit load for composite/bonded/sandwich"
+    - "RFCP note allows lower composite factor (>= 1.0) with customer approval"
+  review: ok
+
+- id: fs-012
+  type: classification
+  question: Can a metallic fitting be classified as a low-risk fracture item under ECSS-E-ST-32-01C? Give the stress limit and the item types that are excluded.
+  expected_ids: ["ECSS-E-ST-32-01C|6.3.5.2a", "ECSS-E-ST-32-01C|6.3.5.2b", "ECSS-E-ST-32-01C|6.3.5.2c"]
+  reference_answer: >
+    Possibly, if agreed with the customer (6.3.5.2c). Maximum net-section tensile stress at
+    limit load must not exceed 30 % of the ultimate tensile strength (6.3.5.2b). Excluded:
+    pressure shells of crewed modules, pressure vessels, pressurized components with
+    hazardous fluid, high-energy rotating machinery, and fasteners (6.3.5.2a). The criteria
+    of 6.3.5.3 (material, process, 100 % visual and part-level NDT, crack growth) also apply.
+  answer_points:
+    - "<= 30 % UTS net section at limit load"
+    - "fasteners and pressure hardware excluded"
+    - "customer agreement required"
+  review: ok
+
+- id: fs-013
+  type: numeric
+  question: Under the ECSS reduced fracture control programme, what proof test is required for a safe-life composite or sandwich structure such as a fairing panel, and how does it compare with the full programme?
+  expected_ids: ["ECSS-E-ST-32-01C|11.2.2.5a", "ECSS-E-ST-32-01C|8.4.4.2g"]
+  reference_answer: >
+    Reduced programme: proof test to at least 1.1 times flight limit load per a
+    customer-approved proof test plan, with proof loads recommended not to exceed 80 % of
+    ultimate (11.2.2.5a). In the full programme, a proof test used for manufacturing-defect
+    screening needs a factor of at least 1.2 on limit load, proof loads not above 80 % of
+    ultimate, post-test NDT and customer approval (8.4.4.2g).
+  answer_points:
+    - "RFCP: >= 1.1 x flight limit load"
+    - "full programme screening proof: >= 1.2 x limit load"
+    - "proof loads <= 80 % of ultimate"
+  review: ok
+
+- id: fs-014
+  type: classification
+  question: When may a composite item be accepted as low-risk fracture under ECSS-E-ST-32-01C without testing the damage tolerance threshold strain?
+  expected_ids: ["ECSS-E-ST-32-01C|8.4.4.3e", "ECSS-E-ST-32-01C|8.4.4.3f"]
+  reference_answer: >
+    Strain at limit load must be below the damage tolerance threshold strain (8.4.4.3e).
+    With customer approval this can be assumed without specific testing if, at limit load
+    and including stress concentrations, maximum tensile stress is below 40 % and maximum
+    compressive stress below 25 % of the material ultimate capability (8.4.4.3f).
+  answer_points:
+    - "tension < 40 % of ultimate, compression < 25 % (incl. Kt)"
+    - "customer approval needed"
+  review: ok
+
+- id: fs-015
+  type: lookup
+  question: Can titanium or small-diameter fasteners be used in safe-life applications under ECSS-E-ST-32-01C?
+  expected_ids: ["ECSS-E-ST-32-01C|8.8a", "ECSS-E-ST-32-01C|8.8b", "ECSS-E-ST-32-01C|11.2.2.7a", "ECSS-E-ST-32-01C|11.2.2.7b"]
+  reference_answer: >
+    In the full programme, fasteners below 5 mm diameter (3/16 in) and titanium alloy
+    fasteners are not allowed in safe-life applications (8.8a, 8.8b). Under the reduced
+    programme, titanium fasteners may be used in safe life if the 11.2.2.7a conditions are
+    met (crack growth with a = c = 0.63 mm over four lifetimes, standard surface NDT,
+    SCC-resistant alloy, not in a pressurized shell) or the 11.2.2.7b conditions (incl.
+    sustained-load K below threshold or K < 0.5 KIC, customer approval). The 5 mm minimum
+    still applies.
+  answer_points:
+    - "< 5 mm not allowed in safe life (always)"
+    - "titanium not allowed in full programme"
+    - "titanium allowed under RFCP with 11.2.2.7a or b conditions"
+  review: ok
+
+- id: fs-016
+  type: numeric
+  question: What initial crack sizes does ECSS-E-ST-32-01C assume for the low-risk approach of metallic safe-life parts under the reduced fracture control programme?
+  expected_ids: ["ECSS-E-ST-32-01C|11.2.2.6a"]
+  reference_answer: >
+    Surface cracks 0.63 mm deep by 1.27 mm long, 0.63 mm radius corner cracks at holes
+    and edges, or 1.27 mm long through cracks, which must not grow to failure in less than
+    four service lifetimes. Further conditions include standard fracture control surface
+    NDT (X-ray not sufficient), well-characterised SCC-resistant alloy, no defect-prone
+    process, and not pressurized hardware.
+  answer_points:
+    - "0.63 mm deep x 1.27 mm surface crack; 0.63 mm corner; 1.27 mm through"
+    - "four lifetimes"
+    - "standard surface NDT, SCC-resistant alloy, not pressurized"
+  review: ok
+
+- id: fs-017
+  type: lookup
+  question: What does ECSS-E-ST-32-08C require about fastening into composite parts and about inserts in sandwich panels?
+  expected_ids: ["ECSS-E-ST-32-08C|4.4.1a", "ECSS-E-ST-32-08C|4.4.1b", "ECSS-E-ST-32-08C|4.4.4a"]
+  reference_answer: >
+    Tapped screws must not be used in composite materials, to avoid damage (4.4.1b);
+    galvanic corrosion from dissimilar-material contact must be precluded (4.4.1a); and all
+    inserts must have corrosion-protected surfaces (4.4.4a).
+  answer_points:
+    - "no tapped screws in composites"
+    - "preclude galvanic corrosion"
+    - "inserts corrosion protected"
+  review: ok
+
+- id: fs-018
+  type: lookup
+  question: Under ECSS-E-ST-32-08C, what must be included when deriving composite design allowables, and who approves them?
+  expected_ids: ["ECSS-E-ST-32-08C|4.5.2a", "ECSS-E-ST-32-08C|4.5.2c", "ECSS-E-ST-32-08C|4.5.2g"]
+  reference_answer: >
+    Allowables must account for manufacturing process control, deviation of lamina
+    properties from nominal, failure modes (fibre, matrix, interface), cure residual strains,
+    combined loading, scatter in compression strength, environmental susceptibility and
+    non-linearity (4.5.2a). Allowables used in pre-dimensioning are justified to the
+    customer for approval (4.5.2c), and the test plan states the statistical basis and how
+    lay-up interpolation is done (4.5.2g).
+  answer_points:
+    - "process control, lamina deviation, failure modes, residual strain, combined loading, compression scatter, environment"
+    - "customer approval of allowables"
+    - "test plan gives statistical basis"
+  kind_note: "Source ambiguity: in 4.5.2a only five items are numbered (process control, cure residual strains, combined loading, compression scatter, environment). Lamina deviation, failure modes and non-linearity sit in NOTE-styled paragraphs between them, likely a formatting error. Please confirm whether they count as requirement items."
+  review: ok
+
+- id: fs-019
+  type: compare
+  question: Compare the fatigue / service-life factor required by NASA-STD-5001B and ECSS-E-ST-32-01C for metallic structure.
+  expected_ids: ["NASA-STD-5001B|FSR 51", "ECSS-E-ST-32-01C|6.3.2c", "ECSS-E-ST-32-01C|6.3.3e", "ECSS-E-ST-32-01C|6.3.2e"]
+  reference_answer: >
+    Both use 4. NASA requires a minimum service life factor of 4.0 for fatigue and creep
+    of well-characterised materials, with possible additional factors for composites or
+    poorly characterised materials (FSR 51). ECSS fracture control uses a design life factor
+    of at least 4 for metallic safe-life crack growth (6.3.2c) and for fatigue of the
+    remaining structure of metallic fail-safe items, with mean fatigue properties (6.3.3e).
+    Composites under ECSS instead use life factor 1 with LEF 1.15.
+  answer_points:
+    - "NASA 4.0 (fatigue and creep)"
+    - "ECSS 4 for metallic safe-life and fail-safe fatigue"
+    - "ECSS composites: life factor 1 + LEF 1.15"
+  review: ok
+
+- id: fs-020
+  type: numeric
+  question: What yield and ultimate factors of safety does ECSS require for metallic parts of an expendable launch vehicle, and how are they applied to the limit load?
+  expected_ids: ["ECSS-E-ST-32-10C|4.3.2.1a", "ECSS-E-ST-32-10C|4.3.2.1d", "ECSS-E-ST-32-10C|4.2.1a", "ECSS-E-ST-32-10C|4.1.5.3a"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-3", "ECSS-E-ST-32-10C|Table 4-1"]
+  reference_answer: >
+    Table 4-3, launch vehicle, metallic parts: FOSY 1.1 and FOSU 1.25 with test; for
+    verification by analysis only FOSU 2.0, while FOSY has no commonly agreed value (note c).
+    The FOS is not applied alone: per Table 4-1, for launch vehicles DLL = LL x KP x KM,
+    then DYL = DLL x FOSY x KMP x KLD and DUL = DLL x FOSU x KMP x KLD, where the margin policy
+    factor KMP is mandatory for launch vehicles (4.1.5.3a). FOSU and FOSY on thermally
+    induced loads are 1.0 for expendable launch vehicles (4.3.2.1d).
+  answer_points:
+    - "FOSY 1.1, FOSU 1.25 (tested)"
+    - "analysis only: FOSU 2.0, FOSY not agreed"
+    - "applied with KP, KM, KMP, KLD per Table 4-1; KMP required for launch vehicles"
+    - "thermal loads: factors 1.0 for expendable launchers"
+  kind_note: "Replaces the earlier not-covered trap, since ECSS-E-ST-32-10 is now loaded. Contrast with NASA-STD-5001B metallic prototype (1.0 yield / 1.4 ultimate) is a good follow-up compare question."
+  review: ok
+
+- id: fs-021
+  type: compare
+  question: What acoustic test levels and duration apply to qualify a payload fairing?
+  expected_ids: ["NASA-STD-7001C|PVTR 2", "NASA-STD-7001C|PVTR 43", "ECSS-E-ST-10-03C|4.5.2f"]
+  expected_tables: ["NASA-STD-7001C|Table 1", "ECSS-E-ST-10-03C|Table 5-2"]
+  answer_points:
+    - "NASA-STD-7001C: envelope of flight acceptance levels plus 3 dB, at least 2 minutes (2 + 0.5N for N reflights)"
+    - "ECSS-E-ST-10-03C: maximum expected acoustic spectrum plus 3 dB (higher margins from the launcher authority apply), 2 minutes, one test"
+    - "no structural test factors reused as acoustic margins"
+  review: ok
+  review_note: "Wave 1 (B5, 10 Oct): was not_covered while 7001 / 10-03 were not loaded. Owner, 10 Oct: both standards apply to the PLF."
+
+# ---------------------------------------------------------------------------
+# Hand-test questions (eval/HAND_TEST.md, 7 October 2026). Expected IDs checked against the
+# source PDFs; answer points are paraphrases. Review waived by the domain owner (7 Oct 2026).
+
+- id: hand-01
+  type: numeric
+  question: What qualification and acceptance test factors does ECSS-E-ST-32-10 specify for launch vehicle structures?
+  expected_ids: ["ECSS-E-ST-32-10C|4.3.1a"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-2"]
+  answer_points:
+    - "Table 4-2: launch vehicle global flight loads KQ 1.25, corrected per 4.2.2 / Annex A"
+    - "KA 1 or the proof factor Jp (1.05 to 1.1 typical for dimensioning)"
+    - "local dynamic loads KQ 1.25, KA not applicable; thermal loads 1 / 1"
+  review: ok
+
+- id: hand-02
+  type: numeric
+  question: What factor of safety does ECSS-E-ST-32-10 require against buckling of launcher structure?
+  expected_ids: ["ECSS-E-ST-32-10C|4.3.2.3a"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-5"]
+  answer_points:
+    - "Table 4-5: FOSU 1.25 global and local; FOSY 1.1 local, not applicable global"
+    - "verification by analysis only: FOSU 2.0"
+    - "knock-down factors are not included in the factor"
+  review: ok
+
+- id: hand-03
+  type: lookup
+  question: How does ECSS-E-ST-32-10 build the design factor from the factors of safety, the model factor and the project factor?
+  expected_ids: ["ECSS-E-ST-32-10C|4.1.4.1a", "ECSS-E-ST-32-10C|4.2.1a"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-1"]
+  answer_points:
+    - "design factor is the product of the listed factors; launch vehicles: KP x KM"
+    - "yield and ultimate coefficients: FOS x KMP x KLD for launch vehicles (Table 4-1)"
+  review: ok
+
+- id: hand-04
+  type: numeric
+  question: Which additional factor does ECSS-E-ST-32-10 apply to joints, inserts and fasteners, and what is its value?
+  expected_ids: ["ECSS-E-ST-32-10C|4.1.5.2a", "ECSS-E-ST-32-10C|4.3.2.2a"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-4"]
+  answer_points:
+    - "local design factor KLD, to be justified (1.2 typical for satellites)"
+    - "Table 4-4 factors per sub-row: failure, gapping/sliding safety critical, other"
+  review: ok
+
+- id: hand-05
+  type: lookup
+  question: What checks must a structural finite element model pass under ECSS-E-ST-32 before it is delivered or used for coupled loads analysis?
+  expected_ids: ["ECSS-E-ST-32C|I.2.1<13.1>a", "ECSS-E-ST-32C|I.2.1<13.3>a"]
+  answer_points:
+    - "report geometry, topology, rigid-body strain energy, static, thermo-elastic and normal-mode checks"
+    - "no numeric acceptance criteria in the loaded standards"
+  review: ok
+
+- id: hand-06
+  type: lookup
+  question: What does ECSS-E-ST-32 require about the minimum natural frequencies of a structure?
+  expected_ids: ["ECSS-E-ST-32C|4.3.5a", "ECSS-E-ST-32C|4.6.2.4a"]
+  answer_points:
+    - "stiffness requirements to be identified, often as minimum frequency"
+    - "verified by modal analysis; no frequency values given"
+  review: ok
+
+- id: hand-07
+  type: lookup
+  question: What does ECSS-E-ST-32 require when correlating the structural mathematical model with modal survey or vibration test results?
+  expected_ids: ["ECSS-E-ST-32C|4.6.2.2b"]
+  answer_points:
+    - "models validated by correlation with test results"
+    - "test-analysis correlation reported per its DRD; numeric criteria not in the loaded set"
+  review: ok
+
+- id: hand-08
+  type: lookup
+  question: What must be done under ECSS-E-ST-32-01 when NDT detects a crack-like defect in a PFCI?
+  expected_ids: ["ECSS-E-ST-32-01C|10.7.1b", "ECSS-E-ST-32-01C|10.7.2.1.1a"]
+  answer_points:
+    - "customer approval before use"
+    - "treat as crack-like and verify by fracture mechanics analysis or test"
+  review: ok
+
+- id: hand-09
+  type: numeric
+  question: What service life factor does NASA-STD-5019A apply in the damage tolerance (safe-life) analysis of fracture critical parts?
+  expected_ids: ["NASA-STD-5019A|FCR 12 / 7.3.2.c"]
+  answer_points:
+    - "4 lifetimes without failure"
+    - "single-event lives: lower-bound toughness at 4 lifetimes or factor 1.4 after 1 lifetime"
+  review: ok
+
+- id: hand-10
+  type: classification
+  question: Under NASA-STD-5019A, when can a part be classified non-fracture critical because it is contained or has low release mass?
+  expected_ids: ["NASA-STD-5019A|FCR 8 / 6.2.1", "NASA-STD-5019A|FCR 8 / 6.2.2"]
+  answer_points:
+    - "hazard-based: fracture and release do not cause a catastrophic hazard; no mass threshold"
+    - "external released parts only within an agreed debris-field criterion"
+    - "contained: containment assessment shows the part cannot escape"
+  review: ok
+
+- id: hand-11
+  type: lookup
+  question: When does NASA-STD-5019A accept a proof test instead of NDE to screen flaws in fracture critical hardware?
+  expected_ids: ["NASA-STD-5019A|FCR 18"]
+  answer_points:
+    - "approach documented in the fracture control plan with rationale"
+    - "approved by the responsible fracture control board"
+  review: ok
+
+- id: hand-12
+  type: compare
+  question: Compare how ECSS-E-ST-32-01 and NASA-STD-5019A treat welds in fracture critical / safe-life metallic parts.
+  expected_ids: ["ECSS-E-ST-32-01C|8.3.2e", "NASA-STD-5019A|FCR 16"]
+  answer_points:
+    - "ECSS: weld properties, residual stresses and imperfections in the safe-life analysis"
+    - "NASA: post-proof NDE at critical welds"
+  review: ok
+
+- id: hand-13
+  type: compare
+  question: Compare how ECSS-E-ST-32-01 and NASA-STD-5019A require fasteners in fracture critical / safe-life applications to be screened.
+  expected_ids: ["ECSS-E-ST-32-01C|8.8f", "NASA-STD-5019A|FCR 11 / 7.2.8.c"]
+  answer_points:
+    - "ECSS: eddy current on shank, head fillet and threads"
+    - "NASA: eddy current or proof test"
+  review: ok
+
+- id: hand-14
+  type: lookup
+  question: What does ECSS-Q-ST-70 require about stress corrosion cracking when selecting metallic materials?
+  expected_ids: ["ECSS-Q-ST-70C|5.1.10a"]
+  answer_points:
+    - "structural materials selected per ECSS-Q-ST-70-36; others tested per ECSS-Q-ST-70-37"
+  review: ok
+
+- id: hand-15
+  type: lookup
+  question: What outgassing screening criteria (RML, CVCM) must materials meet under ECSS-Q-ST-70?
+  expected_ids: ["ECSS-Q-ST-70C|5.1.4b"]
+  answer_points:
+    - "screening per ECSS-Q-ST-70-02"
+    - "the numeric limits are not in the loaded standards"
+  review: ok
+
+- id: hand-16
+  type: lookup
+  question: What does ECSS-E-ST-32-08 require for adhesive bonding and bonded joints?
+  expected_ids: ["ECSS-E-ST-32C|4.6.2.12a", "ECSS-E-ST-32C|4.5.12a"]
+  answer_points:
+    - "ECSS-E-ST-32-08 has no bonding requirements"
+    - "ECSS-E-ST-32: bonded joints analysed and adhesive allowables defined per agreed standards"
+  kind_note: "Names a loaded document that does not cover the topic (hand test F6)."
+  review: ok
+
+- id: hand-17
+  type: numeric
+  question: What random vibration qualification level and duration does ECSS-E-ST-10-03 require for a payload adapter?
+  expected_ids: ["ECSS-E-ST-10-03C|4.5.2f"]
+  expected_tables: ["ECSS-E-ST-10-03C|Table 5-2", "ECSS-E-ST-10-03C|Table 6-2"]
+  answer_points:
+    - "maximum expected spectrum plus 3 dB on the PSD values (higher margins from the launcher authority apply)"
+    - "2 minutes on each of 3 orthogonal axes"
+    - "the same in Table 5-2 (space segment equipment) and Table 6-2 (space segment element)"
+  review: ok
+  review_note: "Wave 1 (B5, 10 Oct): was not_covered. Both tables are in ECSS-E-ST-10-03C and give the same random vibration level and duration, so the equipment / element choice does not change the answer. Review 10 Oct (Claude for the owner, B3 PDF check): IDs and both tables checked on the PDF (Table 5-2 p. 49, Table 6-2 p. 90): the random vibration rows match. Both tables lose their continuation page (H15); the rows used here are on the first page."
+
+- id: hand-18
+  type: numeric
+  question: What margin over the maximum expected pyroshock environment does NASA-STD-7003 require for qualification of a fairing separation system?
+  expected_ids: ["NASA-STD-7003A|4.3.1", "NASA-STD-7003A|4.3.1.1", "NASA-STD-7003A|4.3.2"]
+  expected_tables: ["NASA-STD-7003A|Table 1"]
+  answer_points:
+    - "externally induced: at least 3 dB (or 1.4 x MEFE) added uniformly across the spectrum"
+    - "at least two shock applications per axis for qualification"
+  review: ok
+  review_note: "Wave 1 (B5, 10 Oct): this standard is loaded now; the question was not-covered when it was not. 7003A IDs are tagless records (`4.3 req n`) that merge numbered paragraphs (4.3.1, 4.3.1.1); since H9 (10 Oct) they are the printed paragraph numbers: 4.3 req 1 = 4.3.1 + 4.3.1.1, 4.3 req 2 = 4.3.2. Review 10 Oct (Claude for the owner, B3 PDF check): 4.3 req 1 / 4.3 req 2 and Table 1 checked on the PDF. Dropped the answer point about not reusing the 5019A 1.4 factor: it is not in the source and would mark down correct answers that never mention 5019A."
+
+- id: hand-19
+  type: lookup
+  question: What separation factor of safety does NASA-STD-5020 require for preloaded bolted joints?
+  expected_ids: ["NASA-STD-5020B|TFSR 4", "NASA-STD-5020B|TFSR 10", "NASA-STD-5020B|4.2.3 guidance 3", "NASA-STD-5020B|4.2.2 guidance 10"]
+  answer_points:
+    - "the separation factor follows the logic of Figure 1 (whether the joint is separation-critical and how it is verified); confirm the value in the figure"
+    - "non-separation-critical joints: separation factor 1.0"
+    - "design separation load = limit load x separation factor x fitting factor, without loss of joint compression"
+    - "guidance: fitting factor of at least 1.15 for separation-critical joints"
+  review: ok
+  review_note: "Wave 1 (B5, 10 Oct): was not_covered. Owner, 10 Oct: Figure 1 is a logic chart, also described in the section text; answer and say to confirm in the figure. The separation-critical values are not in the parsed records (H11). B3 check 10 Oct: the separation-critical logic is only in Figure 1 (p. 20); the body text of 4.2.3 does not repeat it (H11)."
+
+- id: hand-20
+  type: numeric
+  question: What torque margin does ECSS-E-ST-33-01 require for a fairing mechanism?
+  expected_ids: ["ECSS-E-ST-33-01C|4.7.5.3.1b", "ECSS-E-ST-33-01C|4.7.5.3.1d"]
+  expected_tables: ["ECSS-E-ST-33-01C|Table 4-2"]
+  answer_points:
+    - "each resistive contributor multiplied by its minimum uncertainty factor (Table 4-2), theoretical vs measured"
+    - "e.g. friction and hysteresis 3 theoretical / 1.5 measured; inertia 1.1"
+    - "minimum actuation torque from the equation in 4.7.5.3.1d (the equation is not in the tool text: see the PDF)"
+  review: ok
+  review_note: "Wave 1 (B5, 10 Oct): this standard is loaded now; the question was not-covered when it was not. Was not_covered. The motorization equation is an image in the PDF; the parser keeps only its symbol list. Review 10 Oct (Claude for the owner, B3 PDF check): 4.7.5.3.1b/d and Table 4-2 checked on the PDF (p. 30). The equation in 4.7.5.3.1d is only in the PDF (H10), so the answer point that points to the PDF stays."
+
+# ---------------------------------------------------------------------------
+# Set v2 additions (7 October 2026): 10 covered + 6 not-covered questions. Expected IDs and numbers checked
+# against the parsed records (text, notes, Table 3 rows). Review pending (domain owner).
+
+- id: fs-022
+  type: numeric
+  question: What scatter factor does ECSS-E-ST-32 require in fatigue analysis, and how is it applied to the service life?
+  expected_ids: ["ECSS-E-ST-32C|4.5.18a", "ECSS-E-ST-32C|4.6.2.8c"]
+  reference_answer: >
+    A scatter factor of 4 is used in fatigue analysis. It multiplies the number of cycles at a
+    load level: the life is verified for the specified service life times the scatter factor, with
+    the most unfavourable load sequence within each event. Notes: higher factors can apply (e.g.
+    pressure vessels, low-cycle fatigue); for composites a factor on stress may be used instead.
+  answer_points:
+    - "scatter factor 4 in fatigue analysis"
+    - "applied to the number of cycles: service life x scatter factor, worst load sequence per event"
+    - "notes: higher for some applications; composites may use a stress factor instead"
+  kind_note: "The higher-factor and composite remarks are NOTEs to 4.5.18a, not requirements."
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): IDs and NOTEs checked."
+
+- id: fs-023
+  type: numeric
+  question: Under ECSS-E-ST-32, what scatter factor applies to the number of thermal cycles in thermal cycling tests of launcher structure?
+  expected_ids: ["ECSS-E-ST-32C|4.6.3.15c"]
+  reference_answer: >
+    For launchers (low number of operational thermal cycles): 4 when cycling within the flight
+    temperature range, 2 when cycling within the qualification temperature range. The 1.5 factor
+    is for other spacecraft with many operational cycles, not launchers.
+  answer_points:
+    - "4 within flight temperature ranges"
+    - "2 within qualification temperature ranges"
+    - "1.5 applies only to spacecraft with a large number of cycles"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-024
+  type: compare
+  question: Compare how ECSS-E-ST-32 and NASA-STD-5001B handle the design of glass and ceramic structural parts.
+  expected_ids: ["ECSS-E-ST-32C|4.5.10.1a", "NASA-STD-5001B|FSR 32"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-3", "NASA-STD-5001B|Table 3"]
+  reference_answer: >
+    ECSS-E-ST-32 asks for probabilistically derived design allowables covering size effects;
+    ECSS-E-ST-32-10C Table 4-3 gives the factors for glass and ceramic parts: ultimate 2,5 for a
+    satellite (5,0 when verified by analysis only), 3,0 for man-rated vehicles, and no agreed value
+    for launch vehicles (note). NASA-STD-5001B gives factors in Table 3 (robotic applications):
+    verified by test, ultimate design factor 3.0 with proof factor 1.2 (non-pressurized) or 2.0
+    (pressurized); analysis only (non-pressurized, not for ceramics) ultimate 5.0.
+  answer_points:
+    - "ECSS-E-ST-32C: probabilistic allowables covering size effects; ECSS-E-ST-32-10C Table 4-3 gives glass/ceramic factors (satellite 2,5, or 5,0 analysis only; man-rated 3,0; launch vehicle: no agreed value, per note)"
+    - "NASA Table 3 tested: ultimate 3.0, proof 1.2 non-pressurized / 2.0 pressurized"
+    - "NASA analysis only: 5.0, not applicable to ceramics"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): IDs and Table 3 checked. 11 Oct (owner decision, round 4): reference widened to ECSS-E-ST-32-10C Table 4-3 (verified tier; glass and ceramic rows)."
+
+- id: fs-025
+  type: numeric
+  question: What proof test does ECSS-E-ST-32-01 require for rotating machinery, and what is the minimum proof factor?
+  expected_ids: ["ECSS-E-ST-32-01C|8.6a", "ECSS-E-ST-32-01C|8.6b", "ECSS-E-ST-32-01C|11.2.2.4a"]
+  reference_answer: >
+    Rotating machinery is proof (spin) tested, with NDT before and after the proof test. The proof
+    factor comes from fracture mechanics analysis and is at least 1.1. Under the reduced fracture
+    control programme (11.2.2.4a) this may be replaced by a spin test at 1.1 times nominal speed.
+  answer_points:
+    - "proof (spin) test with NDT before and after"
+    - "proof factor from fracture mechanics, not below 1.1"
+    - "reduced programme option: 1.1 x nominal operational speed (11.2.2.4a)"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked; added 11.2.2.4a (the reduced-programme spin test the third answer point uses) to expected_ids."
+
+- id: fs-026
+  type: classification
+  question: Under ECSS-E-ST-32-01, which potential fracture-critical items must be classified fracture critical?
+  expected_ids: ["ECSS-E-ST-32-01C|6.2.2a"]
+  reference_answer: >
+    Non-metallic (composite, bonded, sandwich) PFCI unless fail-safe, low-risk or contained;
+    metallic PFCI needing better than standard NDT; pressure vessels and manned or other
+    pressurized structures designated fracture critical; PFCI needing periodic re-inspection or
+    replacement to reach their life (fracture limited-life items); rotating machinery.
+  answer_points:
+    - "non-metallic PFCI unless fail-safe, low-risk or contained"
+    - "metallic PFCI needing better than standard NDT"
+    - "pressure vessels / pressurized structures, rotating machinery"
+    - "items needing periodic NDT or replacement (FLLI)"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-027
+  type: compare
+  question: Compare what ECSS-E-ST-32-01 and NASA-STD-5019A require of the remaining structure for a part to be accepted as fail-safe.
+  expected_ids: ["ECSS-E-ST-32-01C|6.3.3b", "ECSS-E-ST-32-01C|6.3.3c", "NASA-STD-5019A|FCR 8 / 6.2.3.a", "NASA-STD-5019A|FCR 8 / 6.2.3.c"]
+  reference_answer: >
+    ECSS: after failure of any element, the remaining structure carries limit loads times 1.0
+    (metallic, glass) or 1.15 (composite, bonded, sandwich) without losing minimum performance, and
+    no released fragment may create a catastrophic hazard. NASA: loss of any load path is not a
+    catastrophic hazard and multi-site damage is not a credible concern; the remaining structure
+    sustains all redistributed loads and environments until mission end or inspection. Composite or
+    bonded parts hit by the failed part carry DUL with the worst impact damage (DLL for the fail-safe
+    part's own remaining composite structure; fracture-critical ones take the damage into their DTA).
+  answer_points:
+    - "ECSS: limit loads x 1.0 metallic/glass, x 1.15 composite/bonded/sandwich"
+    - "ECSS: no catastrophic release of fragments"
+    - "NASA: no catastrophic hazard on loss of a load path; remaining structure carries redistributed loads until end of mission"
+    - "NASA: no explicit factor on the remaining structure for metallic parts"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-028
+  type: classification
+  question: What conditions must a pressure component meet under ECSS-E-ST-32-01 to be treated as non-hazardous leak-before-burst?
+  expected_ids: ["ECSS-E-ST-32-01C|8.2.7a", "ECSS-E-ST-32-01C|8.2.2.2d"]
+  reference_answer: >
+    LBB failure mode shown at MDP (per ECSS-E-ST-32-02); the leak causes no catastrophic hazard;
+    no repressurization or further cycles while leaking; alloy not prone to sustained-load cracking
+    and made by established processes; supporting structure meets fracture control; no impervious
+    coating that would stop the leak. Areas that cannot be shown LBB are verified safe life.
+  answer_points:
+    - "LBB demonstrated at MDP; leak not a catastrophic hazard"
+    - "no repressurization while leaking; suitable alloy and established processes"
+    - "no impervious barrier or coating; supporting structure under fracture control"
+    - "non-LBB areas verified as safe life"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-029
+  type: lookup
+  question: What does ECSS-Q-ST-70 require to prevent hydrogen embrittlement of mechanical parts?
+  expected_ids: ["ECSS-Q-ST-70C|5.1.19a", "ECSS-Q-ST-70C|5.1.19c", "ECSS-Q-ST-70C|5.1.19d"]
+  reference_answer: >
+    Assess whether hydrogen embrittlement can occur in manufacture or use; implement protection and
+    control measures for manufacture and use; parts under fatigue or sustained stress made of
+    susceptible material are heat treated after coating.
+  answer_points:
+    - "assess the possibility of hydrogen embrittlement"
+    - "protection and control measures in manufacturing and use"
+    - "susceptible parts under fatigue or sustained load heat treated after coating"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-030
+  type: lookup
+  question: What do the ECSS materials standards require about galvanic corrosion between dissimilar metals in a structure?
+  expected_ids: ["ECSS-E-ST-32-08C|4.4.1a", "ECSS-Q-ST-70C|5.1.12a"]
+  reference_answer: >
+    ECSS-E-ST-32-08: galvanic corrosion from contact of dissimilar materials is precluded.
+    ECSS-Q-ST-70: where bimetallic contacts are used, the material pair is agreed with the customer
+    (also metal to conductive fibre-reinforced material).
+  answer_points:
+    - "32-08: galvanic corrosion precluded"
+    - "Q-ST-70: bimetallic pairs agreed with the customer, incl. metal to carbon-fibre contacts"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-031
+  type: lookup
+  question: What does ECSS-E-ST-32 require for venting of a structure such as a fairing or interstage?
+  expected_ids: ["ECSS-E-ST-32C|4.5.15a", "ECSS-E-ST-32C|4.5.15b"]
+  reference_answer: >
+    Venting provisions are part of the structural design; if there are none, the structure withstands
+    the build-up pressure including safety factors. Vent openings are compatible with the purging
+    gas pressure and flow. No venting area or depressurisation rate values are given.
+  answer_points:
+    - "design provides for venting"
+    - "otherwise withstand build-up pressure including safety factors"
+    - "no numeric vent area or depressurisation rate in the loaded standards"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: fs-032
+  type: not_covered
+  question: What minimum static clearance must be kept between the payload and the inner wall of the fairing?
+  expected_ids: []
+  answer_points:
+    - "not covered by the loaded standards; envelope clearances come from the launcher user's manual / ICD"
+    - "no invented clearance value"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Still not covered with wave 1 loaded."
+
+- id: fs-033
+  type: numeric
+  question: What overall sound pressure level does a payload experience under the fairing at lift-off?
+  expected_ids: []
+  expected_tables: ["ECSS-E-HB-32-26A|Table 9-1"]
+  answer_points:
+    - "no generic, launcher-independent level in the loaded standards; the real level comes from the launcher user's manual"
+    - "ECSS-E-HB-32-26A Table 9-1 gives an Ariane 5 example, 139.5 dB overall (OASPL), as handbook guidance, not a requirement"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): 7001C / 10-03C give test margins and the 138 dB OASPL workmanship level, not the lift-off environment. 11 Oct (owner decision, round 4): covered question; Table 9-1 (p. 234, checked tier) checked against the PDF, values match."
+
+- id: fs-034
+  type: compare
+  question: What preload uncertainty should be used for torque-tightened bolts in a fairing joint?
+  expected_ids: ["ECSS-E-HB-32-23A|6.3.2.3", "NASA-STD-5020B|TFSR 7"]
+  expected_tables: ["ECSS-E-HB-32-23A|Table 6-1", "NASA-STD-5020B|Table 3"]
+  answer_points:
+    - "ECSS-E-HB-32-23A (handbook guidance): uncertainty factor about ±0.35 unlubricated, ±0.25 lubricated (Table 6-1)"
+    - "NASA-STD-5020B: torque control, non-separation-critical: statistical basis, or the greater of 25 % lubricated / 35 % non-lubricated and the test variation (Table 3)"
+    - "separation-critical joints need a test-based envelope (lot testing)"
+    - "states that the ECSS source is a handbook (guidance), not a requirement"
+  kind_note: "ECSS-E-ST-32C 4.6.2.13a points to agreed standards; the handbook values are guidance."
+  review: ok
+  review_note: "Wave 1 (B5, 10 Oct): this standard is loaded now; the question was not-covered when it was not. ECSS-E-HB-32-23A and NASA-STD-5020B are loaded now; was not_covered. Review 10 Oct (Claude for the owner, B3 PDF check): Checked on the PDFs: E-HB-32-23A Table 6-1 (p. 51) and 5020B Table 3 (p. 25)."
+
+- id: fs-035
+  type: not_covered
+  question: What is the A-basis ultimate tensile strength of 7075-T7351 aluminium plate?
+  expected_ids: []
+  answer_points:
+    - "not covered; the loaded standards define A/B-basis allowables but give no material values (MMPDS or similar not loaded)"
+    - "no invented strength value"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Still not covered with wave 1 loaded."
+
+- id: fs-036
+  type: not_covered
+  question: What molecular contamination deposition limit applies to payload surfaces inside the fairing?
+  expected_ids: []
+  answer_points:
+    - "not covered; ECSS-Q-ST-70 requires a cleanliness programme and refers to ECSS-Q-ST-70-01, not loaded"
+    - "no invented deposition limit"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Still not covered with wave 1 loaded."
+
+- id: fs-037
+  type: not_covered
+  question: What lightning strike current waveform and peak current must a composite fairing withstand?
+  expected_ids: []
+  answer_points:
+    - "not covered; ECSS-E-ST-32 requires lightning current diversion and testing but gives no waveform or peak current"
+    - "no invented current values"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Still not covered with wave 1 loaded."
+
+# ---------------------------------------------------------------------------
+# Wave 1 (B5, 10 October 2026): drafted by the orchestrator from the parsed wave-1 records and tables; expected
+# IDs resolve in the index, numbers are from table rows or record text. Answer points are paraphrases.
+# Review pending (domain owner).
+- id: w1-001
+  type: numeric
+  question: Under NASA-STD-7001C, at what levels and for how long are payload acoustic and random vibration qualification tests run for a single mission?
+  expected_ids: ["NASA-STD-7001C|PVTR 2", "NASA-STD-7001C|PVTR 4", "NASA-STD-7001C|PVTR 43"]
+  expected_tables: ["NASA-STD-7001C|Table 1"]
+  answer_points:
+    - "acoustic and random vibration qualification: envelope of flight acceptance levels plus 3 dB"
+    - "at least 2 minutes acoustic and 2 minutes in each of 3 orthogonal axes for vibration"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): IDs and Table 1 checked on the PDF (p. 16-17, 26)."
+
+- id: w1-002
+  type: compare
+  question: How do NASA-STD-7001C and ECSS-E-ST-10-03C extend vibroacoustic qualification test durations for hardware that will be reflown?
+  expected_ids: ["NASA-STD-7001C|PVTR 44", "ECSS-E-ST-10-03C|5.5.2.3f"]
+  answer_points:
+    - "NASA-STD-7001C: at least 2 + 0.5N minutes for N reflights"
+    - "ECSS-E-ST-10-03C: the Table 5-2 duration per axis plus 50 seconds per additional flight"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked (5.5.2.3 is a correctly inferred clause number)."
+
+- id: w1-003
+  type: numeric
+  question: What minimum workmanship levels does NASA-STD-7001C set for component random vibration and for acoustic tests?
+  expected_ids: ["NASA-STD-7001C|PVTR 8", "NASA-STD-7001C|PVTR 12"]
+  expected_tables: ["NASA-STD-7001C|Table 1"]
+  answer_points:
+    - "components under 50 kg: the Table 2 spectrum as a minimum (6.8 grms overall in Table 1)"
+    - "acoustic workmanship: 138 dB OASPL, or the NASA-HDBK-7005 level"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked on the PDF (p. 18-19). Replaced the false record `PVTR 12 / 4.3.3.5` (H12) by PVTR 12, which holds the 138 dB requirement; Table 2 (p. 18) is not parsed (H16)."
+
+- id: w1-004
+  type: numeric
+  question: How is a static load qualification test of space segment equipment specified in ECSS-E-ST-10-03C?
+  expected_ids: ["ECSS-E-ST-10-03C|4.5.2f"]
+  expected_tables: ["ECSS-E-ST-10-03C|Table 5-2"]
+  answer_points:
+    - "level: qualification factor KQ (from ECSS-E-ST-32-10) times limit load"
+    - "duration as needed to record data, at least 10 seconds"
+    - "applied for the worst combined load cases, found by analysis"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Table 5-2 row 2 checked on the PDF (p. 49)."
+
+- id: w1-005
+  type: numeric
+  question: By what factor does ECSS-E-ST-33-01C multiply the expected number of cycles for a mechanism life test?
+  expected_ids: ["ECSS-E-ST-33-01C|4.8.3.3.14b"]
+  expected_tables: ["ECSS-E-ST-33-01C|Table 4-4"]
+  answer_points:
+    - "ground cycles: 4 up to 1000, 2 up to 100000, 1.25 above (at least 10 cycles tested)"
+    - "in-orbit cycles: 10 for 1-10 cycles, then 4, 2 and 1.25 for the same bands"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Table 4-4 checked on the PDF (p. 52)."
+
+- id: w1-006
+  type: numeric
+  question: What uncertainty factors does ECSS-E-ST-33-01C apply to actuation torque supplied by a spring or by inertia?
+  expected_ids: ["ECSS-E-ST-33-01C|4.7.5.3.2e", "ECSS-E-ST-33-01C|4.7.5.3.2d"]
+  answer_points:
+    - "spring: worst case, multiplied by 0.8 when no ageing measurements are available (agreed with the customer otherwise)"
+    - "inertia: worst case defined by the customer, multiplied by 0.9"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: w1-007
+  type: numeric
+  question: What factors of safety does ECSS-E-ST-32-02C require for a pressure vessel under internal pressure?
+  expected_ids: ["ECSS-E-ST-32-02C|4.3.1a", "ECSS-E-ST-32-02C|4.3.1b"]
+  expected_tables: ["ECSS-E-ST-32-02C|Table 4-1"]
+  answer_points:
+    - "proof factor 1.25, burst factor 1.5; yield and ultimate factors 1.0 for internal pressure"
+    - "other (mechanical) loads: the factors of ECSS-E-ST-32-10"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Table 4-1 checked on the PDF (p. 23)."
+
+- id: w1-008
+  type: lookup
+  question: When does NASA-STD-5020B require a locking feature on a bolt, and how is it verified?
+  expected_ids: ["NASA-STD-5020B|TFSR 17", "NASA-STD-5020B|TFSR 19"]
+  expected_tables: ["NASA-STD-5020B|Table 4"]
+  answer_points:
+    - "a mechanical locking feature on any bolt subject to rotation in operation"
+    - "presence and locking moment verified by the methods of Table 4"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked (Table 4 values right; its footnote is parsed as a row, H17)."
+
+- id: w1-009
+  type: numeric
+  question: To what cutoff frequency does NASA-STD-5002B require a reduced finite element model to be reduced for a coupled loads analysis?
+  expected_ids: ["NASA-STD-5002B|LAR 27", "NASA-STD-5002B|LAR 2"]
+  answer_points:
+    - "at least 1.5 times the cutoff frequency of the loads analysis"
+    - "coupled loads analysis for liftoff, ascent and landing, through payload separation and aborts"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+- id: w1-010
+  type: numeric
+  question: How many firings of the flight pyrotechnic devices does NASA-STD-7003A require for self-induced pyroshock testing?
+  expected_ids: ["NASA-STD-7003A|4.3.5", "NASA-STD-7003A|4.3.7"]
+  expected_tables: ["NASA-STD-7003A|Table 1"]
+  answer_points:
+    - "qualification and protoflight: at least two firings of the dominant devices"
+    - "flight acceptance: one firing"
+  review: ok
+  review_note: "7003A IDs are the printed paragraph numbers since H9 (10 Oct): 4.3 req 5 = 4.3.5, 4.3 req 7 = 4.3.7. Review 10 Oct (Claude for the owner, B3 PDF check): Checked; IDs may change with H9."
+
+- id: w1-011
+  type: lookup
+  question: What must the modal survey test requirements in an ECSS-E-ST-32-11C test specification define?
+  expected_ids: ["ECSS-E-ST-32-11C|5.4.1a"]
+  answer_points:
+    - "frequency range of interest and target modes (global, local)"
+    - "measurement point plan, exciter positions and allowable force levels"
+  review: ok
+  review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."

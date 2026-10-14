@@ -1,0 +1,15 @@
+space-standards-mcp
+Copyright 2026 Manoj Naikade
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product contains no text from ECSS or NASA standards. Users download the
+standards themselves from the official sources and the software parses them
+locally (see documents/README.md). Those documents remain subject to their
+publishers' terms of use and are not covered by this licence.
+
+This project is independent. It is not affiliated with or endorsed by the
+European Space Agency (ESA), the ECSS Secretariat or the National Aeronautics
+and Space Administration (NASA). "ECSS", "ESA" and "NASA" and the names of
+their standards belong to their respective owners and are used here only to
+identify the documents the software works with.

@@ -1,0 +1,10 @@
+DEMO NASA-style requirements. All text below is invented for testing.
+
+3 Software management
+3.1 Planning
+The project manager shall develop a software management plan for each software project. [SWE-901]
+The project manager shall track software cost and schedule against the plan. [SWE-902]
+4 Software assurance
+4.1 Testing
+The project manager shall perform unit testing of safety-critical software and record the results. [SWE-950]
+NOTE Unit test coverage expectations are described in NASA-HDBK-2203.

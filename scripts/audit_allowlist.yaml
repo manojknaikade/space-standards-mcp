@@ -1,0 +1,69 @@
+# Accepted hits of scripts/audit_standards_text.py (C4 decisions, see eval/TEXT_AUDIT.md).
+# An entry matches a hit when file, kind and length are equal and every source the hit matches starts with
+# `source` (document ID, plus the table ID for a table row). No line numbers: they move. No matched text (ADR-0002).
+# A hit that no entry matches still fails the audit; so does a changed length in an accepted file.
+- file: documents/README.md
+  kind: words
+  length: 13
+  source: [NASA-, ECSS-E-HB-]
+  reason: Title of NASA-STD-5001, repeated in the reference lists of several NASA documents and (since A5) an ECSS handbook; bibliographic, kept.
+- file: documents/README.md
+  kind: words
+  length: 12
+  source: ECSS-E-HB-
+  reason: Title of ECSS-E-ST-32-10 in the documents table, repeated in an ECSS handbook's reference list (A5); bibliographic, kept.
+- file: tests/test_real_documents.py
+  kind: words
+  length: 17
+  source: ECSS-Q-ST-70C
+  reason: One row of compatibility codes (digits only); a fact, kept.
+- file: tests/test_real_documents.py
+  kind: table row
+  length: 3
+  source: NASA-STD-5001B
+  reason: Three factors from Table 7 (numbers only); a fact, kept.
+- file: tests/test_real_documents.py
+  kind: table row
+  length: 2
+  source: ECSS-E-HB-31-01 Part 5A
+  reason: A list of NASA-STD-5005D requirement IDs (B3); two short IDs coincide with a two-field handbook table row. IDs only, kept.
+- file: documents/README.md
+  kind: words
+  length: 12
+  source: NASA-HDBK-
+  reason: Title of NASA-STD-5001 in the documents table, repeated in NASA-HDBK-7005's reference list (parsed since round 4); bibliographic, kept.
+- file: eval/CORPUS_HEALTH.md
+  kind: table row
+  length: 4
+  source: ECSS-E-HB-31-01 Part 14A
+  reason: Health-report rows of small counts and percentages coincide with a four-field numeric handbook row (round 4); our counts, kept.
+- file: eval/CORPUS_HEALTH_WAVE1.md
+  kind: table row
+  length: 4
+  source: ECSS-E-HB-31-01 Part 14A
+  reason: As eval/CORPUS_HEALTH.md (health-report counts); kept.
+- file: tests/test_health.py
+  kind: table row
+  length: 4
+  source: ECSS-E-HB-31-01 Part 14A
+  reason: An invented health-report row in a test coincides with the same four-field numeric handbook row; kept.
+- file: tests/test_parsers.py
+  kind: table row
+  length: 4
+  source: ECSS-E-HB-31-01 Part 11A
+  reason: The four list markers of an invented fixture coincide with a four-field handbook row of single letters; kept.
+- file: tests/test_table_columns.py
+  kind: table row
+  length: 4
+  source: ECSS-E-HB-31-01 Part 11A
+  reason: Four invented one-letter column names coincide with a four-field handbook row of single letters; kept.
+- file: tests/test_table_columns.py
+  kind: table row
+  length: 2
+  source: ECSS-E-HB-31-01 Part 5A
+  reason: Two invented fixture numbers coincide with a two-field numeric handbook row; kept.
+- file: tests/test_real_documents.py
+  kind: table row
+  length: 6
+  source: ECSS-E-HB-32-23A
+  reason: A list of footnote markers ("1" to "6", ">", "shaded") asserted for NASA-STD-7002B Table 1 coincides with a six-field handbook row of single digits; kept.

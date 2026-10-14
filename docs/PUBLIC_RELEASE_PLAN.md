@@ -16,6 +16,9 @@ well-defined steps. Progress is logged in the round log `docs/PROGRESS.md` (priv
 - **Go public at D2**, after the release gate passes.
 - **10 Oct: all work local** (ADR-0008): Opus orchestrator + parallel Sonnet 5.5 workers (medium effort); no
   cloud sessions. Steps re-marked 🤖 / 🧠 / 👤 / 📄.
+- **14 Oct: development stays on `space-standards-mcp-dev`** (private, full history, round log). The public
+  `space-standards-mcp` only receives release commits, rebuilt from -dev's `main` (see "Release flow" under
+  Stage D). Locally `origin` is -dev and `public` is the public repository.
 - **11 Oct: B8 review decisions** (applied in round 4):
   - fs-024: widen the reference. ECSS-E-ST-32-10C Table 4-3 has glass and ceramic rows, so it becomes an expected
     table and the ECSS answer point names its factors next to ECSS-E-ST-32C's probabilistic allowables.
@@ -256,7 +259,7 @@ other NASA-5000 series from the catalogue.
   - retrieval run 12 and r12 answers (`eval/RESULTS.md`);
   - catalogue: 287 documents (285 active), 44 loaded, 26 verified / 17 checked / 1 unchecked;
   - text audit: 0 new hits, 24 accepted (`eval/TEXT_AUDIT.md`), after replacing one copied fixture row.*
-- [ ] **D1a 🧠👤 Fresh repository.** Rename this repository to `space-standards-mcp-dev` (stays private: the full
+- [x] **D1a 🧠👤 Fresh repository.** Rename this repository to `space-standards-mcp-dev` (stays private: the full
   history). Create a new **private** `space-standards-mcp`, push one commit holding the release tree
   (`git checkout --orphan release && git commit -m "space-standards-mcp v0.2.0"`, authored by you), tag `v0.2.0`.
   Check the new repository has exactly one commit, no PRs, no `eval/runs/`, nothing under `documents/` but
@@ -264,6 +267,31 @@ other NASA-5000 series from the catalogue.
   Files on the release-exclude list (at least `docs/PROGRESS.md`, decided 11 Oct) are left out of that commit:
   after `git checkout --orphan release`, `git rm --cached $(python scripts/check_release_tree.py --print-excluded)`,
   commit, then `python scripts/check_release_tree.py --release` must pass.
+  *Done 14 Oct (round 6, owner's "go"): this repository renamed to `space-standards-mcp-dev` (private); new private
+  `space-standards-mcp` with one commit "space-standards-mcp v0.2.0" (ba86d9c, authored by the owner), tag
+  `v0.2.0`, 0 PRs, 106 files, no `eval/runs/` or `docs/PROGRESS.md`, `documents/` holds only the README; CI green.
+  The first push's `guard` failed on the stale-entry check (PROGRESS.md is left out by design); fixed on -dev
+  (#80: a tree with no excluded file runs the release checks) and the release commit rebuilt from it.
+  Local checkout (owner decision 14 Oct: develop on -dev): `origin` = -dev, `public` = the new repository; `main`
+  tracks `origin/main`, `release` tracks `public/main`; `gh repo set-default` is -dev.*
+
+**Release flow (after D1a).** Work and PRs stay on -dev. Each release is one new commit on the public `main`
+whose tree is -dev's `main` minus the release-exclude list, with the previous release commit as its parent (no
+force-push once the repository is public), tagged with the `pyproject.toml` version:
+
+```bash
+git fetch origin && git fetch public
+git worktree add --detach ../release-build origin/main && cd ../release-build
+git rm -q --cached $(python scripts/check_release_tree.py --print-excluded)
+python scripts/check_release_tree.py --release
+python scripts/audit_standards_text.py --docs ../space-standards-mcp/documents   # 0 new hits
+c=$(git commit-tree "$(git write-tree)" -p public/main -m "space-standards-mcp vX.Y.Z")
+git tag vX.Y.Z "$c" && git push public "$c":refs/heads/main && git push public vX.Y.Z
+cd - && git worktree remove --force ../release-build && git branch -f release public/main
+```
+
+Check afterwards: the public CI is green, `git diff --stat origin/main public/main` lists only the excluded files,
+and the public repository has no PRs and nothing under `documents/` but the README.
 - [ ] **D2 👤 Go public:** first the ADR-0002 / ADR-0007 checks: read the current ECSS terms of use on ecss.nl and
   re-check the distribution statement of every NASA document the docs or evals name. Then flip the new repository's visibility (`gh repo edit --visibility public
   --accept-visibility-change-consequences`, or in the GitHub settings). Then enable branch protection on `main`,
@@ -299,5 +327,5 @@ Open work from 10 Oct, as rounds:
   #73), run 12 (record recall as run 11, table recall 0.37 → 0.46 @5; `cli-agent` 0.85 correct), D1 local run.
 - **Round 6 (14 Oct):** gate: launcher-name numbers (#75); citations: NASA paragraph numbers, empty-query message
   (#76); parser: 7002B / 10-03C / 7003A quirks (#78); matrix-row lift tried and closed (#77); run 13 (as run 12);
-  then D1a (owner's "go" given 14 Oct).
+  D1a done (fresh private repository, v0.2.0; guard fix #80).
 - **Next:** D2 👤 → D3 🤖.

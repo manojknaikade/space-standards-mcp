@@ -48,15 +48,13 @@ generic prompt again.
 Continue the space-standards-mcp project from the logged progress. You are the ORCHESTRATOR (Opus) on the
 local machine; the real standards are in documents/ (gitignored; never commit or upload them).
 
-1. `git checkout main && git pull --ff-only` (stop if the tree is dirty). Check `git remote -v`: after D1a,
-   `origin` is the fresh `space-standards-mcp` and `dev` is the private `space-standards-mcp-dev` (full history,
-   docs/PROGRESS.md). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (Stage D, "Order at a glance") and the newest
-   entry of docs/PROGRESS.md (round 6; in the -dev history). Run `.venv/bin/python -m pytest -q` (419 expected
-   with documents/). `gh pr list` on both repositories.
+1. `git checkout main && git pull --ff-only` (stop if the tree is dirty). Check `git remote -v`: `origin` is the private
+   `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`
+   (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (Stage D, "Order at a glance") and the newest
+   entry of docs/PROGRESS.md (round 6). Run `.venv/bin/python -m pytest -q` (419 expected
+   with documents/). `gh pr list` (the default repository is -dev; the public one has no PRs).
 
 2. Plan round 7 as a table and wait for my "go":
-   - First ask me how development continues after D1a (where PRs go, how docs/PROGRESS.md is kept), if the
-     round 6 entry or D1a notes do not already say.
    - D2 👤: prepare the ADR-0002 / ADR-0007 checks (current ECSS terms of use on ecss.nl; the distribution
      statement of every NASA document the docs or evals name: list them with where they are named), then wait for
      my "go" before changing visibility, branch protection, Dependabot, secret scanning or vulnerability reporting.
@@ -93,5 +91,6 @@ local machine; the real standards are in documents/ (gitignored; never commit or
   (`cp -Rc "$MAIN/documents/." documents/`, an APFS clone; never a symlink: the catalogue does not follow it) and
   runs Python as `PYTHONPATH=src $MAIN/.venv/bin/python`.
 - A step can be worked by hand without the orchestrator: give the orchestrator prompt and say "do only <ID>".
-- After D1a the repository moves to a fresh `space-standards-mcp`; the old one becomes `space-standards-mcp-dev`
-  (private). Check `git remote get-url origin` at the start of each round.
+- Since D1a (14 Oct) development stays on the private `space-standards-mcp-dev` (`origin`); the public
+  `space-standards-mcp` (`public`) only receives release commits rebuilt from -dev's `main` (release plan, "Release
+  flow"). Workers branch from `origin/main` and open PRs on -dev. Check `git remote -v` at the start of each round.

@@ -4,19 +4,19 @@ Written by `python -m spacestd.health` (A1/A2 in docs/PUBLIC_RELEASE_PLAN.md). T
 and scores only. A document is `checked` when it meets every threshold; `verified` documents are
 hand-checked (tests/test_real_documents.py) and keep that tier.
 
-- Corpus: `loaded`; 167 documents: 26 verified, 100 checked, 41 unchecked
+- Corpus: `loaded`; 167 documents: 26 verified, 103 checked, 38 unchecked
 - Parse errors: 0; parse time 0 s
 - Thresholds: at least 20 records for a standard (3 for other types), valid IDs ≥ 95%, unparsed ≤ 10% (not for ECSS standards), coverage ≥ 75% (words in records and unparsed fragments / body words), ragged tables ≤ 10% or ≤ 1, file name names the same base number (or no standard, or a sidecar sets the identity); adoption notices are listed, not judged
-- Parser version: `e09d2efdfbbd`
+- Parser version: `91167984535b`
 
 Why documents are not `checked`:
 
 - 14 × ragged tables N
 - 11 × unparsed N > N
-- 10 × N records < N
 - 9 × valid IDs N < N
 - 7 × adoption notice
-- 5 × coverage N < N
+- 6 × N records < N
+- 3 × coverage N < N
 
 | Document | Issue | Tier | Records | Kinds (req/rec/perm/guid/del) | Valid IDs | Dup | Unparsed | Coverage | Tables (ragged) | Name ID | Time s | Reasons |
 | --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- |
@@ -136,21 +136,21 @@ Why documents are not `checked`:
 | ECSS-E-ST-70C |  | checked | 359 | 347/3/8/1/0 | 99% | 4 | 145 | 85% | 34 (0) | match | 0.0 |  |
 | ECSS-E-ST-80C |  | checked | 140 | 139/0/1/0/0 | 100% | 0 | 101 | 89% | 0 (0) | match | 0.0 |  |
 | ECSS-Q-ST-70C | Rev.2 | verified | 281 | 241/5/3/24/8 | 100% | 0 | 54 | 85% | 2 (0) | match | 0.0 |  |
-| NASA-HDBK-1004 |  | unchecked | 2 | 0/0/0/2/0 | 100% | 0 | 0 | 60% | 8 (1) | match | 0.0 | 2 records < 3; coverage 60% < 75% |
-| NASA-HDBK-1005 |  | unchecked | 1 | 0/0/0/1/0 | 100% | 0 | 0 | 88% | 8 (0) | match | 0.0 | 1 records < 3 |
-| NASA-HDBK-1009A |  | checked | 49 | 0/0/0/49/0 | 100% | 0 | 0 | 78% | 0 (0) | match | 0.0 |  |
+| NASA-HDBK-1004 |  | unchecked | 2 | 0/0/0/2/0 | 100% | 0 | 0 | 96% | 8 (1) | match | 0.0 | 2 records < 3 |
+| NASA-HDBK-1005 |  | checked | 17 | 0/0/0/17/0 | 100% | 0 | 0 | 96% | 8 (0) | match | 0.0 |  |
+| NASA-HDBK-1009A |  | checked | 42 | 0/0/0/42/0 | 100% | 0 | 0 | 75% | 0 (0) | match | 0.0 |  |
 | NASA-HDBK-2203 |  | unchecked | 0 | 0/0/0/0/0 | 0% | 0 | 1 | 100% | 0 (0) | match | 0.0 | 0 records < 3; unparsed 100% > 10% |
 | NASA-HDBK-4001A |  | checked | 18 | 0/0/0/18/0 | 100% | 0 | 0 | 86% | 5 (1) | match | 0.0 |  |
-| NASA-HDBK-4002B |  | unchecked | 1 | 0/0/0/1/0 | 100% | 0 | 0 | 98% | 16 (0) | match | 0.0 | 1 records < 3 |
+| NASA-HDBK-4002B |  | checked | 141 | 0/0/0/141/0 | 100% | 0 | 0 | 93% | 16 (0) | match | 0.0 |  |
 | NASA-HDBK-4006A |  | checked | 45 | 0/0/0/45/0 | 100% | 0 | 0 | 97% | 2 (0) | match | 0.0 |  |
-| NASA-HDBK-4007A |  | unchecked | 1 | 0/0/0/1/0 | 0% | 0 | 39 | 100% | 15 (1) | match | 0.0 | 1 records < 3; valid IDs 0% < 95%; unparsed 98% > 10% |
+| NASA-HDBK-4007A |  | unchecked | 25 | 0/0/0/25/0 | 0% | 0 | 626 | 95% | 15 (1) | match | 0.0 | valid IDs 0% < 95%; unparsed 96% > 10% |
 | NASA-HDBK-4008 | w/Change 2 | unchecked | 140 | 0/0/0/140/0 | 100% | 0 | 0 | 97% | 7 (2) | none | 0.0 | ragged tables 2/7 |
 | NASA-HDBK-4011 |  | checked | 14 | 0/0/0/14/0 | 100% | 0 | 0 | 100% | 0 (0) | match | 0.0 |  |
 | NASA-HDBK-5010 Vol 1 | Rev.A | checked | 743 | 303/0/0/440/0 | 95% | 34 | 0 | 98% | 0 (0) | match | 0.0 |  |
 | NASA-HDBK-5010 Vol 2 | Rev.A | checked | 244 | 8/0/0/236/0 | 100% | 0 | 0 | 91% | 0 (0) | match | 0.0 |  |
 | NASA-HDBK-5026 |  | checked | 78 | 12/0/0/66/0 | 97% | 2 | 0 | 97% | 7 (1) | match | 0.0 |  |
 | NASA-HDBK-6007B | w/Change 1 | checked | 26 | 0/0/0/26/0 | 100% | 0 | 0 | 93% | 1 (0) | match | 0.0 |  |
-| NASA-HDBK-6024 | w/Change 2 | unchecked | 0 | 0/0/0/0/0 | 0% | 0 | 0 | 0% | 27 (1) | match | 0.0 | 0 records < 3; coverage 0% < 75% |
+| NASA-HDBK-6024 | w/Change 2 | checked | 93 | 0/0/0/93/0 | 100% | 0 | 0 | 91% | 27 (1) | match | 0.0 |  |
 | NASA-HDBK-7005 |  | checked | 261 | 0/0/0/261/0 | 100% | 0 | 0 | 99% | 0 (0) | match | 0.0 |  |
 | NASA-HDBK-7009B |  | checked | 135 | 1/0/0/134/0 | 100% | 0 | 0 | 95% | 39 (1) | match | 0.0 |  |
 | NASA-HDBK-7010 |  | checked | 31 | 0/0/0/31/0 | 100% | 0 | 0 | 93% | 0 (0) | match | 0.0 |  |
@@ -158,7 +158,7 @@ Why documents are not `checked`:
 | NASA-STD-1006A |  | checked | 49 | 6/0/0/43/0 | 100% | 0 | 0 | 95% | 0 (0) | match | 0.0 |  |
 | NASA-STD-1008 |  | unchecked | 326 | 15/0/0/311/0 | 100% | 0 | 43 | 96% | 5 (0) | match | 0.0 | unparsed 12% > 10% |
 | NASA-STD-2818 |  | unchecked | 1 | 0/0/0/1/0 | 100% | 0 | 23 | 98% | 0 (0) | match | 0.0 | 1 records < 20; unparsed 96% > 10% |
-| NASA-STD-2821 |  | unchecked | 18 | 17/0/0/1/0 | 100% | 0 | 29 | 98% | 0 (0) | match | 0.0 | 18 records < 20; unparsed 62% > 10% |
+| NASA-STD-2821 |  | unchecked | 18 | 17/0/0/1/0 | 100% | 0 | 28 | 98% | 0 (0) | match | 0.0 | 18 records < 20; unparsed 61% > 10% |
 | NASA-STD-2822 |  | unchecked | 16 | 15/0/0/1/0 | 100% | 0 | 102 | 97% | 0 (0) | match | 0.0 | 16 records < 20; unparsed 86% > 10% |
 | NASA-STD-3001 Vol 1 | Rev.C | unchecked | 53 | 53/0/0/0/0 | 9% | 31 | 137 | 96% | 0 (0) | match | 0.0 | valid IDs 9% < 95%; unparsed 72% > 10% |
 | NASA-STD-3001 Vol 2 | Rev.F | unchecked | 667 | 296/0/0/371/0 | 100% | 0 | 228 | 94% | 0 (0) | match | 0.0 | unparsed 25% > 10% |

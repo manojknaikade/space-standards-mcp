@@ -4,7 +4,7 @@
 # Hand-test questions (hand-01…hand-20): review waived. v2 additions (fs-022…fs-037), wave-1 additions
 # (w1-001…w1-011) and the six rewrites of 10 Oct: reviewed 10 Oct against the PDFs (Claude for the owner, B3), all ok
 # after four edits (hand-18, fs-025, fs-033, w1-003; see their review_note).
-# Wave-2 additions (w2-001…w2-010) are drafted and pending owner review.
+# Wave-2 additions (w2-001…w2-010): reviewed by the owner 15 Oct, all ok.
 # New questions: set `review: pending`, then `ok` or `fix` + `review_note` after review.
 #
 # Source documents (local, not committed):
@@ -918,7 +918,7 @@
 # ---------------------------------------------------------------------------
 # Wave 2 (B5, October 2026): drafted from the parsed wave-2 records and tables (tier checked, or verified for the
 # cross-referenced ECSS-E-ST-32-10C table); expected IDs and tables resolve in the index, numbers are from table rows.
-# Answer points are paraphrases. Review pending (domain owner).
+# Answer points are paraphrases. Reviewed by the domain owner 15 Oct: all ok.
 - id: w2-001
   type: numeric
   question: Under ECSS-E-ST-31-02C, what random vibration qualification duration and plateau level apply to heat transport equipment on an external panel, and what applies to equipment that is not on an external panel?
@@ -934,7 +934,8 @@
     - "duration 2.5 minutes per axis"
     - "external panel or unknown location: plateau 0.12 g2/Hz (vertical) and 0.05 g2/Hz (lateral), each times (M + 20)/(M + 1) with M in kg"
     - "not on an external panel: 0.05 g2/Hz times the mass factor, all axes"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-002
   type: numeric
@@ -949,7 +950,8 @@
     - "component loaded to maximum expected operational loads times FOSU"
     - "FOSU follows ECSS-E-ST-32-10 Table 4-3 for the material"
     - "metallic, launch vehicle: FOSU 1.25, FOSY 1.1"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-003
   type: lookup
@@ -961,7 +963,8 @@
   answer_points:
     - "A, B or S-basis statistical methods are defined"
     - "values taken from MMPDS (metallic) or SAE CMH-17 (composites)"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-004
   type: compare
@@ -977,7 +980,8 @@
     - "NASA-STD-6016C: select materials per MSFC-STD-3029A, with defined exceptions to the usage agreement"
     - "ECSS-E-ST-32-08C: stress corrosion tests are part of material characterisation"
     - "ECSS-E-ST-32-08C: tests follow ECSS-Q-ST-70-37 clause 5"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-005
   type: lookup
@@ -993,7 +997,8 @@
     - "minimum standoff distances from the test article and from the speakers"
     - "number and spacing adequate for the average to approximate the true spatial average"
   kind_note: "Guidance (handbook recommendation), not a requirement."
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-006
   type: search
@@ -1008,7 +1013,8 @@
     - "affects low mass-to-area structures such as antennas and solar arrays"
     - "demonstrated with a panel tuned to chamber modes"
   kind_note: "Guidance (handbook discussion), not a requirement."
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-007
   type: lookup
@@ -1024,7 +1030,8 @@
     - "static test can combine axes and use unsymmetric loading; sine excites one axis symmetrically"
     - "gravity acts as a constant load that must be considered in the vibration set-up"
   kind_note: "Guidance (handbook note), not a requirement."
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-008
   type: lookup
@@ -1038,7 +1045,8 @@
     - "interface plane definition and behaviour, including limitation of use"
     - "description by tables, figures, drawings or models, and the data affecting the definition"
     - "units, tolerances or required accuracies, and conversions for non-SI units"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-009
   type: numeric
@@ -1053,7 +1061,8 @@
     - "5 to 21 Hz: 11 mm zero-to-peak"
     - "21 to 60 Hz: 20 g zero-to-peak"
     - "60 to 100 Hz: 6 g zero-to-peak"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."
 
 - id: w2-010
   type: not_covered
@@ -1062,4 +1071,5 @@
   answer_points:
     - "not covered; ECSS-E-ST-33-11C requires the pre-load to be specified and its separation nut table holds only to-be-provided placeholders for pre-load, load capability and stiffness"
     - "no invented pre-load value"
-  review: pending
+  review: ok
+  review_note: "Review 15 Oct (owner, round 10): ok."

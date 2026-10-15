@@ -39,9 +39,9 @@ local machine; the real standards are in documents/ (gitignored; never commit or
 6. Plan the next round, or finish with a short summary: what merged (PR links), what is waiting for me.
 ```
 
-## Round 9 (prepared 15 Oct 2026)
+## Round 10 (prepared 15 Oct 2026)
 
-The generic prompt above with round 9's work and round 8's lessons filled in. Paste it as is; afterwards use the
+The generic prompt above with round 10's work and round 9's lessons filled in. Paste it as is; afterwards use the
 generic prompt again.
 
 ```text
@@ -51,36 +51,36 @@ local machine; the real standards are in documents/ (gitignored; never commit or
 1. `git checkout main && git pull --ff-only` (stop if the tree is dirty). Check `git remote -v`: `origin` is the private
    `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`, PUBLIC
    (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md; never force-push, never
-   open PRs there). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (D3, "After going public": wave 2 B2 / B5) and the
-   newest entry of docs/PROGRESS.md (round 8). Run `.venv/bin/python -m pytest -q` (426 expected with documents/;
-   the local corpus.yaml now loads wave 2, 167 documents). `gh pr list` (review and merge Dependabot PRs like
-   worker PRs).
+   open PRs there). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (D3, "After going public": wave 2 B2 / B5),
+   docs/PARSING_NOTES.md H20–H24 and the newest entry of docs/PROGRESS.md (round 9). Run
+   `.venv/bin/python -m pytest -q` (428 expected with documents/). `gh pr list` (review and merge Dependabot PRs
+   like worker PRs).
 
-2. Plan round 9 as a table and wait for my "go":
-   - D3 👤: ask whether I have set up PyPI (pending trusted publisher for `publish.yml`, environment `pypi`) and
-     the `pypi` environment on the public repository; if yes, and on my "go", create the GitHub Release v0.2.2 on
-     the public repository (that starts the publish), check PyPI, then the registry (`mcp-publisher`, I log in),
-     then the README install section in a v0.2.3. The announcement is mine to post (docs/ANNOUNCEMENT_DRAFT.md).
-   - Wave 2 B2 🧠📄: NASA documents that parse to almost nothing (HDBK-2203, 4007A, 6024, 1005, 4002B, 1004;
-     STD-2818, 2821, 2822, 6033) and NASA-STD-3001 Vol 1 (valid IDs 9 %): look at the PDFs, write each pattern up
-     in docs/PARSING_NOTES.md and hand fixture-reproducible fixes to 🤖 workers. Then the ECSS valid-ID and
-     ragged-table groups (list in round 8's PROGRESS entry). Per-table diff on the exact head before merging a
-     parser change; `test_verified_tables_unchanged` must hold.
-   - Wave 2 B5 🤖: draft ~10 wave-2 eval questions (`review: pending`, paraphrased answer points, IDs checked with
-     the tools), for my review.
+2. Plan round 10 as a table and wait for my "go":
+   - D3 👤: PyPI (0.2.2, 0.2.3) and the MCP registry (0.2.3) are done; the post is mine. On each later release,
+     after its PyPI publish, run `mcp-publisher publish` from a checkout of the public tag (login: device flow,
+     tell me the code at once).
+   - Wave 2 B5 👤: show me w2-001 … w2-010 for review (owner); apply my ok / fix.
+   - Wave 2 B2 🧠📄 / 🤖: ask me about dropping NASA-HDBK-2203 (stub, H23) and STD-2818 / 2821 / 2822 (H24) from
+     the corpus; H21 (4007A, rebuild heading numbers from the contents order) to a 🤖 worker on invented
+     fixtures; then the ECSS valid-ID group (E-HB-10-02A, E-HB-40A, E-ST-50-11C) and the ragged-table group,
+     diagnosed on the PDFs first. Per-document and per-table diff on the exact PR head before merging a parser
+     change (scratch dump of records / IDs / table hashes on main vs the head); `test_verified_tables_unchanged`
+     must hold. One 📄 parse at a time.
    - API pair (`--backend agent` vs `--backend api`) only if ANTHROPIC_API_KEY is set.
 
 3. Worker rules: as in the generic prompt; one 📄 parse at a time. After every merge delete the branch on the
    remote and locally (`gh pr merge <n> --squash --delete-branch`, `git worktree remove <path>`,
    `git branch -D <branch>`, `git fetch --prune`); `--delete-branch` can leave the remote branch when the local
    one is checked out in a worktree: check `git branch -r` and `git push origin --delete <branch>`.
-   Round 8 lessons:
-   - Check what a CI workflow triggers on before a release push: #88 published on every `v*` tag, which the
-     release flow pushes (changed to a published GitHub Release, #90).
-   - A 📄 worker's text audit only covers the corpus it loaded; re-run the audit on main (full catalogue) before
-     a release. Health-report count rows hit E-HB-31-01 Part 14A Table 8-8 by coincidence (allowlisted per file).
-   - The version lives in three places: pyproject.toml, src/spacestd/__init__.py, server.json (tested).
-   - fs-021's empty call is gone; its remaining partial is a scope hedge in the answer, not a tool fault.
+   Round 9 lessons:
+   - A parser fix can move documents it was not aimed at (H20 changed 1009A's body start): always diff every
+     document, not just the targets.
+   - Workers' real-document pytest after a parser change re-parses all 167 documents (13–23 min); give them the
+     time, and run full-corpus checks yourself once on the final head.
+   - `gh release create --notes-from-tag` fails with `--repo`; use `-F` with the changelog section.
+   - Device-flow logins (`mcp-publisher`) time out: start them only when I am at the keyboard.
+   - Numbers in eval answers come from tables only; check worker drafts for numbers taken from record text.
 
 4. Close the round with one tracking PR (plan and ROADMAP boxes, eval/RESULTS.md if runs were made, one
    newest-first PROGRESS entry ending with "Next:"). Merge it and delete its branch, remote and local;

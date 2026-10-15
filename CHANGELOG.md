@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.4]
+
+### Added
+
+- `documents/corpus.yaml` takes an optional `exclude:` list of doc-ID patterns, dropped from what `load:` selects.
+
+### Changed
+
+- The ten wave-2 evaluation questions (`w2-001` to `w2-010`) are reviewed by the owner: all ok.
+
 ## [0.2.3]
 
 ### Changed

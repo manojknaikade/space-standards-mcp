@@ -659,3 +659,37 @@ Still open: 5020B Table 8 (Appendix example: box without inner rules + uncaption
   (section-4 rule, fallback rules, handbook upper-case rule) nor the APPENDIX end. `toc_numbers` still reads the
   contents from the lines before the start. Documents whose contents are not bold behave as before.
 - Tests: two invented handbooks in `tests/test_parsers.py` (bold and wrapped entries; no bold headings).
+- Checked on the real PDFs (round 9, orchestrator, full wave-2 corpus on the PR head): only six documents change;
+  no verified document or table moves. 6024 0 → 93 records, 4002B 1 → 141, 1005 1 → 17 (all three now `checked`),
+  4007A 1 → 25 (626 unparsed: see H21), 1004 stays at 2 (its body really is pages 10–13; the content is the
+  data requirement descriptions in Appendix A, outside the body by rule). 1009A 49 → 42: on main the handbook
+  upper-case rule had started the body on a contents line, which brought in a stray record `9` and sections 1–3;
+  the body now starts at section 4 (still `checked`). Wave 2: 26 verified / 103 checked / 38 unchecked (was 100 / 41).
+
+### H21 · Handbook headings without numbers in the text layer, set in a display font (NASA-HDBK-4007A; open)
+
+Word's automatic heading numbers are not in the text layer, and the headings are set in a different, non-bold
+display font at 14–16 pt; numbered headings appear only in the contents. No bold numbered heading exists, so the
+body starts at line 0 and the prose becomes unparsed fragments (626 after H20). Same idea as ECSS H1: rebuild the
+numbers from the contents order, keyed on size or font change at the left margin. Not fixture-tested yet.
+
+### H22 · Generic font names (NASA-STD-3001 Vol 1; open)
+
+All fonts are embedded as `CIDFont+F1` … `F6` with no weight or style in the name, no `FontWeight`, and a
+meaningless `StemV`, so `Line.bold` / `italic` are 0 everywhere: no heading is found (section stays empty, record
+IDs like `V1 3005 / .a`, valid IDs 9 %) and `[Rationale: …]` blocks are not seen as italic. Fix idea: when every
+font name is generic, infer the role per font from use (the font whose lines mostly match `SECTION_RE` is the
+heading font; the one whose paragraphs start `[Rationale` is the guidance font), or read the embedded font
+program's weight class (needs fontTools). Medical standard, outside the structures scope: low priority.
+
+### H23 · Stub PDF (NASA-HDBK-2203; not a parser fault)
+
+One page with 24 characters of text: the file is a placeholder, not the handbook. Candidate for the corpus
+exclusions rather than a fix.
+
+### H24 · NASA 28xx imagery / audio-video standards (STD-2818, 2821, 2822; owner decision)
+
+Mixed heading styles (bold and regular top-level headings in one document, `1.0 Title:` annex headings), numbered
+paragraphs without `shall` (guidelines), and in 2822 requirement IDs of the form `RQ_nnn` at the start of a
+paragraph. Most unparsed text is prose that is correctly not a requirement. These are IT / media standards outside
+the engineering scope of ADR-0004; proposed: leave them out of the corpus instead of adding rules for them.

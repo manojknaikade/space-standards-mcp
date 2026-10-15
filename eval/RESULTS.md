@@ -31,6 +31,18 @@ What Phase 2 showed, and what it means for Phase 3:
    6 were false positives (NASA guidance IDs, standards that are not loaded). Expect more of this as Phase 4
    adds documents. Every answer flagged by the checker should be looked at by hand before the rule is trusted.
 
+## Round 9 — 15 October 2026 — wave-2 questions and the H20 parser fix
+
+**Retrieval, main after #93–#96** (BM25, 167 documents, 72 scored questions: the old 63 + w2-001 … w2-009;
+w2-010 is not covered): records recall@5 0.70; tables @5 row hit 0.44, reachable 0.71 over 26. The old 63 are
+unchanged by H20 and by the new questions (per-question output identical in the #93 check). New questions:
+recall@5 0.91 over 9; misses w2-002 (33-11C 4.2.5.2c at rank 40, and 32-10C Table 4-3 not reachable: the
+requirement only points to another standard's table, a deliberate hard case) and w2-004 (32-08C 4.6.3c at
+rank 12). The w2 questions are pending owner review.
+
+**H20 per-document check** (#95 head vs main, full wave-2 corpus, uncached): 6 documents changed, no table
+changed anywhere, verified documents unchanged; health 26 / 100 / 41 → 26 / 103 / 38. Details in PARSING_NOTES H20.
+
 ## Round 8 — 15 October 2026 — wave 2 retrieval check and the fs-021 replay
 
 **Wave 2 B1 retrieval check** (#89, BM25, 63 scored questions; corpus 44 → 167 documents): records recall@5

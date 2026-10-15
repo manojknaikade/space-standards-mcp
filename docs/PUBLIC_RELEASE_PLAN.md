@@ -319,6 +319,11 @@ and the public repository has no PRs and nothing under `documents/` but the READ
   marker; `docs/PUBLISHING.md` (one-time setup and steps); `docs/ANNOUNCEMENT_DRAFT.md` (-dev only). Shipped in
   v0.2.2. Open, 👤: PyPI account + pending trusted publisher, `pypi` environment on the public repository, a GitHub
   Release for v0.2.2, then `mcp-publisher publish`, then the post.*
+  *PyPI done 15 Oct (round 9): owner set up the pending publisher and the `pypi` environment (owner as reviewer);
+  GitHub Release v0.2.2 published the package (0.2.2 on PyPI, `mcp-name` marker present, clean install checked).
+  README install section from PyPI (#94) shipped in v0.2.3 (release commit 65c7f33, GitHub Release v0.2.3; 0.2.3 on PyPI after the owner's approval). MCP registry: owner
+  logged in (`mcp-publisher login github`), `io.github.manojknaikade/space-standards-mcp` 0.2.3 published from the
+  public tag v0.2.3, listed as active. Open, 👤: the post (docs/ANNOUNCEMENT_DRAFT.md).*
 
 ## After going public
 
@@ -335,7 +340,14 @@ Then issue diffing and tailoring matrices (ROADMAP Phase 4).
   PROGRESS entry and the health report): low valid-ID share (E-HB-10-02A, E-HB-40A, E-ST-50-11C, E-ST-40C,
   NASA-STD-3001 Vol 1), ragged tables (E-HB-31-01 parts, E-ST-70-31C, E-ST-50-13C), NASA documents that parse
   to almost nothing (HDBK-2203, 4007A, 6024, 1005, 4002B, 1004; STD-2818, 2821, 2822, 6033).
+  *Round 9: NASA near-empty parses diagnosed on the PDFs (PARSING_NOTES H20–H24). H20 contents-page body bounds
+  fixed (#95): 6024 / 4002B / 1005 now `checked`; wave 2 26 / 103 / 38. Open: H21 4007A unnumbered display-font
+  headings, H22 3001 Vol 1 generic font names, H23 2203 stub, H24 28xx out of scope (owner), 6033; then the ECSS
+  valid-ID and ragged-table groups.*
 - [ ] **Wave 2 B5 👤** about 10 new eval questions for wave 2.
+  *Drafted 15 Oct (round 9, #93): w2-001 … w2-010 (`review: pending`), wave-2 `checked` sources, IDs and tables
+  checked with the tools; w2-006 trimmed to no record-text numbers. Retrieval on the 9 scored: recall@5 0.91,
+  @20 0.94; the old 63 unchanged. Open, 👤: owner review.*
 
 ## Order at a glance
 
@@ -365,4 +377,6 @@ Open work from 10 Oct, as rounds:
   vulnerability reporting); `cli-agent` answer run r13 on the round-6 code.
 - **Round 8 (15 Oct):** fs-021 required search arguments (#87); D3 prepared (#88); wave 2 B1 (#89); Dependabot
   Actions v7 (#85, #86); v0.2.2 released to the public repository.
-- **Next:** D3 👤 publish (owner), wave 2 B2 / B5.
+- **Round 9 (15 Oct):** PyPI live (0.2.2, 0.2.3) and MCP registry listing (0.2.3); wave 2 B5 drafted (#93); B2 diagnosis and H20 (#95);
+  README PyPI install (#94); v0.2.3 (#96).
+- **Next:** the post (owner), B5 review (owner), wave 2 B2 continued.

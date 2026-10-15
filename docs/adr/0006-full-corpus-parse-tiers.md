@@ -38,7 +38,7 @@ constraints are:
    mechanical, …). Files under a `superseded…` folder are catalogued as superseded and never loaded. Identities
    are cached in `.spacestd-cache/catalogue.json`.
 2. **Selection.** `documents/corpus.yaml` lists doc-ID patterns to load (`load: [ECSS-E-ST-32*, …]`, `"*"` for
-   everything active). Without it, only files directly in `documents/` are loaded, as before.
+   everything active), plus an optional `exclude:` list dropped from that selection (round 10). Without it, only files directly in `documents/` are loaded, as before.
 3. **`list_documents` covers the whole catalogue.** Filters: family, doc_type, discipline, words in the ID or
    title. `include_not_loaded` lists documents that are present but not loaded, so a client can say which
    standard would cover a question without answering from it.

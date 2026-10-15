@@ -11,6 +11,8 @@ ID; titles come from the cover page or from a download manifest in the same fold
     load:              # doc ID patterns (fnmatch, case-insensitive); "*" loads every active document
       - ECSS-E-ST-32*
       - NASA-STD-5001*
+    exclude:           # optional: patterns dropped from that selection
+      - NASA-STD-2818*
 
 Without it, only files directly in the documents folder are loaded (the behaviour before the catalogue).
 Files under a folder whose name starts with "superseded" are catalogued as superseded and never loaded.
@@ -276,6 +278,15 @@ def _selection(folder: Path) -> list[str] | None:
     return [load] if isinstance(load, str) else [str(x) for x in load]
 
 
+def _exclusions(folder: Path) -> list[str]:
+    path = folder / CORPUS_FILE
+    if not path.exists():
+        return []
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    exclude = data.get("exclude") or []
+    return [exclude] if isinstance(exclude, str) else [str(x) for x in exclude]
+
+
 def _selected(doc_id: str, patterns: list[str]) -> bool:
     return any(fnmatch.fnmatch(doc_id.upper(), p.upper()) for p in patterns)
 
@@ -285,6 +296,7 @@ def build_catalogue(folder: Path, use_cache: bool = True) -> Catalogue:
     files = _discover(folder)
     idents = _identities(folder, files, use_cache)
     selection = _selection(folder)
+    exclusions = _exclusions(folder)
     health = checked_tiers(folder)
 
     def rank(p: Path) -> tuple:
@@ -312,7 +324,7 @@ def build_catalogue(folder: Path, use_cache: bool = True) -> Catalogue:
         if selection is None:
             loaded = len(rel.parts) == 1
         else:
-            loaded = not superseded and _selected(doc_id, selection)
+            loaded = not superseded and _selected(doc_id, selection) and not _selected(doc_id, exclusions)
         e = Entry(
             doc_id=doc_id,
             issue=meta.get("issue", ""),

@@ -52,6 +52,8 @@ load:
   - ECSS-E-ST-32*
   - ECSS-E-ST-10-03C
   - NASA-STD-5*
+exclude:            # optional: drop documents the load patterns would pick up
+  - NASA-STD-2818*
 ```
 
 Supported formats: `.pdf` (preferred; ECSS and NASA), `.docx` / `.doc` (ECSS Word files are read through

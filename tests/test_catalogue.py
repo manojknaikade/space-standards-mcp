@@ -74,6 +74,14 @@ def test_corpus_selects_and_superseded_never_loads(tmp_path):
     assert sorted(d.doc_id for d in load_folder(tmp_path)) == ["ECSS-E-ST-99-01C", "ECSS-E-ST-99-02C"]
 
 
+def test_corpus_exclude_drops_matching_documents(tmp_path):
+    _txt(tmp_path / "ECSS-E-ST-99-01C_Rev.1.txt")
+    _txt(tmp_path / "ECSS-E-ST-99-02C_Rev.1.txt")
+    (tmp_path / "corpus.yaml").write_text("load:\n  - ECSS-E-*\nexclude:\n  - ecss-e-st-99-02*\n")
+    cat = build_catalogue(tmp_path)
+    assert {e.doc_id: e.loaded for e in cat.entries} == {"ECSS-E-ST-99-01C": True, "ECSS-E-ST-99-02C": False}
+
+
 def test_top_level_copy_wins_and_alternates_are_kept(tmp_path):
     _txt(tmp_path / "ECSS-E-ST-99-10C_Rev.2.txt")
     _txt(tmp_path / "bundle" / "ECSS-E-ST-99-10C_Rev.2-Corr.1(1August2031).txt")

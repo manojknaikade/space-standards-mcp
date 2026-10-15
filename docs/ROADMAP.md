@@ -109,4 +109,6 @@ Waves 2–4 can follow after going public.
 
 - [x] Public repository live: `space-standards-mcp` v0.2.1, branch protection and security features on (15 Oct 2026, release plan D2)
 - [x] v0.2.2 released (15 Oct 2026): required tool arguments, PyPI workflow and MCP registry `server.json` prepared
-- [ ] On PyPI and in the MCP registry; announcement posted (D3, owner)
+- [x] On PyPI (15 Oct 2026: 0.2.2, 0.2.3 with the PyPI install README)
+- [x] In the official MCP registry (15 Oct 2026: `io.github.manojknaikade/space-standards-mcp` 0.2.3)
+- [ ] Announcement posted (D3, owner)

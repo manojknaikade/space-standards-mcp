@@ -932,6 +932,8 @@ def test_nasa_handbook_uppercase_plain_headings_h8():
         L("2. DEFINITIONS", **_NT),
         L("Invented definitions prose.", **_NT),
     ])
+    for ln in lines[3:]:  # the body is on the page after the contents (H20)
+        ln.page = 2
     reqs, unparsed = parse_nasa_lines(lines, "NASA-HDBK-9974", "", handbook=True)
     assert [(r.req_id, r.kind, r.text) for r in reqs] == [
         ("1", "guidance", "Invented prose of the introduction."),
@@ -1013,6 +1015,8 @@ def test_nasa_handbook_subsections_from_the_toc_h8():
         L("2.1 Widget Loads", x0=99, size=12.0),
         L("Invented prose about loads.", **_NT),
     ])
+    for ln in lines[5:]:  # the body is on the page after the contents (H20)
+        ln.page = 2
     reqs, _ = parse_nasa_lines(lines, "NASA-HDBK-9980", "", handbook=True)
     by = {r.req_id: r for r in reqs}
     assert list(by) == ["1.1", "1.2", "2", "2.1"]  # "1" has no prose of its own
@@ -1024,3 +1028,55 @@ def test_table_reference_word_is_case_insensitive():
     from spacestd.ecss_parser import TABLE_REF_RE
     assert TABLE_REF_RE.findall("as in table 2, and Table 4-3; see tables 5-1") == ["2", "4-3", "5-1"]
     assert TABLE_REF_RE.findall("the table of contents, a table") == []
+
+
+# --------------------------------------------------------------------------- H20: body bounds skip the contents
+
+
+def _on_page(lines, page):
+    for ln in lines:
+        ln.page = page
+    return lines
+
+
+def _toc_page():
+    return _on_page(_spread([
+        L("TABLE OF CONTENTS", **_NB),
+        L("1. INVENTED SCOPE 7", **_NT),
+        L("2. INVENTED REFERENCES 9", **_NT),
+        L("4. INVENTED TITLE 21", **_NB),  # bold entry with a trailing page number
+        L("4.1 Invented Part ........ 22", **_NT),
+        L("4. INVENTED WRAPPED TITLE THAT RUNS ON", **_NB),  # wrapped bold entry, leaders on the next line
+        L("........ 23", **_NT),
+        L("APPENDIX PAGE", **_NB),
+        L("APPENDIX A: INVENTED ....... 104", **_NB),
+    ]), 1)
+
+
+def test_nasa_toc_page_gives_neither_body_start_nor_end_h20():
+    body = _on_page(_spread([
+        L("4. REQUIREMENTS", **_NB),
+        L("4.1 Widgets", **_NB),
+        L("[WDG 1] Each widget shall be inspected.", **_NT),
+        L("APPENDIX A", **_NB),
+        L("[WDG 9] Appendix text shall not be parsed.", **_NT),
+    ]), 2)
+    reqs, _ = parse_nasa_lines(_toc_page() + body, "NASA-HDBK-9981", "", handbook=True)
+    assert [r.req_id for r in reqs] == ["WDG 1"]
+
+
+def test_nasa_toc_page_without_bold_headings_h20():
+    toc = _on_page(_spread([
+        L("1. INVENTED SCOPE 7", **_NT),
+        L("2. INVENTED REFERENCES 9", **_NT),
+        L("4. INVENTED TITLE 21", **_NT),
+        L("APPENDIX A: INVENTED ....... 104", **_NB),
+    ]), 1)
+    body = _on_page(_spread([
+        L("4.1 Widgets", **_NB),
+        L("[WDG 1] Each widget shall be inspected.", **_NT),
+        L("APPENDIX A", **_NB),
+        L("[WDG 9] Appendix text shall not be parsed.", **_NT),
+    ]), 2)
+    reqs, _ = parse_nasa_lines(toc + body, "NASA-HDBK-9982", "", handbook=True)
+    assert [r.req_id for r in reqs] == ["WDG 1"]

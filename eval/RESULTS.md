@@ -31,6 +31,19 @@ What Phase 2 showed, and what it means for Phase 3:
    6 were false positives (NASA guidance IDs, standards that are not loaded). Expect more of this as Phase 4
    adds documents. Every answer flagged by the checker should be looked at by hand before the rule is trusted.
 
+## Round 8 — 15 October 2026 — wave 2 retrieval check and the fs-021 replay
+
+**Wave 2 B1 retrieval check** (#89, BM25, 63 scored questions; corpus 44 → 167 documents): records recall@5
+0.65 → 0.67, with neighbours 0.75 → 0.75, @20 0.88 → 0.89; tables @5 0.46 / 0.72 and @20 0.59 / 0.87, unchanged.
+No question dropped out of the top 5; fs-019, hand-04 and hand-20 improved. Two-stage retrieval is still not needed.
+
+**fs-021 replay** (`eval/runs/r14-fs021-cli-agent`, `cli-agent`, code after #87): no argument-less search call
+(4 calls, all with search words; r13: 6 calls, one `{}`). Verdict partial in both; answer-point coverage 0.50 →
+0.83, table citation recall 0.50 → 1.00, citation recall 1.00 → 0.33 (this time the agent used 7001C Table 1
+instead of the PVTR 2 / 43 records). The answer still opens with a hedge that the standards do not name the
+payload fairing; that hedge, not the empty call, is what keeps it partial. One answer, one judge pass: read with
+the round-7 note on judge variance.
+
 ## Answers r13 — 15 October 2026 — round 7: `cli-agent` on the round-6 code
 
 Code 99ab533 (main after round 6 and D1a). `--backend cli-agent` (Sonnet 5.5), `--judge cli`, 68 questions;

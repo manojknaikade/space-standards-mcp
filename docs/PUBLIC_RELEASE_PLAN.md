@@ -312,12 +312,30 @@ and the public repository has no PRs and nothing under `documents/` but the READ
     repository (it keeps its alerts and stays free of PRs), and `.github/dependabot.yml` (weekly pip and Actions
     updates) is on the release-exclude list.*
 - [ ] **D3 🤖 Optional:** publish to PyPI, list the server in an MCP registry, write an announcement post.
+  *Prepared 15 Oct (round 8, owner chose all three; #88, #90): PyPI name `space-standards-mcp` free; Trusted
+  Publishing workflow `publish.yml` (public repository only, runs on a published GitHub Release or by hand, not on
+  the release flow's tag push); sdist limited to source and metadata; `server.json` for the official MCP registry
+  (`io.github.manojknaikade/space-standards-mcp`, version tested against `pyproject.toml`) and the README ownership
+  marker; `docs/PUBLISHING.md` (one-time setup and steps); `docs/ANNOUNCEMENT_DRAFT.md` (-dev only). Shipped in
+  v0.2.2. Open, 👤: PyPI account + pending trusted publisher, `pypi` environment on the public repository, a GitHub
+  Release for v0.2.2, then `mcp-publisher publish`, then the post.*
 
 ## After going public
 
 Waves 2–4 from ADR-0006 follow the same loop as stage B (B1 🤖📄 → B2 🧠📄/🤖 → B3 👤📄 → B5–B6 👤📄/🤖📄 → B7 🧠): rest
 of ECSS-E and the NASA engineering series; ECSS-Q and NASA 87xx; ECSS-M/-U/-S and the remaining handbooks.
 Then issue diffing and tailoring matrices (ROADMAP Phase 4).
+
+- [x] **Wave 2 B1 🤖📄** patterns in `documents/corpus.yaml` and health report (`eval/CORPUS_HEALTH_WAVE2.md`, #89).
+  *Done 15 Oct (round 8): all ECSS-E-ST / -HB / -AS and NASA STD / HDBK / SPEC numbered 1000–7999 (87xx is wave 3;
+  NASA-STD-10001 / 10002 and 7919.1 left out). 167 documents load (44 + 123): 26 verified, 100 checked, 41
+  unchecked (7 adoption notices), 0 parse errors. Retrieval on the 63 scored questions: recall@5 0.65 → 0.67,
+  neighbours 0.75, @20 0.88 → 0.89, tables unchanged; no question left the top 5.*
+- [ ] **Wave 2 B2 🧠📄 / 🤖** parser fixes for the 33 unchecked wave-2 standards and handbooks (list in round 8's
+  PROGRESS entry and the health report): low valid-ID share (E-HB-10-02A, E-HB-40A, E-ST-50-11C, E-ST-40C,
+  NASA-STD-3001 Vol 1), ragged tables (E-HB-31-01 parts, E-ST-70-31C, E-ST-50-13C), NASA documents that parse
+  to almost nothing (HDBK-2203, 4007A, 6024, 1005, 4002B, 1004; STD-2818, 2821, 2822, 6033).
+- [ ] **Wave 2 B5 👤** about 10 new eval questions for wave 2.
 
 ## Order at a glance
 
@@ -345,4 +363,6 @@ Open work from 10 Oct, as rounds:
   D1a done (fresh private repository, v0.2.0; guard fix #80).
 - **Round 7 (15 Oct):** D2 checks and go public (branch protection, Dependabot, secret scanning, private
   vulnerability reporting); `cli-agent` answer run r13 on the round-6 code.
-- **Next:** D3 🤖 (optional), then waves 2–4 (After going public).
+- **Round 8 (15 Oct):** fs-021 required search arguments (#87); D3 prepared (#88); wave 2 B1 (#89); Dependabot
+  Actions v7 (#85, #86); v0.2.2 released to the public repository.
+- **Next:** D3 👤 publish (owner), wave 2 B2 / B5.

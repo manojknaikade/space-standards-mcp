@@ -644,3 +644,18 @@ over the 44 loaded documents (109 of 268 tables changed, all reviewed as fixes o
 
 Still open: 5020B Table 8 (Appendix example: box without inner rules + uncaptioned table), 7002B Table 1 (shading),
 10-03C table-by-table check, appendix requirement matrices (5009C Table 3: one row).
+
+
+### H20 · NASA body bounds taken from the table of contents (wave 2, B2)
+
+- Pattern: the body starts at the first bold `4 Title` heading and ends at the first bold line starting with
+  APPENDIX. When the contents page sets its section-4 entry in bold (`4. INVENTED TITLE 21`, or a wrapped entry
+  whose dot leaders and page number are on the next line), the start lands on the contents page and the end on its
+  `APPENDIX A: ... 104` entry or its bold `APPENDIX PAGE` column header. The body is a few contents lines, so
+  the document parses to 0-2 records (NASA-HDBK-6024, 4002B, 1004, 1005). With no bold heading at all the start is 0
+  and the end is the contents' APPENDIX entry (4007A).
+- Fix: `toc_page_lines` marks a page as a contents page when at least three of its lines match `TOC_LINE_RE`
+  (number, title, dot leaders or trailing page number). Lines on such pages are neither a body start candidate
+  (section-4 rule, fallback rules, handbook upper-case rule) nor the APPENDIX end. `toc_numbers` still reads the
+  contents from the lines before the start. Documents whose contents are not bold behave as before.
+- Tests: two invented handbooks in `tests/test_parsers.py` (bold and wrapped entries; no bold headings).

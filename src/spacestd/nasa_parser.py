@@ -114,6 +114,18 @@ def _plausible_next(num: str, cur: str) -> bool:
 TOC_LINE_RE = re.compile(r"^(\d{1,2}(?:\.\d{1,2}){0,5})\.?\s+\S.*?(?:\.{3,}|(?:\.\s){3,}|\s)\s*\d{1,3}\s*$")
 
 
+def toc_page_lines(lines: list[Line]) -> set[int]:
+    """Indices of lines on table-of-contents pages: pages with at least three TOC-style lines (H20). A bold
+    '4. TITLE 21' entry, an 'APPENDIX A ... 104' entry or an 'APPENDIX PAGE' column header there is not the
+    start or end of the body."""
+    count: dict[int, int] = {}
+    for ln in lines:
+        if TOC_LINE_RE.match(ln.text):
+            count[ln.page] = count.get(ln.page, 0) + 1
+    pages = {pg for pg, n in count.items() if n >= 3}
+    return {i for i, ln in enumerate(lines) if ln.page in pages}
+
+
 def toc_numbers(lines: list[Line]) -> set[str]:
     """Section numbers listed in the table of contents (dot leaders or a trailing page number)."""
     return {m.group(1) for ln in lines if (m := TOC_LINE_RE.match(ln.text))}
@@ -237,15 +249,16 @@ def parse_nasa_lines(lines: list[Line], doc_id: str, issue: str, handbook: bool 
     # everything: H6), up to Appendix A
     xs = [round(ln.x0) for ln in lines if ln.text]
     left = max(set(xs), key=xs.count) if xs else None  # left margin: the commonest x0
-    start = next((i for i, ln in enumerate(lines) if _is_heading(ln) and re.match(r"^4(?:\.0)?\.?\s+[A-Z]", ln.text)),
-                 None)
+    on_toc = toc_page_lines(lines)  # table-of-contents pages never hold the body bounds (H20)
+    start = next((i for i, ln in enumerate(lines) if i not in on_toc and _is_heading(ln)
+                  and re.match(r"^4(?:\.0)?\.?\s+[A-Z]", ln.text)), None)
     if start is None:
-        start = next((i for i, ln in enumerate(lines) if _is_heading(ln, handbook, left)), 0)
+        start = next((i for i, ln in enumerate(lines) if i not in on_toc and _is_heading(ln, handbook, left)), 0)
     elif handbook:  # plain upper-case headings (H8) may start before section 4
-        cap = next((i for i, ln in enumerate(lines) if _caps_heading(ln, left)), None)
+        cap = next((i for i, ln in enumerate(lines) if i not in on_toc and _caps_heading(ln, left)), None)
         start = min(start, cap) if cap is not None else start
-    end = next((i for i in range(start, len(lines)) if _bold(lines[i]) and lines[i].text.upper().startswith("APPENDIX")),
-               len(lines))
+    end = next((i for i in range(start, len(lines)) if i not in on_toc and _bold(lines[i])
+                and lines[i].text.upper().startswith("APPENDIX")), len(lines))
     body = lines[start:end]
     tagless = not any(LEAD_TAG_RE.match(ln.text) for ln in body)
     hxs = [round(ln.x0) for ln in body if _is_heading(ln, handbook, left)]

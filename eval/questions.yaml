@@ -1,9 +1,10 @@
 # Evaluation set — launcher and payload-fairing structures
 #
-# Status: 68 questions. v1 (fs-001…fs-021) reviewed by the domain owner, 7 October 2026: all ok.
+# Status: 78 questions. v1 (fs-001…fs-021) reviewed by the domain owner, 7 October 2026: all ok.
 # Hand-test questions (hand-01…hand-20): review waived. v2 additions (fs-022…fs-037), wave-1 additions
 # (w1-001…w1-011) and the six rewrites of 10 Oct: reviewed 10 Oct against the PDFs (Claude for the owner, B3), all ok
 # after four edits (hand-18, fs-025, fs-033, w1-003; see their review_note).
+# Wave-2 additions (w2-001…w2-010) are drafted and pending owner review.
 # New questions: set `review: pending`, then `ok` or `fix` + `review_note` after review.
 #
 # Source documents (local, not committed):
@@ -913,3 +914,152 @@
     - "measurement point plan, exciter positions and allowable force levels"
   review: ok
   review_note: "Review 10 Oct (Claude for the owner, B3 PDF check): Checked."
+
+# ---------------------------------------------------------------------------
+# Wave 2 (B5, October 2026): drafted from the parsed wave-2 records and tables (tier checked, or verified for the
+# cross-referenced ECSS-E-ST-32-10C table); expected IDs and tables resolve in the index, numbers are from table rows.
+# Answer points are paraphrases. Review pending (domain owner).
+- id: w2-001
+  type: numeric
+  question: Under ECSS-E-ST-31-02C, what random vibration qualification duration and plateau level apply to heat transport equipment on an external panel, and what applies to equipment that is not on an external panel?
+  expected_ids: ["ECSS-E-ST-31-02C|5.6.10.3a"]
+  expected_tables: ["ECSS-E-ST-31-02C|Table 5-6"]
+  reference_answer: >
+    Table 5-6: 2.5 minutes per axis in every case. For equipment on an external panel (panel directly excited
+    by the payload acoustic environment) or at an unknown location, the 100-300 Hz plateau is 0.12 g2/Hz
+    times (M + 20 kg)/(M + 1 kg) in the vertical axis and 0.05 g2/Hz times the same mass factor in the lateral
+    axis. For equipment not on an external panel the plateau is 0.05 g2/Hz times the mass factor in all axes.
+    The spectrum rises at 3 dB/octave from 20 Hz and falls at 5 dB/octave above 300 Hz. M is the equipment mass in kg.
+  answer_points:
+    - "duration 2.5 minutes per axis"
+    - "external panel or unknown location: plateau 0.12 g2/Hz (vertical) and 0.05 g2/Hz (lateral), each times (M + 20)/(M + 1) with M in kg"
+    - "not on an external panel: 0.05 g2/Hz times the mass factor, all axes"
+  review: pending
+
+- id: w2-002
+  type: numeric
+  question: What ultimate and yield factors of safety apply to a metallic pyrotechnic component on a launch vehicle that must not rupture in operation, and where does ECSS-E-ST-33-11C get them from?
+  expected_ids: ["ECSS-E-ST-33-11C|4.2.5.2b", "ECSS-E-ST-33-11C|4.2.5.2c"]
+  expected_tables: ["ECSS-E-ST-32-10C|Table 4-3"]
+  reference_answer: >
+    ECSS-E-ST-33-11C requires such a component to withstand the maximum expected operational loads times an
+    ultimate factor FOSU, and takes FOSU from Table 4-3 of ECSS-E-ST-32-10 for the material used. For metallic
+    parts on a launch vehicle that table gives FOSU 1.25 and FOSY 1.1 (the analysis-only verification FOSU is 2.0).
+  answer_points:
+    - "component loaded to maximum expected operational loads times FOSU"
+    - "FOSU follows ECSS-E-ST-32-10 Table 4-3 for the material"
+    - "metallic, launch vehicle: FOSU 1.25, FOSY 1.1"
+  review: pending
+
+- id: w2-003
+  type: lookup
+  question: Under NASA-STD-6016C, from which sources must design values for mechanical properties of structural materials be taken?
+  expected_ids: ["NASA-STD-6016C|MPR 35"]
+  reference_answer: >
+    Mechanical property values in the design environment, with the A, B or S-basis statistical method defined,
+    come from MMPDS for metallic materials or from SAE CMH-17 for composite materials.
+  answer_points:
+    - "A, B or S-basis statistical methods are defined"
+    - "values taken from MMPDS (metallic) or SAE CMH-17 (composites)"
+  review: pending
+
+- id: w2-004
+  type: compare
+  question: How do NASA-STD-6016C and ECSS-E-ST-32-08C control stress corrosion cracking of metallic materials?
+  expected_ids: ["NASA-STD-6016C|MPR 56", "ECSS-E-ST-32-08C|4.6.3c", "ECSS-E-ST-32-08C|4.6.3a"]
+  reference_answer: >
+    NASA-STD-6016C uses MSFC-STD-3029A to select metallic materials for stress corrosion resistance in sea
+    and air environments, with listed exceptions that need no material usage agreement (low-stress electronic
+    parts, compressively loaded bearing-type applications, non-mission-critical hardware). ECSS-E-ST-32-08C
+    instead lists stress corrosion tests among the tests that characterise a metallic material and requires
+    them to follow clause 5 of ECSS-Q-ST-70-37.
+  answer_points:
+    - "NASA-STD-6016C: select materials per MSFC-STD-3029A, with defined exceptions to the usage agreement"
+    - "ECSS-E-ST-32-08C: stress corrosion tests are part of material characterisation"
+    - "ECSS-E-ST-32-08C: tests follow ECSS-Q-ST-70-37 clause 5"
+  review: pending
+
+- id: w2-005
+  type: lookup
+  question: According to NASA-HDBK-7010, how should control microphones be placed for a direct field acoustic test?
+  expected_ids: ["NASA-HDBK-7010|6.3.1"]
+  reference_answer: >
+    Several control microphones are recommended, placed around the test article circumferentially at
+    elevations chosen from analytical predictions, with minimum standoff distances from the article and from
+    the loudspeakers. Their number and spacing should be enough that their average represents the true spatial
+    average of the sound field, including spatial variations. Symmetric placement relative to the loudspeakers is advised.
+  answer_points:
+    - "multiple microphones placed circumferentially, at elevations from analytical predictions"
+    - "minimum standoff distances from the test article and from the speakers"
+    - "number and spacing adequate for the average to approximate the true spatial average"
+  kind_note: "Guidance (handbook recommendation), not a requirement."
+  review: pending
+
+- id: w2-006
+  type: search
+  question: Why can a reverberant-chamber acoustic test overtest low mass-to-area structures such as antennas or solar arrays?
+  expected_ids: ["NASA-HDBK-7010|8.2.2"]
+  reference_answer: >
+    Coupling between a structural mode and an acoustic standing wave of the chamber can strongly amplify the
+    response of lightweight, large-area structures. The handbook cites a test panel tuned to coincide with
+    chamber modes, whose response changed strongly.
+  answer_points:
+    - "structure and acoustic mode coupling in the chamber causes the overtest"
+    - "affects low mass-to-area structures such as antennas and solar arrays"
+    - "demonstrated with a panel tuned to chamber modes"
+  kind_note: "Guidance (handbook discussion), not a requirement."
+  review: pending
+
+- id: w2-007
+  type: lookup
+  question: Does a sine vibration test cover the static load of equipment, according to ECSS-E-HB-10-03A, and what are its limits compared with a static test?
+  expected_ids: ["ECSS-E-HB-10-03A|5.2a"]
+  reference_answer: >
+    Usually yes, sine vibration covers the static load for equipment, with exceptions such as entry, descent and
+    landing loads. A static test can combine loads on several axes and apply unsymmetric (tension and compression)
+    loading, whereas sine vibration excites one axis symmetrically; in the vertical direction gravity makes the
+    loading unsymmetric anyway.
+  answer_points:
+    - "sine vibration usually covers the static load, with exceptions such as entry, descent and landing loads"
+    - "static test can combine axes and use unsymmetric loading; sine excites one axis symmetrically"
+    - "gravity acts as a constant load that must be considered in the vibration set-up"
+  kind_note: "Guidance (handbook note), not a requirement."
+  review: pending
+
+- id: w2-008
+  type: lookup
+  question: What must the interface responsible define for each specified interface in an Interface Control Document under ECSS-E-ST-10-24C?
+  expected_ids: ["ECSS-E-ST-10-24C|B.2.1<5>b"]
+  reference_answer: >
+    The interface characteristics: interface plane definition, behaviour including limitations of use, a
+    description by tables, figures, drawings, models or databases, the data that affect the definition,
+    units and scale of measure, tolerances or required accuracies, and conversions when non-SI units are used.
+  answer_points:
+    - "interface plane definition and behaviour, including limitation of use"
+    - "description by tables, figures, drawings or models, and the data affecting the definition"
+    - "units, tolerances or required accuracies, and conversions for non-SI units"
+  review: pending
+
+- id: w2-009
+  type: numeric
+  question: What sinusoidal vibration qualification levels does ECSS-E-ST-31-02C give for generic equipment, by frequency band?
+  expected_ids: ["ECSS-E-ST-31-02C|5.6.10.2a"]
+  expected_tables: ["ECSS-E-ST-31-02C|Table 5-5"]
+  reference_answer: >
+    Table 5-5: 5 to 21 Hz at 11 mm (zero to peak); 21 to 60 Hz at 20 g (zero to peak); 60 to 100 Hz at 6 g
+    (zero to peak). Notching is allowed or not depending on whether the equipment first frequency is at or
+    below 100 Hz or above it.
+  answer_points:
+    - "5 to 21 Hz: 11 mm zero-to-peak"
+    - "21 to 60 Hz: 20 g zero-to-peak"
+    - "60 to 100 Hz: 6 g zero-to-peak"
+  review: pending
+
+- id: w2-010
+  type: not_covered
+  question: What pre-load tension in kN must a separation bolt in a launcher payload separation nut be tightened to?
+  expected_ids: []
+  answer_points:
+    - "not covered; ECSS-E-ST-33-11C requires the pre-load to be specified and its separation nut table holds only to-be-provided placeholders for pre-load, load capability and stiffness"
+    - "no invented pre-load value"
+  review: pending

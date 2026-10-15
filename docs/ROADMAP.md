@@ -94,7 +94,8 @@ catalogued at once, loaded in waves gated by the eval, with a parse tier on each
   recall 0.37 → 0.46 @5 with record recall unchanged, gated answers 0.85 correct
 - [x] Handbooks: section-level records (no lettered requirements), ranked below standards (A5, 10 Oct)
 - [ ] Two-stage retrieval (pick documents, then records) once a wave shows dilution (wave 1 does not: run 10, B7)
-- [ ] Wave 2 — rest of ECSS-E and NASA engineering; wave 3 — ECSS-Q, NASA 87xx; wave 4 — ECSS-M/-U/-S, remaining handbooks
+- [ ] Wave 2 — rest of ECSS-E and NASA engineering (B1 15 Oct: 167 documents load, 41 unchecked, no retrieval
+  regression; parser fixes and questions next); wave 3 — ECSS-Q, NASA 87xx; wave 4 — ECSS-M/-U/-S, remaining handbooks
 - [ ] NASA Lessons Learned on fairings, separation events and structural failures (public LLIS records)
 - [ ] Issue/version diffing, tailoring support (load a project tailoring matrix)
 - [x] Decide: open-source the code under Apache-2.0, bring your own documents, fresh squashed public repository
@@ -107,3 +108,5 @@ Release gate: stage A (health report, parse tiers), wave 1 loaded and evaluated,
 Waves 2–4 can follow after going public.
 
 - [x] Public repository live: `space-standards-mcp` v0.2.1, branch protection and security features on (15 Oct 2026, release plan D2)
+- [x] v0.2.2 released (15 Oct 2026): required tool arguments, PyPI workflow and MCP registry `server.json` prepared
+- [ ] On PyPI and in the MCP registry; announcement posted (D3, owner)

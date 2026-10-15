@@ -8,12 +8,12 @@
     "url": "https://github.com/manojknaikade/space-standards-mcp",
     "source": "github"
   },
-  "version": "0.2.2",
+  "version": "0.2.3",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "space-standards-mcp",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"

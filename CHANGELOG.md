@@ -4,6 +4,19 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.3]
+
+### Changed
+
+- README: install from PyPI (`uvx space-standards-mcp`, `pipx install space-standards-mcp`); the package is
+  published since 0.2.2.
+- NASA parser: table-of-contents pages are never the start or end of the body (a bold section-4 or `APPENDIX`
+  entry in the contents had cut several handbooks down to a few contents lines; PARSING_NOTES H20).
+
+### Added
+
+- Ten wave-2 evaluation questions (`w2-001` to `w2-010`, pending owner review).
+
 ## [0.2.2]
 
 ### Added

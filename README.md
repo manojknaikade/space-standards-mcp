@@ -64,12 +64,15 @@ The standards remain subject to their publishers' terms of use.
 
 ## Install without a clone
 
-The package is not on PyPI yet; install it from git:
+The package is on [PyPI](https://pypi.org/project/space-standards-mcp/):
 
 ```bash
-uvx --from git+https://github.com/manojknaikade/space-standards-mcp space-standards-mcp
-pipx install git+https://github.com/manojknaikade/space-standards-mcp
+uvx space-standards-mcp
+pipx install space-standards-mcp
 ```
+
+The latest development version installs from git:
+`pipx install git+https://github.com/manojknaikade/space-standards-mcp`.
 
 The `space-standards-mcp` command starts the server (stdio) and reads `SPACESTD_DOCS`.
 
@@ -78,7 +81,7 @@ The `space-standards-mcp` command starts the server (stdio) and reads `SPACESTD_
 Use an absolute path to the Python that has the package installed, and to your documents folder.
 
 With `uvx`, a client can start the server without a local install, e.g. in Claude Desktop:
-`{"command": "uvx", "args": ["--from", "git+https://github.com/manojknaikade/space-standards-mcp", "space-standards-mcp"], "env": {"SPACESTD_DOCS": "/abs/path/to/documents"}}`.
+`{"command": "uvx", "args": ["space-standards-mcp"], "env": {"SPACESTD_DOCS": "/abs/path/to/documents"}}`.
 
 **Claude Code**
 

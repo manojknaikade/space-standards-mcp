@@ -39,9 +39,9 @@ local machine; the real standards are in documents/ (gitignored; never commit or
 6. Plan the next round, or finish with a short summary: what merged (PR links), what is waiting for me.
 ```
 
-## Round 8 (prepared 15 Oct 2026)
+## Round 9 (prepared 15 Oct 2026)
 
-The generic prompt above with round 8's work and round 7's lessons filled in. Paste it as is; afterwards use the
+The generic prompt above with round 9's work and round 8's lessons filled in. Paste it as is; afterwards use the
 generic prompt again.
 
 ```text
@@ -49,33 +49,38 @@ Continue the space-standards-mcp project from the logged progress. You are the O
 local machine; the real standards are in documents/ (gitignored; never commit or upload them).
 
 1. `git checkout main && git pull --ff-only` (stop if the tree is dirty). Check `git remote -v`: `origin` is the private
-   `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`, now
-   PUBLIC (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md; never force-push,
-   never open PRs there). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (Stage D, "After going public") and the newest
-   entry of docs/PROGRESS.md (round 7). Run `.venv/bin/python -m pytest -q` (420 expected with documents/).
-   `gh pr list` (Dependabot PRs may now appear on -dev: review and merge them like worker PRs).
+   `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`, PUBLIC
+   (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md; never force-push, never
+   open PRs there). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (D3, "After going public": wave 2 B2 / B5) and the
+   newest entry of docs/PROGRESS.md (round 8). Run `.venv/bin/python -m pytest -q` (426 expected with documents/;
+   the local corpus.yaml now loads wave 2, 167 documents). `gh pr list` (review and merge Dependabot PRs like
+   worker PRs).
 
-2. Plan round 8 as a table and wait for my "go":
-   - D3 🤖 optional: ask me which of PyPI, an MCP registry listing and an announcement post I want; PyPI and the
-     registry publish under my name, so the publish itself waits for my "go".
-   - 🤖 fs-021: the agent sends a search call with no arguments (r12b and r13) and then hedges a decline. Stop it in
-     the agent prompt or the tool schema (required `query`); fixture-only, replay r13's fs-021 through the change.
-   - 🧠 release v0.2.2 to `public` with the release flow after those merge (version and CHANGELOG first); the push
-     to protected `main` goes through as admin; check the public CI afterwards.
-   - Wave 2 B1 🤖📄 only if I ask for it.
+2. Plan round 9 as a table and wait for my "go":
+   - D3 👤: ask whether I have set up PyPI (pending trusted publisher for `publish.yml`, environment `pypi`) and
+     the `pypi` environment on the public repository; if yes, and on my "go", create the GitHub Release v0.2.2 on
+     the public repository (that starts the publish), check PyPI, then the registry (`mcp-publisher`, I log in),
+     then the README install section in a v0.2.3. The announcement is mine to post (docs/ANNOUNCEMENT_DRAFT.md).
+   - Wave 2 B2 🧠📄: NASA documents that parse to almost nothing (HDBK-2203, 4007A, 6024, 1005, 4002B, 1004;
+     STD-2818, 2821, 2822, 6033) and NASA-STD-3001 Vol 1 (valid IDs 9 %): look at the PDFs, write each pattern up
+     in docs/PARSING_NOTES.md and hand fixture-reproducible fixes to 🤖 workers. Then the ECSS valid-ID and
+     ragged-table groups (list in round 8's PROGRESS entry). Per-table diff on the exact head before merging a
+     parser change; `test_verified_tables_unchanged` must hold.
+   - Wave 2 B5 🤖: draft ~10 wave-2 eval questions (`review: pending`, paraphrased answer points, IDs checked with
+     the tools), for my review.
    - API pair (`--backend agent` vs `--backend api`) only if ANTHROPIC_API_KEY is set.
 
 3. Worker rules: as in the generic prompt; one 📄 parse at a time. After every merge delete the branch on the
    remote and locally (`gh pr merge <n> --squash --delete-branch`, `git worktree remove <path>`,
    `git branch -D <branch>`, `git fetch --prune`); `--delete-branch` can leave the remote branch when the local
    one is checked out in a worktree: check `git branch -r` and `git push origin --delete <branch>`.
-   Round 7 lessons:
-   - Re-score stored answers with the current checker before reading a gain as an answer improvement: the whole
-     NASA citation-recall gain (0.82 → 0.94) was the checker.
-   - A grade that flips on a fresh judge pass of the same answer (fs-018) is judge variance, not a fault.
-   - A `cli-agent` run takes about 15 minutes, not an hour.
-   - The public repository keeps no PRs: Dependabot security updates run on -dev, and -dev-only files
-     (docs/PROGRESS.md, .github/dependabot.yml) are on scripts/release_exclude.txt.
+   Round 8 lessons:
+   - Check what a CI workflow triggers on before a release push: #88 published on every `v*` tag, which the
+     release flow pushes (changed to a published GitHub Release, #90).
+   - A 📄 worker's text audit only covers the corpus it loaded; re-run the audit on main (full catalogue) before
+     a release. Health-report count rows hit E-HB-31-01 Part 14A Table 8-8 by coincidence (allowlisted per file).
+   - The version lives in three places: pyproject.toml, src/spacestd/__init__.py, server.json (tested).
+   - fs-021's empty call is gone; its remaining partial is a scope hedge in the answer, not a tool fault.
 
 4. Close the round with one tracking PR (plan and ROADMAP boxes, eval/RESULTS.md if runs were made, one
    newest-first PROGRESS entry ending with "Next:"). Merge it and delete its branch, remote and local;

@@ -4,6 +4,25 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.2]
+
+### Added
+
+- `server.json` for the official MCP registry (`io.github.manojknaikade/space-standards-mcp`, PyPI package, stdio)
+  and the registry's ownership marker in the README.
+- PyPI publishing workflow with Trusted Publishing, run in the public repository when a GitHub Release is
+  published (a tag push alone publishes nothing); `docs/PUBLISHING.md` lists the one-time setup and the steps.
+- The sdist holds the source, README, licence files, changelog and `pyproject.toml` only.
+
+### Changed
+
+- Tool schemas mark mandatory arguments as required (`search_requirements` `query`); `get_table`'s `table_id` is
+  optional (empty lists the document's tables). An empty query's message asks for a new call with search words.
+- Agent prompt: every search call carries search words; after an empty or unhelpful result, search again instead
+  of declining.
+- README links are absolute, so they work on PyPI.
+- CI uses `actions/checkout` and `actions/setup-python` v7.
+
 ## [0.2.1]
 
 ### Fixed

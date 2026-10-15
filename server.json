@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.manojknaikade/space-standards-mcp",
+  "title": "Space Standards",
+  "description": "Cited, requirement-level Q&A over ECSS and NASA standards you supply (bring your own documents)",
+  "websiteUrl": "https://github.com/manojknaikade/space-standards-mcp",
+  "repository": {
+    "url": "https://github.com/manojknaikade/space-standards-mcp",
+    "source": "github"
+  },
+  "version": "0.2.2",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "space-standards-mcp",
+      "version": "0.2.2",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "SPACESTD_DOCS",
+          "description": "Absolute path to the folder with your own ECSS / NASA standards (PDF or Word). No standards ship with the package; without it the server starts empty.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "SPACESTD_EMBED",
+          "description": "Optional hybrid search: set to 'default' (needs the 'embed' extra: space-standards-mcp[embed]).",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "SPACESTD_RERANK",
+          "description": "Optional reranker: set to 'default' (needs the 'embed' extra).",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

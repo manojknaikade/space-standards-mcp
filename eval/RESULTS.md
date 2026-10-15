@@ -31,6 +31,34 @@ What Phase 2 showed, and what it means for Phase 3:
    6 were false positives (NASA guidance IDs, standards that are not loaded). Expect more of this as Phase 4
    adds documents. Every answer flagged by the checker should be looked at by hand before the rule is trusted.
 
+## Answers r13 — 15 October 2026 — round 7: `cli-agent` on the round-6 code
+
+Code 99ab533 (main after round 6 and D1a). `--backend cli-agent` (Sonnet 5.5), `--judge cli`, 68 questions;
+`eval/runs/r13-cli-agent` (gitignored), 14 min, no failed generations. r12's stored answers were re-scored with the
+current checker (fresh judge pass) into `eval/runs/r12-replay-r7`, to split the checker effect from answer variance.
+
+| Measure | r12 (old checker) | r12 replay (current checker) | **r13** |
+| --- | --- | --- | --- |
+| correct / partial / wrong | 58 / 9 / 1 | 57 / 10 / 1 | **59 / 9 / 0** |
+| answer-point coverage | 0.95 | 0.95 | 0.96 |
+| citation recall (63) | 0.90 | 0.94 | 0.94 |
+| citation recall, NASA-only questions (17) | 0.82 | 0.94 | 0.94 |
+| table citation recall (23) | 0.89 | 0.89 | 0.89 |
+| invented IDs / wrong declines | 0 / 0 | 0 / 0 | 0 / 0 |
+| answers with an ungrounded number (of 64 covered) | 9 | 7 | 2 |
+| not covered: declines, no numbers | 4 / 4 | 4 / 4 | 4 / 4 |
+| gate passed / revised / flagged / declined | 65 / 2 / 0 / 1 | 65 / 2 / 0 / 1 | 65 / 3 / 0 / 0 |
+
+- **The NASA citation-recall gain is all checker (#76):** 0.82 → 0.94 on the same r12 answers; r13 is the same.
+- **Grade changes r12 → r13 (5):** fs-019, hand-19 partial → correct; w1-002 wrong → correct (the #73 gate fix:
+  passed instead of declined); fs-018 correct → partial (it flips in the replay too: judge variance); fs-021
+  correct → partial (answer side, below).
+- **fs-021:** the agent again sent one search with no arguments, never fetched NASA-STD-7001C Table 1, and hedged
+  that fairing acoustic qualification is not covered. r12 fetched the table. Same failure as r12b.
+- Still partial: w1-003, w1-009 (NASA-STD-5002B LAR 2 not cited); fs-034 misses ECSS-E-HB-32-23A 6.3.2.3 and has
+  one ungrounded number; fs-027 two ungrounded numbers.
+- `agent` vs `api` pair: still waits for an API key.
+
 ## Run 13 — 14 October 2026 — round 6 (gate and citation fixes, three parser quirks)
 
 Code: main after round 6 (#75, #76, #78). The changes:

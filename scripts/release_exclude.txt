@@ -3,3 +3,5 @@
 # Used by scripts/check_release_tree.py (CI guard: no stale entries; --release: nothing tracked, no links in)
 # and by release plan D1a (`--print-excluded` feeds `git rm --cached` after `git checkout --orphan`).
 docs/PROGRESS.md
+.github/dependabot.yml
+docs/ANNOUNCEMENT_DRAFT.md

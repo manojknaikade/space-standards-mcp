@@ -76,9 +76,12 @@ def get_requirement(doc_id: str, req_id: str) -> dict:
 
 
 @mcp.tool(annotations=READ_ONLY)
-def search_requirements(query: str = "", doc_id: str | None = None, limit: int = 5) -> dict:
+def search_requirements(query: str, doc_id: str | None = None, limit: int = 5) -> dict:
     """Search across loaded requirements (BM25; hybrid with embeddings when the server enables it).
-    Optionally restrict to one document. `query` is required (an empty one returns a message, not results).
+    Optionally restrict to one document.
+
+    query: REQUIRED search words, never empty, e.g. "ultimate factor of safety metallic structure" or
+    "fracture control NASA-STD-5019". A call without search words returns no results.
 
     Returns {"results": [...]} plus, when relevant, "not_loaded", "elsewhere" and "notes".
     Without doc_id, standards named in the query (e.g. "NASA-STD-5001B", "ECSS-E-ST-32-01") restrict
@@ -98,7 +101,7 @@ def search_requirements(query: str = "", doc_id: str | None = None, limit: int =
 
 
 @mcp.tool(annotations=READ_ONLY)
-def get_table(doc_id: str, table_id: str) -> dict:
+def get_table(doc_id: str, table_id: str = "") -> dict:
     """Get a table (e.g. factors of safety) as structured rows, verbatim from the source.
 
     doc_id: e.g. "ECSS-E-ST-32-10C" or "NASA-STD-5001B". table_id: e.g. "Table 4-3" or "4-3".

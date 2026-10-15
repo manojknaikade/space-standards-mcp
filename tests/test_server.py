@@ -72,8 +72,34 @@ def test_empty_query_returns_message():
     msg = "Empty query"
     for res in (server.search_requirements(""), server.search_requirements("   "),
                 tools.search_requirements(StandardsIndex([]), "")):
-        assert res["found"] is False and res["message"].startswith(msg) and "list_documents" in res["message"]
-    out = asyncio.run(server.mcp.call_tool("search_requirements", {}))
+        assert res["found"] is False and res["message"].startswith(msg) and "again with search words" in res["message"]
+    out = asyncio.run(server.mcp.call_tool("search_requirements", {"query": ""}))
     assert not out.is_error
     structured = json.loads(out.content[0].text)
     assert structured["found"] is False and structured["message"].startswith(msg)
+
+
+REQUIRED = {"list_documents": [], "get_requirement": ["doc_id", "req_id"], "search_requirements": ["query"],
+            "get_table": ["doc_id"], "get_references": ["doc_id", "req_id"], "compare_topic": ["topic"],
+            "get_section_outline": ["doc_id"]}
+
+
+def test_tool_schemas_list_mandatory_arguments_as_required():
+    import asyncio
+
+    from spacestd_agent.agent import tool_definitions
+
+    listed = {t.name: t.input_schema for t in asyncio.run(server.mcp.list_tools())}
+    assert set(listed) == set(REQUIRED)
+    for name, req in REQUIRED.items():
+        assert sorted(listed[name].get("required", [])) == sorted(req), name
+    # the agent's Messages-API definitions carry the same schemas
+    assert {t["name"]: t["input_schema"].get("required", []) for t in tool_definitions()} == \
+        {n: s.get("required", []) for n, s in listed.items()}
+    assert "required" in server.search_requirements.__doc__.lower()
+
+
+def test_agent_prompt_tells_model_to_retry_searches():
+    from spacestd_agent.agent import ANSWER_SYSTEM
+
+    assert "search words" in ANSWER_SYSTEM and "instead of declining" in ANSWER_SYSTEM

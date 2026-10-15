@@ -1,5 +1,7 @@
 # space-standards-mcp
 
+<!-- mcp-name: io.github.manojknaikade/space-standards-mcp -->
+
 An MCP server (and a thin optional agent) that answers questions about **ECSS** and **NASA** space standards with
 **exact, requirement-level citations**: every result names the document, issue and requirement ID, or the answer is
 "not covered". You bring the standards; nothing from them is stored in this repository. It is aimed at launcher and
@@ -48,7 +50,7 @@ python -m spacestd.health documents         # parse every document, set its tier
 ```
 
 `documents/corpus.yaml` selects what is loaded (doc-ID patterns with `*`, see
-[ADR-0006](docs/adr/0006-full-corpus-parse-tiers.md)); without it only files directly in `documents/` load:
+[ADR-0006](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/adr/0006-full-corpus-parse-tiers.md)); without it only files directly in `documents/` load:
 
 ```yaml
 load:
@@ -57,7 +59,7 @@ load:
 ```
 
 File naming, sidecar metadata and formats (PDF preferred; Word files need LibreOffice) are described in
-[documents/README.md](documents/README.md). Parsed documents are cached in `documents/.spacestd-cache/`.
+[documents/README.md](https://github.com/manojknaikade/space-standards-mcp/blob/main/documents/README.md). Parsed documents are cached in `documents/.spacestd-cache/`.
 The standards remain subject to their publishers' terms of use.
 
 ## Install without a clone
@@ -130,13 +132,13 @@ Every record carries its `kind` (requirement, recommendation, permission, guidan
 ### Optional: hybrid search and the agent
 
 `pip install -e ".[embed]"` and `SPACESTD_EMBED=default` add embedding ranking fused with BM25 (opt-in, see
-[eval/RESULTS.md](eval/RESULTS.md)). `pip install -e ".[agent]"` adds `python -m spacestd_agent "<question>" --docs documents`,
+[eval/RESULTS.md](https://github.com/manojknaikade/space-standards-mcp/blob/main/eval/RESULTS.md)). `pip install -e ".[agent]"` adds `python -m spacestd_agent "<question>" --docs documents`,
 the same tools in a tool-calling loop with a citation gate that checks each draft for invented IDs and numbers not
-found in the retrieved records ([ADR-0005](docs/adr/0005-agent-loop.md)); it needs an Anthropic API key.
+found in the retrieved records ([ADR-0005](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/adr/0005-agent-loop.md)); it needs an Anthropic API key.
 
 ## Parse tiers
 
-Documents differ in how well they parse, so each carries a tier ([ADR-0006](docs/adr/0006-full-corpus-parse-tiers.md)):
+Documents differ in how well they parse, so each carries a tier ([ADR-0006](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/adr/0006-full-corpus-parse-tiers.md)):
 
 - **verified**: checked by hand against the source (requirement counts, IDs, tables).
 - **checked**: passes the automatic health checks (`python -m spacestd.health`), not reviewed by hand.
@@ -149,7 +151,7 @@ answer repeats it. Always confirm a number in the source.
 ## Evaluation and its limits
 
 Two evals run on a 57-question set (17 numeric, 17 lookup, 7 classification, 5 compare, 11 not covered). Numbers
-from [eval/RESULTS.md](eval/RESULTS.md), on the 7 hand-verified standards:
+from [eval/RESULTS.md](https://github.com/manojknaikade/space-standards-mcp/blob/main/eval/RESULTS.md), on the 7 hand-verified standards:
 
 | Measure | Value |
 | --- | --- |
@@ -173,11 +175,11 @@ later additions did not; one model family answers and judges; retrieval is keywo
 
 ## Project docs
 
-[Roadmap](docs/ROADMAP.md) · [Release plan](docs/PUBLIC_RELEASE_PLAN.md) · [Project brief](docs/PROJECT_BRIEF.md) ·
-[Architecture](docs/ARCHITECTURE.md) · [Decision records](docs/adr/) · [Contributing](CONTRIBUTING.md) ·
-[Security](SECURITY.md)
+[Roadmap](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/ROADMAP.md) · [Release plan](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/PUBLIC_RELEASE_PLAN.md) · [Project brief](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/PROJECT_BRIEF.md) ·
+[Architecture](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/ARCHITECTURE.md) · [Decision records](https://github.com/manojknaikade/space-standards-mcp/tree/main/docs/adr/) · [Contributing](https://github.com/manojknaikade/space-standards-mcp/blob/main/CONTRIBUTING.md) ·
+[Security](https://github.com/manojknaikade/space-standards-mcp/blob/main/SECURITY.md)
 
 ## Licence
 
-The code is licensed under the [Apache License 2.0](LICENSE); see also [NOTICE](NOTICE) and
-[ADR-0007](docs/adr/0007-open-source-apache-byod.md).
+The code is licensed under the [Apache License 2.0](https://github.com/manojknaikade/space-standards-mcp/blob/main/LICENSE); see also [NOTICE](https://github.com/manojknaikade/space-standards-mcp/blob/main/NOTICE) and
+[ADR-0007](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/adr/0007-open-source-apache-byod.md).

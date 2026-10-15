@@ -42,6 +42,11 @@
   length: 4
   source: ECSS-E-HB-31-01 Part 14A
   reason: As eval/CORPUS_HEALTH.md (health-report counts); kept.
+- file: eval/CORPUS_HEALTH_WAVE2.md
+  kind: table row
+  length: 4
+  source: ECSS-E-HB-31-01 Part 14A
+  reason: As eval/CORPUS_HEALTH.md (health-report counts, wave 2 B1, round 8); kept.
 - file: tests/test_health.py
   kind: table row
   length: 4

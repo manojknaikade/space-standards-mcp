@@ -39,9 +39,9 @@ local machine; the real standards are in documents/ (gitignored; never commit or
 6. Plan the next round, or finish with a short summary: what merged (PR links), what is waiting for me.
 ```
 
-## Round 7 (prepared 14 Oct 2026)
+## Round 8 (prepared 15 Oct 2026)
 
-The generic prompt above with round 7's work and round 6's lessons filled in. Paste it as is; afterwards use the
+The generic prompt above with round 8's work and round 7's lessons filled in. Paste it as is; afterwards use the
 generic prompt again.
 
 ```text
@@ -49,37 +49,38 @@ Continue the space-standards-mcp project from the logged progress. You are the O
 local machine; the real standards are in documents/ (gitignored; never commit or upload them).
 
 1. `git checkout main && git pull --ff-only` (stop if the tree is dirty). Check `git remote -v`: `origin` is the private
-   `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`
-   (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (Stage D, "Order at a glance") and the newest
-   entry of docs/PROGRESS.md (round 6). Run `.venv/bin/python -m pytest -q` (419 expected
-   with documents/). `gh pr list` (the default repository is -dev; the public one has no PRs).
+   `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`, now
+   PUBLIC (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md; never force-push,
+   never open PRs there). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (Stage D, "After going public") and the newest
+   entry of docs/PROGRESS.md (round 7). Run `.venv/bin/python -m pytest -q` (420 expected with documents/).
+   `gh pr list` (Dependabot PRs may now appear on -dev: review and merge them like worker PRs).
 
-2. Plan round 7 as a table and wait for my "go":
-   - D2 👤: prepare the ADR-0002 / ADR-0007 checks (current ECSS terms of use on ecss.nl; the distribution
-     statement of every NASA document the docs or evals name: list them with where they are named), then wait for
-     my "go" before changing visibility, branch protection, Dependabot, secret scanning or vulnerability reporting.
-   - 🤖📄 one `cli-agent` answer run on the round-6 code (`generate`, then `score`), compared per question with
-     r12: citation recall for tagless NASA documents was undercounted before #76.
+2. Plan round 8 as a table and wait for my "go":
+   - D3 🤖 optional: ask me which of PyPI, an MCP registry listing and an announcement post I want; PyPI and the
+     registry publish under my name, so the publish itself waits for my "go".
+   - 🤖 fs-021: the agent sends a search call with no arguments (r12b and r13) and then hedges a decline. Stop it in
+     the agent prompt or the tool schema (required `query`); fixture-only, replay r13's fs-021 through the change.
+   - 🧠 release v0.2.2 to `public` with the release flow after those merge (version and CHANGELOG first); the push
+     to protected `main` goes through as admin; check the public CI afterwards.
+   - Wave 2 B1 🤖📄 only if I ask for it.
    - API pair (`--backend agent` vs `--backend api`) only if ANTHROPIC_API_KEY is set.
-   - D3 🤖 only after D2.
 
 3. Worker rules: as in the generic prompt; one 📄 parse at a time. After every merge delete the branch on the
    remote and locally (`gh pr merge <n> --squash --delete-branch`, `git worktree remove <path>`,
    `git branch -D <branch>`, `git fetch --prune`); `--delete-branch` can leave the remote branch when the local
    one is checked out in a worktree: check `git branch -r` and `git push origin --delete <branch>`.
-   Round 6 lessons:
-   - Diagnose a reported eval failure on the stored answers before writing the worker spec: two of three
-     round-5 "bugs" were checker misreadings (a launcher name, an unrecognised citation form), not agent faults.
-   - Replay stored answers through a checker change (main replays unchanged first, then the PR head) and review
-     every question that changes.
-   - Parallel PRs that append to the same test file conflict; rebase the later one before merging.
-   - Health over the whole corpus (`--corpus all`) takes about 26 minutes: run it in the background.
-   - A small search gain next to a recall cliff is not worth merging (#77).
+   Round 7 lessons:
+   - Re-score stored answers with the current checker before reading a gain as an answer improvement: the whole
+     NASA citation-recall gain (0.82 → 0.94) was the checker.
+   - A grade that flips on a fresh judge pass of the same answer (fs-018) is judge variance, not a fault.
+   - A `cli-agent` run takes about 15 minutes, not an hour.
+   - The public repository keeps no PRs: Dependabot security updates run on -dev, and -dev-only files
+     (docs/PROGRESS.md, .github/dependabot.yml) are on scripts/release_exclude.txt.
 
 4. Close the round with one tracking PR (plan and ROADMAP boxes, eval/RESULTS.md if runs were made, one
    newest-first PROGRESS entry ending with "Next:"). Merge it and delete its branch, remote and local;
-   `git branch -a` and `git worktree list` should show only main. When preparing the next round's prompt,
-   keep this branch-deletion rule in it.
+   `git branch -a` and `git worktree list` should show only main and release. When preparing the next round's
+   prompt, keep this branch-deletion rule in it.
 ```
 
 ## Notes

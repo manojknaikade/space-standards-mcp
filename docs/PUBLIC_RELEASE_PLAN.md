@@ -292,10 +292,25 @@ cd - && git worktree remove --force ../release-build && git branch -f release pu
 
 Check afterwards: the public CI is green, `git diff --stat origin/main public/main` lists only the excluded files,
 and the public repository has no PRs and nothing under `documents/` but the README.
-- [ ] **D2 👤 Go public:** first the ADR-0002 / ADR-0007 checks: read the current ECSS terms of use on ecss.nl and
+- [x] **D2 👤 Go public:** first the ADR-0002 / ADR-0007 checks: read the current ECSS terms of use on ecss.nl and
   re-check the distribution statement of every NASA document the docs or evals name. Then flip the new repository's visibility (`gh repo edit --visibility public
   --accept-visibility-change-consequences`, or in the GitHub settings). Then enable branch protection on `main`,
   Dependabot, secret scanning and private vulnerability reporting.
+  *Done 15 Oct (round 7, owner's "go"):
+  - ECSS License agreement/Disclaimer on ecss.nl (from ECSS-P-00C clause 5.8): copyright with ESA; no
+    reproduction without ESA's consent; quotations identified with reference and version. Nothing on local
+    processing. The repository holds no standards text; eval answer points are paraphrases with IDs.
+  - NASA: the local PDFs of 18 named documents carry "approved for public release" on their first pages; seven
+    named ones (HDBK-7005, 5012C, HDBK-5026, 3001 Vol 2, 2818, 8719.24 and its Annex) carry no statement and were
+    confirmed public by the owner (all from standards.nasa.gov). The Annex's export-control wording is a
+    fill-in template, not a marking.
+  - `space-standards-mcp` made public at v0.2.1. Branch protection on `main`: CI checks `test (3.11–3.13)` and
+    `guard` required, one approving review, linear history, no force-push or deletion; admins are not enforced, so
+    the release push below goes through as the owner. Dependabot alerts, secret scanning with push protection and
+    private vulnerability reporting enabled; `parsing` label created for the issue form.
+  - Dependabot PRs go to -dev, where development happens: security updates are on there and off on the public
+    repository (it keeps its alerts and stays free of PRs), and `.github/dependabot.yml` (weekly pip and Actions
+    updates) is on the release-exclude list.*
 - [ ] **D3 🤖 Optional:** publish to PyPI, list the server in an MCP registry, write an announcement post.
 
 ## After going public
@@ -328,4 +343,6 @@ Open work from 10 Oct, as rounds:
 - **Round 6 (14 Oct):** gate: launcher-name numbers (#75); citations: NASA paragraph numbers, empty-query message
   (#76); parser: 7002B / 10-03C / 7003A quirks (#78); matrix-row lift tried and closed (#77); run 13 (as run 12);
   D1a done (fresh private repository, v0.2.0; guard fix #80).
-- **Next:** D2 👤 → D3 🤖.
+- **Round 7 (15 Oct):** D2 checks and go public (branch protection, Dependabot, secret scanning, private
+  vulnerability reporting); `cli-agent` answer run r13 on the round-6 code.
+- **Next:** D3 🤖 (optional), then waves 2–4 (After going public).

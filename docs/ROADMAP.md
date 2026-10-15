@@ -105,3 +105,5 @@ catalogued at once, loaded in waves gated by the eval, with a parse tier on each
 Step-by-step checklist, with each step marked worker / orchestrator / your decision (ADR-0008, all local): [PUBLIC_RELEASE_PLAN.md](PUBLIC_RELEASE_PLAN.md).
 Release gate: stage A (health report, parse tiers), wave 1 loaded and evaluated, licence and text audit clean.
 Waves 2–4 can follow after going public.
+
+- [x] Public repository live: `space-standards-mcp` v0.2.1, branch protection and security features on (15 Oct 2026, release plan D2)

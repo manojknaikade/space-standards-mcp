@@ -146,5 +146,5 @@ def test_allowlist_entry_does_not_match_other_length_or_source():
 
 def test_repository_allowlist_is_well_formed():
     entries = audit.load_allowlist(ROOT / "scripts" / "audit_allowlist.yaml")
-    assert len(entries) == 13
+    assert len(entries) == 14
     assert all({"file", "kind", "length", "source", "reason"} <= set(e) for e in entries)

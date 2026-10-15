@@ -54,14 +54,16 @@ def get_requirement(index: StandardsIndex, doc_id: str, req_id: str) -> dict:
     return annotate(index, {"found": True, **req.to_dict()})
 
 
-def search_requirements(index: StandardsIndex, query: str = "", doc_id: str | None = None, limit: int = 5) -> dict:
+def search_requirements(index: StandardsIndex, query: str, doc_id: str | None = None, limit: int = 5) -> dict:
     if not query or not query.strip():
-        return {"found": False, "message": "Empty query: give search words (e.g. a topic or a requirement ID); "
-                                           "use list_documents to see the loaded documents."}
+        return {"found": False, "message": "Empty query, nothing was searched. Do not answer yet: call "
+                                           "search_requirements again with search words (a topic or a requirement ID, "
+                                           "e.g. \"factor of safety metallic structure\"), optionally with doc_id; "
+                                           "list_documents shows the loaded documents."}
     return annotate(index, index.search_response(query, doc_id, max(1, min(limit, 20))))
 
 
-def get_table(index: StandardsIndex, doc_id: str, table_id: str) -> dict:
+def get_table(index: StandardsIndex, doc_id: str, table_id: str = "") -> dict:
     if not table_id:
         return annotate(index, {"found": True, "tables": index.list_tables(doc_id)})
     t = index.get_table(doc_id, table_id)

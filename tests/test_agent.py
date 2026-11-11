@@ -47,7 +47,7 @@ def lookup():
 def test_tools_are_the_mcp_servers():
     assert {t["name"] for t in tool_definitions()} == {
         "list_documents", "get_requirement", "search_requirements", "get_references", "get_table", "compare_topic",
-        "get_section_outline"}
+        "get_section_outline", "find_standards"}
 
 
 def test_answer_passes_gate(index):

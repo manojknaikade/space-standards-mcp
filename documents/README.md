@@ -44,6 +44,10 @@ as written by `scripts/download_nasa_standards.py`) supplies titles and IDs the 
 User-Agent, robots.txt, one request every 2 s) and skips PDFs already in the folder; `--only NASA-STD-5001`
 limits it, `--dry-run` only lists, `--force` re-downloads. Its docstring documents the manifest format.
 
+`python scripts/download_nasa_nprs.py documents/npr` fetches NASA Procedural Requirements from the NODIS library
+(current revision of each; project User-Agent, one request every 2 s, PDFs already present are skipped; it does
+not read robots.txt; `--only 7150.2 7123.1` to limit); their IDs read `NPR 7150.2D`.
+
 Without `corpus.yaml`, only files directly in `documents/` are loaded. To load from the bundles, list doc-ID
 patterns (case-insensitive, `*` wildcards; `"*"` loads everything) in `documents/corpus.yaml`:
 

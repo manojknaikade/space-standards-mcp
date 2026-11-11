@@ -7,6 +7,7 @@ counts, IDs and table values hand-checked against the source PDFs — never stan
 from __future__ import annotations
 
 import re
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -23,7 +24,23 @@ EVAL = Path(__file__).resolve().parents[1] / "eval" / "questions.yaml"
 def docs():
     if not DOCS.is_dir() or not any(p.suffix.lower() in {".pdf", ".docx", ".doc"} for p in DOCS.iterdir()):
         pytest.skip("real standards not present in documents/")
-    return {d.doc_id: d for d in load_folder(DOCS)}
+    # the hand-checked counts and IDs below are those of the body (clauses 4 onwards and annexes); the terms
+    # and definitions of clause 3 (round 11, H26) are checked in test_definitions
+    DEFINITIONS.update({d.doc_id: [r for r in d.requirements if r.kind == "definition"] for d in load_folder(DOCS)})
+    return {d.doc_id: replace(d, requirements=[r for r in d.requirements if r.kind != "definition"])
+            for d in load_folder(DOCS)}
+
+
+DEFINITIONS: dict = {}
+
+
+def test_definitions(docs):
+    """Clause 3 terms are records of kind definition: one per numbered term, ID = its number (H26)."""
+    for doc_id, n in [("ECSS-E-ST-32-10C", 9), ("ECSS-E-ST-32-01C", 37), ("ECSS-E-ST-32C", 48)]:
+        need(docs, doc_id)
+        defs = DEFINITIONS[doc_id]
+        assert len(defs) == n and defs[0].req_id == "3.2.1" and defs[-1].req_id == f"3.2.{n}"
+        assert all("\n" in r.text and r.clause == r.req_id for r in defs)
 
 
 def need(docs, doc_id):

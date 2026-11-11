@@ -39,53 +39,18 @@ local machine; the real standards are in documents/ (gitignored; never commit or
 6. Plan the next round, or finish with a short summary: what merged (PR links), what is waiting for me.
 ```
 
-## Round 10 (prepared 15 Oct 2026)
+## Resuming after the pause (15 Oct 2026)
 
-The generic prompt above with round 10's work and round 9's lessons filled in. Paste it as is; afterwards use the
-generic prompt again.
+Round 10 was the last round before the project paused. To resume, paste the generic prompt above and add:
 
 ```text
-Continue the space-standards-mcp project from the logged progress. You are the ORCHESTRATOR (Opus) on the
-local machine; the real standards are in documents/ (gitignored; never commit or upload them).
-
-1. `git checkout main && git pull --ff-only` (stop if the tree is dirty). Check `git remote -v`: `origin` is the private
-   `space-standards-mcp-dev` (all development, PRs, docs/PROGRESS.md) and `public` is `space-standards-mcp`, PUBLIC
-   (release commits only, rebuilt with the "Release flow" in docs/PUBLIC_RELEASE_PLAN.md; never force-push, never
-   open PRs there). Read CLAUDE.md, docs/PUBLIC_RELEASE_PLAN.md (D3, "After going public": wave 2 B2 / B5),
-   docs/PARSING_NOTES.md H20–H24 and the newest entry of docs/PROGRESS.md (round 9). Run
-   `.venv/bin/python -m pytest -q` (428 expected with documents/). `gh pr list` (review and merge Dependabot PRs
-   like worker PRs).
-
-2. Plan round 10 as a table and wait for my "go":
-   - D3 👤: PyPI (0.2.2, 0.2.3) and the MCP registry (0.2.3) are done; the post is mine. On each later release,
-     after its PyPI publish, run `mcp-publisher publish` from a checkout of the public tag (login: device flow,
-     tell me the code at once).
-   - Wave 2 B5 👤: show me w2-001 … w2-010 for review (owner); apply my ok / fix.
-   - Wave 2 B2 🧠📄 / 🤖: ask me about dropping NASA-HDBK-2203 (stub, H23) and STD-2818 / 2821 / 2822 (H24) from
-     the corpus; H21 (4007A, rebuild heading numbers from the contents order) to a 🤖 worker on invented
-     fixtures; then the ECSS valid-ID group (E-HB-10-02A, E-HB-40A, E-ST-50-11C) and the ragged-table group,
-     diagnosed on the PDFs first. Per-document and per-table diff on the exact PR head before merging a parser
-     change (scratch dump of records / IDs / table hashes on main vs the head); `test_verified_tables_unchanged`
-     must hold. One 📄 parse at a time.
-   - API pair (`--backend agent` vs `--backend api`) only if ANTHROPIC_API_KEY is set.
-
-3. Worker rules: as in the generic prompt; one 📄 parse at a time. After every merge delete the branch on the
-   remote and locally (`gh pr merge <n> --squash --delete-branch`, `git worktree remove <path>`,
-   `git branch -D <branch>`, `git fetch --prune`); `--delete-branch` can leave the remote branch when the local
-   one is checked out in a worktree: check `git branch -r` and `git push origin --delete <branch>`.
-   Round 9 lessons:
-   - A parser fix can move documents it was not aimed at (H20 changed 1009A's body start): always diff every
-     document, not just the targets.
-   - Workers' real-document pytest after a parser change re-parses all 167 documents (13–23 min); give them the
-     time, and run full-corpus checks yourself once on the final head.
-   - `gh release create --notes-from-tag` fails with `--repo`; use `-F` with the changelog section.
-   - Device-flow logins (`mcp-publisher`) time out: start them only when I am at the keyboard.
-   - Numbers in eval answers come from tables only; check worker drafts for numbers taken from record text.
-
-4. Close the round with one tracking PR (plan and ROADMAP boxes, eval/RESULTS.md if runs were made, one
-   newest-first PROGRESS entry ending with "Next:"). Merge it and delete its branch, remote and local;
-   `git branch -a` and `git worktree list` should show only main and release. When preparing the next round's
-   prompt, keep this branch-deletion rule in it.
+The project was paused after round 10 (v0.2.4). Read the round-10 entry of docs/PROGRESS.md and the parked items
+in docs/PUBLIC_RELEASE_PLAN.md ("After going public") and docs/PARSING_NOTES.md (H21, H22). Check `git remote -v`:
+`origin` is the private -dev repository, `public` gets release commits only ("Release flow"). After every merge
+delete the branch on the remote and locally; `--delete-branch` can leave the remote branch when the local one is
+checked out in a worktree: check `git branch -r` and `git push origin --delete <branch>`. On each release, after
+its PyPI publish, run `mcp-publisher publish` from a checkout of the public tag (device-flow login: only when I am
+at the keyboard).
 ```
 
 ## Notes

@@ -95,7 +95,13 @@ catalogued at once, loaded in waves gated by the eval, with a parse tier on each
 - [x] Handbooks: section-level records (no lettered requirements), ranked below standards (A5, 10 Oct)
 - [ ] Two-stage retrieval (pick documents, then records) once a wave shows dilution (wave 1 does not: run 10, B7)
 - [ ] Wave 2 — rest of ECSS-E and NASA engineering (B1 15 Oct: 167 documents load, 41 unchecked, no retrieval
-  regression; parser fixes and questions next); wave 3 — ECSS-Q, NASA 87xx; wave 4 — ECSS-M/-U/-S, remaining handbooks
+  regression; round 9–10: H20 fixed, 4 out-of-scope documents excluded, 163 load, 10 questions reviewed; remaining
+  parser fixes parked 15 Oct); wave 3 — ECSS-Q, NASA 87xx; wave 4 — ECSS-M/-U/-S, remaining handbooks
+- [x] Waves 3 and 4 loaded (round 11, 10 Nov 2026): ECSS-Q handbooks, ECSS-M / -S / -U / -P, NASA 87xx, and 19 NASA
+  Procedural Requirements from NODIS; 297 documents load, 26 verified, 189 checked. Coverage eval over all branches
+  (`eval/run_coverage_eval.py`, 70 questions): 51.1 → 90.5; revision guard, edition dates, `find_standards`,
+  definitions as records, `docs/TOOLS.md`. Details in the round log and `docs/ANALYSIS.md` (development repository only)
+- [x] LLM answer eval on the coverage question set (`claude -p`, no gate: 0.90 correct, 0.10 partial, 0 wrong, no invented ID; docs/PROGRESS.md round 11)
 - [ ] NASA Lessons Learned on fairings, separation events and structural failures (public LLIS records)
 - [ ] Issue/version diffing, tailoring support (load a project tailoring matrix)
 - [x] Decide: open-source the code under Apache-2.0, bring your own documents, fresh squashed public repository
@@ -111,4 +117,6 @@ Waves 2–4 can follow after going public.
 - [x] v0.2.2 released (15 Oct 2026): required tool arguments, PyPI workflow and MCP registry `server.json` prepared
 - [x] On PyPI (15 Oct 2026: 0.2.2, 0.2.3 with the PyPI install README)
 - [x] In the official MCP registry (15 Oct 2026: `io.github.manojknaikade/space-standards-mcp` 0.2.3)
+- [x] v0.2.4 released (15 Oct 2026): `corpus.yaml` `exclude:` key, wave-2 questions reviewed. Project paused after it;
+  the open items in Phases 4–5 are parked
 - [ ] Announcement posted (D3, owner)

@@ -4,6 +4,43 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0]
+
+### Added
+
+- Revision guard. A document named with an issue or revision letter that is not the loaded one is reported and
+  never answered silently: `search_requirements` returns `issue_mismatch`; `get_requirement`, `get_table` (with or
+  without a table ID) and `get_references` return `found: false` with `loaded_issues`. Document names accept issue words
+  (`ECSS-Q-ST-80C Rev.2`).
+- `issue_date` on every record, table and listed document: the edition's date from the file name or the first
+  page (an NPR's effective date; never an expiration date).
+- `find_standards` tool: loaded standards ranked on a topic, with their best-matching sections.
+- `search_requirements` signals for declining: `external_standards` (another body's standard named in the
+  query), `coverage: none` (no keyword match) and `coverage: weak` with `unmatched_terms` (an acronym or
+  designation of the query is in no hit).
+- Lookup help in `get_requirement`: identifiers printed in a record's text resolve to it (`M&S 26`,
+  `Requirement 4.4-1`); an item kept inside its paragraph returns that paragraph's record (`asked_for`); a
+  clause number returns `records_in_clause`; a miss lists `nearest_ids`.
+- NASA Procedural Requirements: `scripts/download_nasa_nprs.py` (NODIS, current revisions, manifest), document
+  IDs `NPR 7150.2D`, a parser for the NODIS layout (`src/spacestd/npr_parser.py`), doc type
+  `procedural requirements`.
+- ECSS parser: terms and definitions as records of kind `definition` (clause 3 of a standard, the glossary
+  ECSS-S-ST-00-01); requirements printed without letters under their machine IDs as `<clause> req N`
+  (ECSS-Q-ST-60C, ECSS-Q-ST-70-61C).
+- Coverage evaluation: `eval/coverage_questions.yaml` (all ECSS branches and NASA families, expected standard,
+  clause and issue read from the sources) and `eval/run_coverage_eval.py` (deterministic score);
+  `eval/run_answer_eval.py` reads the same file and checks the cited standard, clause and issue by string match.
+- `docs/TOOLS.md`: the full tool interface.
+
+### Changed
+
+- `compare_topic` without `doc_ids` on a corpus above 8 documents compares the three best-matching standards per
+  family (`documents_chosen`) instead of returning one section per loaded document.
+- ECSS parser: a table-of-contents line is never a heading; a heading's parents in `heading_path` follow its
+  clause number; a chapter title printed without its number joins the path of its first clause.
+- Server instructions, tool descriptions and the agent prompt cover every discipline, not only structures.
+- The `anthropic` dependency accepts versions below 3 (was below 2).
+
 ## [0.2.4]
 
 ### Added

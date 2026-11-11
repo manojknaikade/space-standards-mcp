@@ -23,6 +23,7 @@ from dataclasses import dataclass
 from itertools import zip_longest
 
 from .catalogue import VERIFIED, Catalogue, classify
+from .editions import issue_differs, issue_words
 from .models import Document, Requirement, Table, TableRow
 from .parser import is_handbook
 
@@ -36,10 +37,14 @@ K1, B = 1.2, 0.5  # b < 0.75: long ECSS clauses (32-01 11.2.2.6a) were over-pena
 # score multiplier per record kind: explanatory guidance should not outrank the requirement it
 # explains (hand test F5: 5019A "7.3 guidance 10" above FCR 12 / 7.3.2.c)
 # "table": synthetic owner of a table no record points to (cite the table); like guidance
-KIND_WEIGHT = {"guidance": 0.8, "deleted": 0.5, "table": 0.8}
+# "definition": a term's definition should not outrank the requirement that uses the term
+KIND_WEIGHT = {"guidance": 0.8, "deleted": 0.5, "table": 0.8, "definition": 0.8}
 # handbook section records (A5) come on top of the guidance weight: a standard's requirement outranks a
 # handbook section that matches the query as well
 HANDBOOK_WEIGHT = 0.85
+# a question that asks for a definition: definition records get this weight instead of KIND_WEIGHT's
+DEFINITION_ASKED = 1.5
+DEFINE_RE = re.compile(r"\bdefin(?:e[sd]?|ition|itions)\b|\bterminology\b|\bmeans? by\b|\bmeaning of\b|\bwhat (?:exactly )?is (?:a|an|the) ['\"‘“]", re.I)
 
 
 def record_weight(req: Requirement) -> float:
@@ -57,6 +62,11 @@ DENSE_POOL = 50
 # embedding share in the fusion: 2 was best on the real documents (eval/RESULTS.md, run 8)
 DENSE_WEIGHT = 2.0
 RERANK_POOL = 30
+# records looked at when ranking whole documents on a topic (rank_documents)
+DOC_POOL = 300
+# compare_topic without doc_ids: above COMPARE_DOCS loaded documents, only the best COMPARE_PER_FAMILY per family
+COMPARE_DOCS = 8
+COMPARE_PER_FAMILY = 3
 # records shown next to each hit: up to this many on either side within the same clause (6.3.3d -> 6.3.3c, 6.3.3e).
 # A requirement is often split over sibling letters, and a sibling that shares no query word ranks far down
 # (fs-027: 32-01 6.3.3c, no fragment release, at rank 36 although 6.3.3d is at rank 2)
@@ -72,6 +82,20 @@ STD_ID_RE = re.compile(r"(?<![A-Z0-9-])(?P<std>ECSS-[A-Z]-(?:ST|HB|TM|AS)-\d{2}(
                        r"|(?P<nasa>NASA-(?:STD|HDBK|SPEC)-\d{4,5}(?:\.\d+(?:-\d(?!\d))?)?[A-Z]?)"
                        r"|NPR ?\d{4}\.\d+[A-Z]?)(?![A-Z0-9]|[-.]\d)"
                        rf"(?:{PART_SEP}(?:{PART_PAT}|(?(nasa){ANNEX_PAT}|(?!)))(?![A-Z0-9]))?")
+# designations of other bodies' standards, as a question may name them ("SMC-S-016", "MIL-STD-1540E",
+# "ISO 24113", "DO-178C"): never held here, even when a loaded standard refers to them
+EXTERNAL_STD_RE = re.compile(
+    r"(?<![A-Z0-9-])(?:MIL-(?:STD|HDBK|DTL|PRF|SPEC)-\d+[A-Z]?|SMC-S-\d+|TOR-\d{4}\(\d+\)-\d+|ISO(?:/IEC)? ?\d{3,5}(?:-\d+)?"
+    r"|IEC ?\d{4,5}(?:-\d+)*|AIAA ?S-\d+[A-Z]?(?:-\d{4})?|IEEE ?\d{3,5}|ASTM ?[A-Z]\d+|DO-(?:178|254|160)[A-G]?"
+    r"|(?:JSC|MSFC|GSFC|KSC|JPL)-(?:STD|SPEC|HDBK|RQMT|D)-\d+[A-Z]?|JSC ?\d{5}|MISRA(?:[ -]C(?:\+\+)?)?(?:[: ]?\d{4})?"
+    r"|ESCC ?\d{4,7}|CCSDS ?\d{3}\.\d-[A-Z]-\d|IPC-[A-Z]?-?\d+[A-Z]?|SAE ?A[SR]P?\d+[A-Z]?)(?![A-Z0-9])")
+# words in capitals that are not designations of a subject
+PLAIN_CAPS = {"ECSS", "NASA", "NPR", "ESA", "DC", "AC", "OK", "TBD", "TBC", "US", "EU", "PDR", "CDR", "QR", "AR", "SRR"}
+DESIGNATION_RE = re.compile(r"(?<![\w-])(?:[A-Z][A-Z0-9]+(?:-[A-Z0-9]+)*|\d+[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*|[A-Z]+\d+[A-Z0-9]*)(?![\w-])")
+# an identifier printed at the start of a record's text: '[M&S 26] ...', 'Requirement 4.4-1: ...'
+PRINTED_ID_RE = re.compile(r"\s*(?:\[([A-Z][A-Z0-9&]{1,9}[ -]\d+)\]|Requirement (\d+(?:\.\d+)*-\d+)\b)")
+# the item part of an ID below a record: '5.2.2a', '12.3.5.c(3)', '4.3(1)', '5.5.1.a'
+ITEM_SUFFIX_RE = re.compile(r"(?:\.?\(\d{1,2}\)|\.?[a-z])$")
 # a doc_id with its part, normalised: 'ECSS-E-HB-32-20-PART-1A' -> base, part suffix
 PART_ID_RE = re.compile(r"(.+?)-(PART-\d+[A-Z]?|VOL-\d+|ANNEX)$")
 # a heading as parsed: '5.1 General', '4.3.2', 'A.2 Content' -> (number, title)
@@ -205,6 +229,16 @@ class SearchHit:
         return d
 
 
+def ISSUE_SPAN(after: str) -> int:
+    """Length of the issue words at the start of `after` (what follows a document name)."""
+    from .editions import ISSUE_WORD_RE
+
+    pos = 0
+    while m := ISSUE_WORD_RE.match(after, pos):
+        pos = m.end()
+    return pos
+
+
 CHECK_FLAG = "check against the source"
 
 
@@ -262,6 +296,16 @@ class StandardsIndex:
                 k = (_norm_doc(req.doc_id), req.clause.lower())
                 if req.clause and clauses[k] == 1:
                     self._by_key.setdefault(k, req)
+        # the identifier a document prints at the start of a requirement, when the parser kept the paragraph
+        # number as its ID: '[M&S 26] ...' (a tag form the tag pattern does not know), 'Requirement 4.4-1: ...'
+        for doc in documents:
+            for req in doc.requirements:
+                m = PRINTED_ID_RE.match(req.text)
+                if m:
+                    alias = (m.group(1) or f"Requirement {m.group(2)}").lower()
+                    self._by_key.setdefault((_norm_doc(req.doc_id), alias), req)
+                    if m.group(2):
+                        self._by_key.setdefault((_norm_doc(req.doc_id), m.group(2).lower()), req)
         # (normalised doc ID, where the text names it); 'X' names all of 'X Part 1A', 'X Part 2A' unless X is loaded
         ids = [_norm_doc(d.doc_id) for d in documents]
         self._doc_patterns = []
@@ -357,6 +401,60 @@ class StandardsIndex:
             if self.catalogue else None
         return e.tier if e else "unchecked"
 
+    def issue_date_of(self, doc_id: str, issue: str) -> str:
+        """ISO date of the loaded edition (catalogue), "" when unknown."""
+        e = next((e for e in self.catalogue.entries if e.doc_id == doc_id and e.issue == issue), None) \
+            if self.catalogue else None
+        return e.issue_date if e else ""
+
+    def _edition(self, norm_id: str) -> dict:
+        d = next(d for d in self.documents if _norm_doc(d.doc_id) == norm_id)
+        out = {"doc_id": d.doc_id, "issue": d.issue}
+        if date := self.issue_date_of(d.doc_id, d.issue):
+            out["issue_date"] = date
+        return out
+
+    def split_issue(self, name: str) -> tuple[str, dict[str, str]]:
+        """'ECSS-Q-ST-80C Rev.1' -> ('ECSS-Q-ST-80C', {'rev': '1'}): a document name and the issue words
+        after it. A name without issue words comes back whole."""
+        m = STD_ID_RE.match(HYPHENS_RE.sub("-", name.strip().upper()))
+        if not m:
+            return name, {}
+        words = issue_words(name.strip()[m.end():])
+        return (name.strip()[:m.end()], words) if words else (name, {})
+
+    def other_letter(self, name: str) -> list[str]:
+        """Loaded documents that are another issue letter of `name` ('NASA-STD-5001A' -> NASA-STD-5001B,
+        'ECSS-Q-ST-80B' -> ECSS-Q-ST-80C). Empty when `name` itself is loaded or has no issue letter."""
+        want = _norm_doc(name)
+        if not re.search(r"\d[A-Z]$", want) or self._match_doc(name):
+            return []
+        return [d for d in (_norm_doc(x.doc_id) for x in self.documents)
+                if d != want and re.fullmatch(re.escape(want[:-1]) + "[A-Z]?", d)]
+
+    def issue_mismatches(self, text: str) -> list[dict]:
+        """Standards named in `text` with an issue that is not the loaded one: 'ECSS-Q-ST-80C Rev.1' when
+        Rev.2 is loaded, 'NASA-STD-5001A' when 5001B is. Each entry: what was asked, and the loaded edition."""
+        up = HYPHENS_RE.sub("-", text.upper())
+        out: list[dict] = []
+        for d, pat in self._doc_patterns:
+            for m in pat.finditer(up):
+                asked = issue_words(text[m.end():m.end() + 40])
+                ed = self._edition(d)
+                if asked and issue_differs(asked, ed["issue"]):
+                    said = " ".join(text[m.start():m.end() + ISSUE_SPAN(text[m.end():])].split())
+                    out.append({"asked": said, **ed, "reason": "another issue of this document is loaded"})
+        for m in STD_ID_RE.finditer(up):
+            name = std_name(m)
+            for d in self.other_letter(name):
+                out.append({"asked": name, **self._edition(d), "reason": "another revision letter is loaded"})
+        seen, uniq = set(), []
+        for x in out:
+            if (x["asked"], x["doc_id"]) not in seen:
+                seen.add((x["asked"], x["doc_id"]))
+                uniq.append(x)
+        return uniq
+
     def list_documents(self, family: str = "", doc_type: str = "", discipline: str = "", query: str = "",
                        include_not_loaded: bool = False) -> list[dict]:
         """Loaded documents (record counts, family, type, discipline, parse tier), then, with
@@ -417,15 +515,71 @@ class StandardsIndex:
             return [_norm_doc(d.doc_id) for d in self.documents if _family(d.doc_id) == fam], False
         return None, False
 
+    def _docs_for(self, doc_id: str) -> list[str]:
+        """Loaded documents a caller names, issue words allowed ('ECSS-Q-ST-80C Rev.2'); none when the named
+        issue is not the loaded one."""
+        name, asked = self.split_issue(doc_id)
+        return [d for d in self._match_doc(name) if not asked or not issue_differs(asked, self._edition(d)["issue"])]
+
+    def loaded_issues(self, doc_id: str) -> list[dict]:
+        """The loaded editions of a document named with an issue or revision letter that is not loaded."""
+        name, asked = self.split_issue(doc_id)
+        if asked:
+            return [self._edition(d) for d in self._match_doc(name) if issue_differs(asked, self._edition(d)["issue"])]
+        return [self._edition(d) for d in self.other_letter(name)]
+
     def get(self, doc_id: str, req_id: str) -> Requirement | None:
-        for d in self._match_doc(doc_id):
+        for d in self._docs_for(doc_id):
             req = self._by_key.get((d, req_id.strip().lower()))
             if req:
                 return req
         return None
 
+    def lookup_help(self, doc_id: str, req_id: str) -> dict:
+        """What to offer when get() finds nothing in a loaded document:
+
+        - `parent`: the record that holds the item ('5.2.2' for '5.2.2a', when the document's items were kept
+          inside their paragraph);
+        - `records_in_clause`: the records of a clause asked for without an item ('5.4.4' -> 5.4.4a, 5.4.4b);
+        - `nearest_ids`: IDs of the same document that share the longest leading part with the one asked.
+        Empty when the document is not loaded."""
+        docs = self._docs_for(doc_id)
+        if not docs:
+            return {}
+        d = docs[0]
+        doc = next(x for x in self.documents if _norm_doc(x.doc_id) == d)
+        want = req_id.strip().lower()
+        out: dict = {}
+        stem_id = want
+        for _ in range(2):  # '12.3.5.c(3)' -> '12.3.5.c' -> '12.3.5'
+            cut = ITEM_SUFFIX_RE.sub("", stem_id)
+            if cut == stem_id or not cut:
+                break
+            stem_id = cut
+            parent = self._by_key.get((d, stem_id))
+            # the record with exactly that ID: a clause alias ('4.2' for its only record 4.2a) is a sibling
+            if parent is not None and parent.req_id.lower() == stem_id:
+                out["parent"] = parent
+                break
+        inside = [r for r in doc.requirements if r.clause.lower() == want and r.req_id.lower() != want]
+        if inside:
+            out["records_in_clause"] = [{"citation": r.citation, "req_id": r.req_id, "kind": r.kind} for r in inside]
+        if not out:
+            def shared(a: str) -> int:
+                n = 0
+                for x, y in zip(a.lower(), want):
+                    if x != y:
+                        break
+                    n += 1
+                return n
+            ranked = sorted(doc.requirements, key=lambda r: -shared(r.req_id))
+            best = shared(ranked[0].req_id) if ranked else 0
+            if best >= 2:
+                out["nearest_ids"] = [r.req_id for r in ranked if shared(r.req_id) == best][:8]
+        return out
+
     def get_table(self, doc_id: str, table_id: str) -> Table | None:
-        for d in self._match_doc(doc_id):
+        for d in self._docs_for(doc_id):
             t = self._tables.get((d, _norm_table(table_id)))
             if t:
                 return t
@@ -458,13 +612,15 @@ class StandardsIndex:
                 allowed = set(detected)
         if allowed is not None and not allowed:
             return []
-        q = tokenize(query)
+        q = tokenize(self._subject(query) if named else query)
+        # "what does ECSS mean by X", "definition of X": the term's definition is the answer, not a side note
+        defining = bool(DEFINE_RE.search(query))
 
         best: dict[int, SearchHit] = {}
         for req, toks, n in self._reqs:
             if allowed is not None and _norm_doc(req.doc_id) not in allowed:
                 continue
-            s = self._bm25(q, toks, n) * record_weight(req)
+            s = self._bm25(q, toks, n) * (DEFINITION_ASKED if defining and req.kind == "definition" else record_weight(req))
             if s > 0:
                 best[id(req)] = SearchHit(s, req, lexical=s)
         for t, row, owners, toks, n in self._rows:
@@ -491,6 +647,17 @@ class StandardsIndex:
             per_doc = [[h for h in hits if _norm_doc(h.requirement.doc_id) == d] for d in docs]
             hits = [h for group in zip_longest(*per_doc) for h in group if h]
         return hits[:limit]
+
+    def _subject(self, query: str) -> str:
+        """The query without the names of the standards it is restricted to (and their issue words): the
+        name's own tokens ('npr', '7150.2') would favour records that merely cite the standard."""
+        up = HYPHENS_RE.sub("-", query.upper())
+        out = query
+        spans = [m.span() for _, pat in self._doc_patterns for m in pat.finditer(up)]
+        for a, b in sorted(spans, reverse=True):
+            b += ISSUE_SPAN(out[b:])
+            out = out[:a] + " " + out[b:]
+        return out if tokenize(out) else query
 
     def _fuse(self, query: str, lexical: list[SearchHit], allowed: set[str] | None) -> list[SearchHit]:
         """Reciprocal rank fusion of the BM25 ranking and the embedding ranking (top DENSE_POOL).
@@ -612,6 +779,34 @@ class StandardsIndex:
             notes.append(f"Not in the documents folder: {', '.join(absent)}. Do not answer from these standards.")
         return out, notes
 
+    def external_standards(self, query: str) -> list[str]:
+        """Standards of other bodies named in the query (SMC-S-016, MIL-STD-1540, ISO 24113, MISRA C)."""
+        up = STD_ID_RE.sub(" ", HYPHENS_RE.sub("-", query.upper()))
+        return list(dict.fromkeys(" ".join(m.group(0).split()) for m in EXTERNAL_STD_RE.finditer(up)))
+
+    def unmatched_designations(self, query: str, hits: list[SearchHit]) -> list[str]:
+        """Acronyms and designations in the query (words in capitals, alloy or part designations such as
+        '7075-T7351') that no returned hit, neighbour or matched table row contains. A subject named this
+        way and found in no hit is probably not treated by the hits."""
+        raw = HYPHENS_RE.sub("-", query)
+        up = raw.upper()
+        for _, pat in self._doc_patterns:  # loaded documents' own names are not subjects
+            for m in pat.finditer(up):
+                raw = raw[:m.start()] + " " * (m.end() - m.start()) + raw[m.end():]
+        raw = EXTERNAL_STD_RE.sub(" ", STD_ID_RE.sub(" ", raw))
+        raw = re.sub(r"(?i)\b(?:rev(?:ision)?\.?|change|corr\.?|part|vol(?:ume)?\.?|table|annex)\s*[A-Z0-9-]+", " ", raw)
+        names = [m.group(0) for m in DESIGNATION_RE.finditer(raw) if m.group(0) not in PLAIN_CAPS]
+        if not names:
+            return []
+        pool: set[str] = set()
+        for h in hits:
+            pool.update(tokenize(_req_text(h.requirement)))
+            if h.table is not None and h.row is not None:
+                pool.update(tokenize(_row_text(h.table, h.row)))
+            for n in self.neighbours(h.requirement):
+                pool.update(tokenize(_req_text(n)))
+        return [n for n in dict.fromkeys(names) if not set(tokenize(n)) & pool]
+
     def search_response(self, query: str, doc_id: str | None = None, limit: int = 5) -> dict:
         """search_hits plus what a client needs to judge coverage (hand test F6):
 
@@ -627,6 +822,30 @@ class StandardsIndex:
         out.update(missing)
         if missing:
             notes.append("Results come from the loaded documents only and may not cover the question.")
+        external = self.external_standards(query)
+        if external:
+            out["external_standards"] = external
+            notes.append(f"Not an ECSS or NASA document held here: {', '.join(external)}. Loaded standards may "
+                         "refer to it but do not reproduce it: do not state its requirements.")
+        unmatched = self.unmatched_designations(query, hits)
+        if not any(h.lexical > 0 for h in hits):  # keyword matches only: an embedding always finds a neighbour
+            out["coverage"] = "none"
+            notes.append("No loaded record matches this query. Say the loaded standards do not cover it, or "
+                         "search again with other words.")
+        elif unmatched:
+            out["coverage"] = "weak"
+            out["unmatched_terms"] = unmatched
+            notes.append(f"No hit contains {', '.join(unmatched)}: the hits may not treat that subject. Search "
+                         "for it by another name; if nothing returned treats it, say the loaded standards do "
+                         "not cover it.")
+        mismatch = self.issue_mismatches(" ".join(filter(None, [query, doc_id])))
+        if mismatch:
+            out["issue_mismatch"] = mismatch
+            notes.append("The question names an issue that is not loaded: " + "; ".join(
+                f"{x['asked']} (loaded: {x['doc_id']} {x['issue'] or 'first issue'}"
+                + (f", {x['issue_date']}" if x.get("issue_date") else "") + ")" for x in mismatch)
+                + ". Results come from the loaded issue; its clause numbers and text can differ from the issue "
+                "asked about. Say so, and do not present them as the issue asked about.")
         detected, named = self._detect(query) if not doc_id else (set(self._match_doc(doc_id)), True)
         if named and detected:
             # compare on the topic words only: the ID's own tokens ('nasa', 'std') would favour
@@ -671,6 +890,16 @@ class StandardsIndex:
 
         subject = STD_ID_RE.sub(" ", HYPHENS_RE.sub("-", topic.upper()))
         subject = re.sub(r"(?<![A-Z0-9-])(?:ECSS|NASA|VS|VERSUS|COMPARE|COMPARED)(?![A-Z0-9-])", " ", subject)
+        chosen = False
+        if not doc_ids and len(docs) > COMPARE_DOCS:
+            # a large corpus: compare the standards that say most on the subject, COMPARE_PER_FAMILY per family
+            # (named documents first), instead of one section for every loaded document
+            # two or more named documents were kept above; a single named one is added to the best matches
+            keep = [d for d in docs if len(docs) < len(self.documents)] or [d for d in (named or []) if explicit and d in docs][:1]
+            for fam in ("ECSS", "NASA"):
+                ranked = [_norm_doc(x["doc_id"]) for x in self.rank_documents(subject, family=fam, limit=COMPARE_PER_FAMILY)]
+                keep += [d for d in ranked if d not in keep]
+            docs, chosen = keep, True
         by_id = {_norm_doc(d.doc_id): d for d in self.documents}
         sections = []
         for d in docs:
@@ -690,12 +919,60 @@ class StandardsIndex:
         out.update(missing)
         if missing:
             notes.append("Do not compare against standards that are not loaded.")
+        if chosen:
+            out["documents_chosen"] = "top matches per family"
+            notes.append(f"No doc_ids given: compared the {COMPARE_PER_FAMILY} standards per family that match the "
+                         "topic best (find_standards ranks more). Pass doc_ids to compare specific standards.")
         if any(s["coverage"] != "ok" for s in sections):
             notes.append("Documents marked 'weak' or 'none' may not treat this topic; say so instead of "
                          "presenting their hits as equivalents.")
         if notes:
             out["notes"] = notes
         return out
+
+    def rank_documents(self, topic: str, family: str = "", doc_type: str = "", limit: int = 8,
+                       pool: int = DOC_POOL) -> list[dict]:
+        """Loaded standards ranked by how much they say on a topic ("which standards apply to ...").
+
+        Score: the three best keyword matches of a document among the top `pool` records (handbook and
+        guidance weights as in search), plus a title share: the part of the topic's words found in the
+        title, times the best match overall. Each entry names its best-matching sections (clause, heading,
+        the record to open); no requirement text. Standards named in the topic do not restrict the ranking."""
+        subject = STD_ID_RE.sub(" ", HYPHENS_RE.sub("-", topic.upper())).lower()
+        words = set(tokenize(subject))
+        hits = self.search_hits(subject, limit=pool, detect_docs=False) if words else []
+        top = max((h.lexical for h in hits), default=0.0)
+        per_doc: dict[str, list[SearchHit]] = {}
+        for h in hits:
+            per_doc.setdefault(h.requirement.doc_id, []).append(h)
+        entries = {e.doc_id: e for e in self.catalogue.entries} if self.catalogue else {}
+        out = []
+        for d in self.documents:
+            info = classify(d.doc_id)
+            if (family and info["family"].lower() != family.lower()) or (
+                    doc_type and doc_type.lower() not in info["doc_type"].lower()):
+                continue
+            title = d.title or (entries[d.doc_id].title if d.doc_id in entries else "")
+            in_title = len(words & set(tokenize(title))) / len(words) if words else 0.0
+            mine = per_doc.get(d.doc_id, [])
+            score = sum(h.lexical for h in mine[:3]) + in_title * (top or 1.0)
+            if not mine and in_title < 0.5:
+                continue
+            sections, seen = [], set()
+            for h in mine:
+                r = h.requirement
+                if r.clause in seen:
+                    continue
+                seen.add(r.clause)
+                sections.append({"clause": r.clause, "heading": r.heading_path[-1] if r.heading_path else "",
+                                 "citation": r.citation, "kind": r.kind})
+                if len(sections) == 3:
+                    break
+            out.append({"doc_id": d.doc_id, "issue": d.issue, "title": title, **info,
+                        "tier": self.tier_of(d.doc_id, d.issue), "score": round(score, 2),
+                        "matching_records": len(mine), "top_sections": sections})
+        out.sort(key=lambda x: x["score"], reverse=True)
+        return out[:limit]
 
     def section_outline(self, doc_id: str, clause: str = "", depth: int = 2) -> dict | None:
         """Heading tree of one document (from the records' heading paths), for browsing a clause

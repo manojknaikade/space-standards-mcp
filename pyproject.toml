@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "space-standards-mcp"
-version = "0.2.4"
+version = "0.3.0"
 description = "MCP server for cited, requirement-level Q&A over ECSS and NASA standards (bring your own documents)"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -33,8 +33,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8", "numpy>=1.26", "ruff>=0.6"]
 embed = ["fastembed>=0.5", "numpy>=1.26"]  # hybrid search + reranking (SPACESTD_EMBED / SPACESTD_RERANK)
-eval = ["anthropic>=1.12,<2"]  # eval/run_answer_eval.py --backend api|agent / --judge api
-agent = ["anthropic>=1.12,<2"]  # python -m spacestd_agent
+eval = ["anthropic>=1.12,<3"]  # eval/run_answer_eval.py --backend api|agent / --judge api
+agent = ["anthropic>=1.12,<3"]  # python -m spacestd_agent
 
 [project.urls]
 Homepage = "https://github.com/manojknaikade/space-standards-mcp"

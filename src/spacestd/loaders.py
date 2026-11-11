@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 def _code_version() -> str:
     """Hash of the parsing code: any parser change invalidates the cache."""
     h = hashlib.sha1()
-    for name in ("models", "parser", "pdf_extract", "ecss_parser", "nasa_parser", "word_extract", "loaders"):
+    for name in ("models", "parser", "pdf_extract", "ecss_parser", "nasa_parser", "npr_parser", "word_extract", "loaders"):
         h.update((Path(__file__).parent / f"{name}.py").read_bytes())
     return h.hexdigest()[:12]
 
@@ -55,10 +55,11 @@ def read_paragraphs(path: Path) -> list[str]:
     return path.read_text(encoding="utf-8").splitlines()
 
 
-# ECSS-E-ST-32-10C, ECSS-Q-ST-70C, NASA-STD-5001B, NASA-HDBK-7005, NASA-STD-10001, NASA-HDBK-8739.19-2 ...
+# ECSS-E-ST-32-10C, ECSS-Q-ST-70C, NASA-STD-5001B, NASA-HDBK-7005, NASA-STD-10001, NASA-HDBK-8739.19-2, NPR 7150.2D ...
 STD_ID_RE = re.compile(
     r"(?<![A-Za-z0-9])(ECSS-[A-Z]-(?:(?:ST|HB|AS|TM)-)?\d{2}(?:-\d{2})*[A-Z]?"
-    r"|NASA-(?:STD|HDBK|SPEC)-\d{4,5}(?:\.\d+(?:-\d(?!\d))?)?[A-Z]?)(?!\d)",
+    r"|NASA-(?:STD|HDBK|SPEC)-\d{4,5}(?:\.\d+(?:-\d(?!\d))?)?[A-Z]?"
+    r"|NPR[ _-]?\d{4}\.\d+[A-Z]?)(?!\d)",
     re.I,
 )
 # part of a multi-part document, right after the ID: "Part 10A", "_Part1A", ", VOLUME 1", "-Vol-2", "-ANNEX"
@@ -78,6 +79,8 @@ def _ids(text: str) -> list[tuple[str, int]]:
     out = []
     for m in STD_ID_RE.finditer(text):
         doc_id, end = m.group(1).upper(), m.end()
+        if doc_id.startswith("NPR"):  # NASA Procedural Requirements: 'NPR 7150.2D' however the name is spaced
+            doc_id = "NPR " + doc_id[3:].lstrip(" _-")
         part = PART_AFTER_RE.match(text, end)
         suffix = ""
         if part and part.group(1):
@@ -222,7 +225,7 @@ def _family(doc_id: str) -> str:
     d = doc_id.upper()
     if d.startswith("ECSS"):
         return "ecss"
-    if d.startswith("NASA"):
+    if d.startswith(("NASA", "NPR ")):
         return "nasa"
     return "generic"
 
@@ -241,16 +244,26 @@ def _load_pdf(path: Path, doc: Document) -> None:
                                       stats=stats)
         attach_tables(doc.tables, info)
         doc.unparsed = stats["unparsed"]
+    elif doc.doc_id.upper().startswith("NPR "):
+        from .npr_parser import parse_npr_lines
+
+        reqs, doc.unparsed = parse_npr_lines(content.lines, doc.doc_id, doc.issue, stats=stats)
+        _own_tables(doc.tables, reqs)
     elif family == "nasa":
         reqs, doc.unparsed = parse_nasa_lines(content.lines, doc.doc_id, doc.issue,
                                               handbook=is_handbook(doc.doc_id), stats=stats)
-        for t in doc.tables:  # clause = the requirement that points to the table
-            owner = next((r for r in reqs if t.table_id in r.tables and r.kind == "requirement"), None)
-            t.clause = owner.req_id if owner else ""
+        _own_tables(doc.tables, reqs)
     else:
         reqs = parse_paragraphs([ln.text for ln in content.lines], doc.doc_id, doc.issue, is_handbook(doc.doc_id))
     doc.requirements = reqs
     doc.body_words, doc.unparsed_words = stats.get("body_words", 0), stats.get("unparsed_words", 0)
+
+
+def _own_tables(tables: list, reqs: list) -> None:
+    """NASA layouts: a table's clause is the requirement that points to it."""
+    for t in tables:
+        owner = next((r for r in reqs if t.table_id in r.tables and r.kind == "requirement"), None)
+        t.clause = owner.req_id if owner else ""
 
 
 def _load_word_ecss(path: Path, doc: Document) -> None:

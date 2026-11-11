@@ -51,6 +51,9 @@ NASA_REQ_RE = re.compile(r"^(?:(?:[A-Z]{2,6}|[A-Z]{1,5}\d) \d{1,4}(?: / \d+(?:\.
                          r"|\d+(?:\.\d+)* guidance \d+)$")  # 4.1.1 guidance 3
 # handbook section records (A5): kind guidance, ID = the clause number (4.2.1, A.2.1, or an annex letter)
 SECTION_ID_RE = re.compile(r"^(?:[A-Z]|(?:[A-Z]\.)?\d+(?:\.\d+)*)$")
+PARA_ID_RE = re.compile(r"^(?:[A-Z]\.)?\d+(?:\.\d+)* req \d+$")  # unlettered requirement paragraph: 4.2.3 req 2
+# NPR records: paragraph number, Preface or appendix item, tag, guidance paragraph (npr_parser.py)
+NPR_REQ_RE = re.compile(r"^(?:(?:\d{1,2}|[A-Z]|P)(?:\.\d{1,2}){1,6}[a-z]?|[A-Z]{2,6}-\d{1,4}|(?:\d{1,2}|[A-Z]|P)(?:\.\d{1,2})* guidance \d+)$")
 GLOSSARY_ID_RE = re.compile(r"^\d+:\S.*$")  # glossary term records (H8): 1:Fibre
 TAG_REQ_RE = re.compile(r"^[A-Z]{2,8}[- ]?\d{1,4}$")  # generic parser: [SWE-033] -> SWE-033
 VALID_ID = {
@@ -144,7 +147,9 @@ def measure(doc: Document, family: str) -> dict:
     return {
         "records": len(ids),
         "by_kind": dict(sorted(Counter(r.kind for r in doc.requirements).items())),
-        "valid_ids": sum(valid_id(r.req_id, family) or (r.kind == "guidance" and bool(SECTION_ID_RE.match(r.req_id) or GLOSSARY_ID_RE.match(r.req_id)))
+        "valid_ids": sum(valid_id(r.req_id, family) or (r.kind in ("guidance", "definition") and bool(SECTION_ID_RE.match(r.req_id) or GLOSSARY_ID_RE.match(r.req_id)))
+                         or bool(PARA_ID_RE.match(r.req_id))
+                         or (doc.doc_id.startswith("NPR ") and bool(NPR_REQ_RE.match(r.req_id)))
                          for r in doc.requirements),
         "duplicate_ids": sum("(duplicate" in i for i in ids),
         "unparsed": len(doc.unparsed),
@@ -249,7 +254,7 @@ def _pct(x: float) -> str:
     return f"{x:.0%}"
 
 
-def render(results: list[Health], corpus: str) -> str:
+def render(results: list[Health], corpus: str, no_cache: bool = False) -> str:
     tiers = Counter(h.tier for h in results)
     reasons = Counter(r.split(" (")[0] if r.startswith("parse error") else re.sub(r"[\d/%]+", "N", r)
                       for h in results for r in h.reasons)
@@ -263,7 +268,8 @@ def render(results: list[Health], corpus: str) -> str:
         "",
         f"- Corpus: `{corpus}`; {len(results)} documents: "
         + ", ".join(f"{tiers.get(k, 0)} {k}" for k in ("verified", "checked", "unchecked")),
-        f"- Parse errors: {sum(bool(h.error) for h in results)}; parse time {sum(h.seconds for h in results):.0f} s",
+        f"- Parse errors: {sum(bool(h.error) for h in results)}; load time {sum(h.seconds for h in results):.0f} s"
+        + ("" if no_cache else " (from the parse cache where present; `--no-cache` gives parse times)"),
         f"- Thresholds: at least {t['min_records']} records for a standard ({t['min_records_other']} for other "
         f"types), valid IDs ≥ {_pct(t['min_valid_id_share'])}, unparsed ≤ {_pct(t['max_unparsed_share'])} "
         "(not for ECSS standards), "
@@ -309,7 +315,7 @@ def main() -> None:
 
     results = run(Path(args.folder), args.corpus, not args.no_cache, progress)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(render(results, args.corpus), encoding="utf-8")
+    args.out.write_text(render(results, args.corpus, args.no_cache), encoding="utf-8")
     path = write_json(Path(args.folder), results, args.corpus)
     tiers = Counter(h.tier for h in results)
     print(f"\n{len(results)} documents: {dict(tiers)}; wrote {args.out} and {path}")

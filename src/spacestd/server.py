@@ -27,8 +27,14 @@ mcp = MCPServer(
         "test levels) only from get_table rows, with their conditions and footnotes. Every record and table "
         "carries its parse `tier`; values from tables below `verified` carry a `check` flag and a `page`: give "
         "such numbers with the flag, as \"check against the source, page N\". State the "
-        "record kind (requirement, recommendation, permission, guidance, deleted, table (a table with no owning record: cite the table)). If no tool "
-        "result supports an answer, say the loaded standards do not cover it."
+        "record kind (requirement, recommendation, permission, guidance, definition, deleted, table (a table with no owning record: cite the table)). "
+        "Cite each standard with its issue and `issue_date` as returned, so the reader knows the edition. "
+        "When a result carries `issue_mismatch` or `loaded_issues`, the user named an issue that is not loaded: say "
+        "which issue is loaded and never present its text as the issue asked about. `not_loaded` and "
+        "`external_standards` name documents this server does not hold: state no requirement from them. "
+        "`coverage: none` or `weak` (with `unmatched_terms`) means the hits may not treat the subject. If no tool "
+        "result supports an answer, say the loaded standards do not cover it; never answer from memory. "
+        "For \"which standards cover X\" use find_standards; the full interface is in docs/TOOLS.md."
     ),
 )
 
@@ -66,11 +72,15 @@ def list_documents(family: str = "", doc_type: str = "", discipline: str = "", q
 def get_requirement(doc_id: str, req_id: str) -> dict:
     """Get the exact text of one requirement.
 
-    doc_id: e.g. "ECSS-Q-ST-80C" or "ECSS-Q-ST-80" or "NPR 7150.2".
-    req_id: ECSS clause + letter, e.g. "5.2.1a" (DRD content: "A.2.1<5.2>a"); NASA tag, e.g. "FSR 24",
+    doc_id: e.g. "ECSS-Q-ST-80C" or "ECSS-Q-ST-80" or "NPR 7150.2"; issue words are allowed ("ECSS-Q-ST-80C Rev.2").
+    req_id: ECSS clause + letter, e.g. "5.2.1a" (DRD content: "A.2.1<5.2>a"; a definition: its number, "3.2.1"; a
+    requirement printed without a letter: "4.2.3 req 2"); NASA tag, e.g. "FSR 24", "SWE-144",
     or an FCR item, e.g. "FCR 11 / 7.2.1.c"; untagged NASA standards: section + item, e.g. "4.2a", "4.3(1)",
     or the n-th "shall" paragraph of a section, e.g. "4.4 req 1". Records carry a `kind`: requirement, recommendation,
-    permission, guidance or deleted — say which when answering.
+    permission, guidance, definition or deleted — say which when answering — and `issue`, `issue_date`, `page`, `tier`.
+    Not found: `loaded_issues` (the issue or revision letter named is not the loaded one: say so, do not answer as
+    if it were), `records_in_clause` (a clause with several records: ask for one), or `nearest_ids` (suggestions to
+    read, never to cite unread). A record returned with `asked_for` holds the item asked for inside its text.
     """
     return tools.get_requirement(get_index(), doc_id, req_id)
 
@@ -83,7 +93,11 @@ def search_requirements(query: str, doc_id: str | None = None, limit: int = 5) -
     query: REQUIRED search words, never empty, e.g. "ultimate factor of safety metallic structure" or
     "fracture control NASA-STD-5019". A call without search words returns no results.
 
-    Returns {"results": [...]} plus, when relevant, "not_loaded", "elsewhere" and "notes".
+    Returns {"results": [...]} plus, when relevant, "not_loaded", "issue_mismatch", "external_standards",
+    "coverage", "elsewhere" and "notes". `issue_mismatch`: the query names an issue or revision letter that is
+    not loaded (results come from the loaded issue: say which). `external_standards`: standards of other bodies
+    named in the query, never held here. `coverage` "none" (no keyword match) or "weak" (`unmatched_terms`: an
+    acronym or designation of the query is in no hit): the hits may not treat the subject.
     Without doc_id, standards named in the query (e.g. "NASA-STD-5001B", "ECSS-E-ST-32-01") restrict
     the search to them. `not_loaded` lists named standards that are not loaded: never answer from
     them. It is split into `in_documents_folder` (present in the user's documents folder but not loaded,
@@ -133,6 +147,21 @@ def compare_topic(topic: str, doc_ids: list[str] | None = None, limit: int = 5) 
     Coverage is judged on keyword matches: read the hits, and use get_requirement / get_table before comparing.
     """
     return tools.compare_topic(get_index(), topic, doc_ids, limit)
+
+
+@mcp.tool(annotations=READ_ONLY)
+def find_standards(topic: str, family: str = "", doc_type: str = "", limit: int = 8) -> dict:
+    """Which loaded standards treat a topic: documents ranked for "which standards apply to / cover X".
+
+    topic: REQUIRED, the subject in a few words, e.g. "thermal vacuum test", "software criticality", "space debris
+    mitigation". family: "ECSS" or "NASA" (optional). doc_type: e.g. "standard", "handbook" (optional).
+    Returns {"documents": [...]}: each with doc_id, issue, issue_date, title, family, doc_type, discipline, parse
+    tier, a score, how many of its records matched, and `top_sections` (clause, heading, the citation of the
+    best record there; no text). The ranking is by keyword matches: it shows where a topic is written about, not
+    that a standard is applicable to a given project. Read the sections with get_section_outline and
+    get_requirement before stating what a standard requires, and cite those records, not this list.
+    """
+    return tools.find_standards(get_index(), topic, family, doc_type, limit)
 
 
 @mcp.tool(annotations=READ_ONLY)

@@ -9,7 +9,8 @@ from dataclasses import dataclass, field
 # permission      "may" / "need not" without "shall"/"should" (ECSS nomenclature)
 # guidance        NASA italic text, rationale, informative annexes, other descriptive items
 # deleted         ECSS "<<deleted>>" placeholders, kept so lookups can explain the gap
-KINDS = ("requirement", "recommendation", "permission", "guidance", "deleted")
+# definition      a term and its definition (ECSS clause 3 "Terms ...", the ECSS glossary)
+KINDS = ("requirement", "recommendation", "permission", "guidance", "deleted", "definition")
 
 
 @dataclass

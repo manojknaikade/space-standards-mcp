@@ -44,7 +44,7 @@ from spacestd_agent.claude_code import SEARCH_ENV, ClaudeCode, ClaudeCodeAgent
 HERE = Path(__file__).parent
 DEFAULT_MODEL = "claude-sonnet-5-5"
 JUDGE_SYSTEM = (
-    "You grade answers to questions about space structures standards against a reference written by a "
+    "You grade answers to questions about space standards (ECSS, NASA) against a reference written by a "
     "domain expert. Judge content, not style. Reply with one JSON object only."
 )
 JUDGE_PROMPT = """Question ({qtype}):
@@ -137,8 +137,49 @@ def make_backend(name: str, model: str, docs: Path):
 # -- generate -----------------------------------------------------------------------------------------
 
 def load_questions(path: Path, ids: list[str] | None) -> list[dict]:
+    """Questions from eval/questions.yaml or eval/coverage_questions.yaml. The coverage set states `expected`
+    entries (doc_id, issue, clause, req_ids); `expected_ids` are derived from them here."""
     qs = yaml.safe_load(path.read_text(encoding="utf-8"))
+    for q in qs:
+        if "expected" in q and "expected_ids" not in q:
+            q["expected_ids"] = [f"{e['doc_id']}|{r}" for e in q["expected"] for r in e.get("req_ids") or []]
+        q.setdefault("answer_points", [])
     return [q for q in qs if not ids or q["id"] in ids]
+
+
+ISSUE_WORDS_RE = re.compile(r"(rev|change|corr)[a-z]*[.\s/-]*(\w+)", re.I)
+
+
+def source_checks(q: dict, answer: str) -> dict:
+    """Citation accuracy against the source-checked `expected` entries of the coverage set, by plain string
+    match (independent of the parser): per entry, does the answer name the standard, the clause (the clause
+    number or one of the requirement IDs) and the issue (its "Rev.N" / "Change N" words; for a first issue,
+    the full ID with its issue letter or the cover year)? Each value is the share of entries, 0..1.
+
+    Limit: the match is over the whole answer, so with several expected standards a clause or issue written
+    next to the wrong standard still counts. `citation_recall` (document and ID parsed together by the citation
+    checker) and the judge cover that case; this check only says the markers are present."""
+    exp = q.get("expected") or []
+    if not exp:
+        return {}
+    text = re.sub(r"[\u2010-\u2015\u2212]", "-", answer)
+    flat = re.sub(r"\s+", " ", text).lower()
+    std = clause = issue = 0
+    for e in exp:
+        base = re.sub(r"(?<=\d)[A-Z]$", "", e["doc_id"].split(" Part ")[0].split(" Vol ")[0]).lower()
+        named = base in flat
+        ids = [str(i).lower() for i in (e.get("req_ids") or [])] + ([str(e["clause"]).lower()] if e.get("clause") else [])
+        has_clause = any(re.search(rf"(?<![\w.]){re.escape(i)}(?![\w]|\.\d)", flat) for i in ids)
+        if e.get("issue"):
+            words = [(m.group(1)[:3].lower(), m.group(2).lower()) for m in ISSUE_WORDS_RE.finditer(e["issue"])]
+            got = {(m.group(1)[:3].lower(), m.group(2).lower()) for m in ISSUE_WORDS_RE.finditer(text)}
+            has_issue = bool(words) and all(w in got for w in words)
+        else:
+            year = re.search(r"(?:19|20)\d{2}", e.get("cover_issue", ""))
+            has_issue = e["doc_id"].split(" ")[0].lower() in flat or bool(year and year.group(0) in flat)
+        std, clause, issue = std + named, clause + (named and has_clause), issue + (named and has_issue)
+    n = len(exp)
+    return {"standard_cited": round(std / n, 3), "clause_cited": round(clause / n, 3), "issue_cited": round(issue / n, 3)}
 
 
 def read_jsonl(path: Path) -> dict[str, dict]:
@@ -206,6 +247,7 @@ def check_one(checker: CitationChecker, q: dict, rec: dict) -> dict:
            "table_recall": round(sum(t in cited for t in tabs) / len(tabs), 3) if tabs else None}
     if q["type"] == "not_covered":
         out["not_covered_ok"] = chk.declines and not chk.ungrounded
+    out.update(source_checks(q, rec["answer"]))
     return out
 
 
@@ -230,6 +272,11 @@ def summarise(qs: list[dict], scores: dict[str, dict]) -> list[tuple[str, str, s
         for v in ("correct", "partial", "wrong"):
             add(f"judge: {v}", [x["judge"]["verdict"] == v for x in judged])
         add("judge: answer-point coverage", [x["judge"]["coverage"] for x in judged])
+    for key, name in (("standard_cited", "source check: expected standard named"),
+                      ("clause_cited", "source check: expected clause or ID cited"),
+                      ("issue_cited", "source check: expected issue stated")):
+        if any(key in x for x in covered):
+            add(name, [x.get(key) for x in covered])
     add("citation recall (expected IDs cited)", [x["citation_recall"] for x in covered])
     add("table citation recall", [x["table_recall"] for x in covered])
     add("answers with an invented ID", [bool(x["invented"]) for x in s])
@@ -275,7 +322,8 @@ def score(args) -> None:
 
     with ThreadPoolExecutor(args.workers) as pool:
         scores = dict(pool.map(one, qs))
-    scores_path.write_text(json.dumps(scores, indent=1))
+    # A run limited with --ids keeps the stored scores of the other questions.
+    scores_path.write_text(json.dumps({**old, **scores} if args.ids else scores, indent=1))
 
     for q in qs:
         x = scores[q["id"]]

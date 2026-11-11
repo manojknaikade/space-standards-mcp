@@ -5,3 +5,4 @@
 docs/PROGRESS.md
 .github/dependabot.yml
 docs/ANNOUNCEMENT_DRAFT.md
+docs/ANALYSIS.md

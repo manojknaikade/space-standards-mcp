@@ -20,7 +20,7 @@ def test_tools_registered():
 
     names = {t.name for t in asyncio.run(server.mcp.list_tools())}
     assert names == {"list_documents", "get_requirement", "search_requirements", "get_references", "get_table",
-                     "compare_topic", "get_section_outline"}
+                     "compare_topic", "get_section_outline", "find_standards"}
 
 
 def test_get_requirement_found_and_missing():
@@ -81,7 +81,7 @@ def test_empty_query_returns_message():
 
 REQUIRED = {"list_documents": [], "get_requirement": ["doc_id", "req_id"], "search_requirements": ["query"],
             "get_table": ["doc_id"], "get_references": ["doc_id", "req_id"], "compare_topic": ["topic"],
-            "get_section_outline": ["doc_id"]}
+            "get_section_outline": ["doc_id"], "find_standards": ["topic"]}
 
 
 def test_tool_schemas_list_mandatory_arguments_as_required():

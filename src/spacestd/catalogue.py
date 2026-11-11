@@ -33,6 +33,7 @@ from pathlib import Path
 
 import yaml
 
+from .editions import find_dates, issue_date
 from .health import checked_tiers
 from .loaders import CACHE_DIR, PREFERENCE, SUPPORTED, load_document, manifest_record, meta_from_text, read_meta
 from .models import Document
@@ -123,6 +124,12 @@ NASA_SERIES = {
 
 ECSS_ID_RE = re.compile(r"^ECSS-([A-Z])-(?:(ST|HB|AS|TM)-)?(\d{2})", re.I)
 NASA_ID_RE = re.compile(r"^NASA-(STD|HDBK|SPEC)-(\d{4})", re.I)
+NPR_ID_RE = re.compile(r"^NPR[ -]?(\d{4})\.", re.I)
+# NASA Procedural Requirements are numbered by subject (NODIS chapters)
+NPR_SERIES = {
+    "7000": "program and project management, systems and software engineering",
+    "8000": "risk management, safety and mission assurance, environment and facilities",
+}
 
 
 def classify(doc_id: str) -> dict:
@@ -138,7 +145,17 @@ def classify(doc_id: str) -> dict:
         series = "8700" if num.startswith("87") else num[0] + "000"
         return {"family": "NASA", "doc_type": NASA_TYPES[kind], "discipline": f"NASA-{series}",
                 "discipline_name": NASA_SERIES.get(series, "")}
+    if m := NPR_ID_RE.match(doc_id):
+        series = m.group(1)[0] + "000"
+        return {"family": "NASA", "doc_type": "procedural requirements", "discipline": f"NPR-{series}",
+                "discipline_name": NPR_SERIES.get(series, "")}
     return {"family": "other", "doc_type": "", "discipline": "", "discipline_name": ""}
+
+
+def _iso(text: str) -> str:
+    """A manifest date as an ISO date; "" when it holds none."""
+    dates = find_dates(text or "")
+    return dates[-1].isoformat() if dates else ""
 
 
 @dataclass
@@ -155,6 +172,7 @@ class Entry:
     tier: str = "unchecked"  # verified | checked (passes the health report, health.py) | unchecked (ADR-0006)
     loaded: bool = False
     date: str = ""  # from a download manifest, when there is one
+    issue_date: str = ""  # ISO date of this edition: file name, else the latest date on the first page (editions.py)
     alternates: list[str] = field(default_factory=list)  # other files with the same doc_id
     alternate_issues: list[str] = field(default_factory=list)  # their issues, when different from `issue`
     identified: bool = True  # False: no standard number found, doc_id is the file name
@@ -162,7 +180,7 @@ class Entry:
     def to_dict(self, full: bool = False) -> dict:
         d = asdict(self)
         if not full:
-            for k in ("alternates", "alternate_issues", "date"):
+            for k in ("alternates", "alternate_issues", "date", "issue_date"):
                 if not d[k]:
                     d.pop(k)
             if d["identified"]:
@@ -218,7 +236,7 @@ def _discover(folder: Path) -> list[Path]:
 
 def _code_version() -> str:
     h = hashlib.sha1()
-    for name in ("loaders", "catalogue"):
+    for name in ("loaders", "catalogue", "editions"):
         h.update((Path(__file__).parent / f"{name}.py").read_bytes())
     return h.hexdigest()[:12]
 
@@ -255,6 +273,7 @@ def _identities(folder: Path, files: list[Path], use_cache: bool) -> dict[str, d
             meta = hit["meta"]
         else:
             meta = {k: str(v) for k, v in read_meta(p).items() if k in ("doc_id", "issue", "title")}
+            meta["issue_date"] = issue_date(p)
             cached[rel] = {"stamp": stamp, "meta": meta}
             changed = True
         for f in group:
@@ -333,6 +352,7 @@ def build_catalogue(folder: Path, use_cache: bool = True) -> Catalogue:
             status="superseded" if superseded else "active",
             loaded=loaded,
             date=manifest.get("date", ""),
+            issue_date=meta.get("issue_date", "") or _iso(manifest.get("date", "")),
             alternates=[p.relative_to(folder).as_posix() for p in paths[1:]],
             alternate_issues=alt_issues,
             identified=meta_from_text(doc_id)[0] == doc_id or best.suffix.lower() in {".txt", ".md"},

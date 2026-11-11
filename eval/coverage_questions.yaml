@@ -1,0 +1,1452 @@
+# Coverage evaluation set: all ECSS branches (M, Q, E, U, S) and the NASA standard families.
+#
+# 70 questions (x-07 and x-08 became lookups and x-11 was added when the NPRs were downloaded, 10 Nov 2026).
+# 69 at the baseline. Drafted 10 Nov 2026 by nine subagents (one per standards area) from the source PDFs, then
+# reviewed by the orchestrator: every expected clause, item letter or tag was checked to be printed on the stated
+# page (script), 15 questions were hand-checked against the source page, 11 drafts were dropped (6 "not covered"
+# drafts that another standard in the folder does treat, 5 with loose or ambiguous references).
+# Owner review is pending for all of them.
+#
+# Fields: "expected" entries give doc_id and issue as catalogued, cover_issue (issue and date as printed on the
+# cover), clause, req_ids (ECSS clause + letter, NASA tag or paragraph item; [] for prose and definitions) and
+# page (1-based PDF page). Questions of type "revision" name an issue that is not the loaded one (asked_issue
+# or asked_doc); "expected" is the loaded issue the server must point to. Type "not_covered": nothing in the
+# documents folder answers it. answer_points are paraphrases, never standard text (ADR-0002).
+# Scored by eval/run_coverage_eval.py (deterministic) and eval/run_answer_eval.py --questions <this file>.
+
+- id: msu-01
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: definition
+  names_standard: false
+  question: In ECSS terminology, what exactly is a 'residual risk'?
+  expected:
+  - doc_id: ECSS-S-ST-00-01C
+    issue: Rev.1
+    cover_issue: Third issue, Revision 1, 11 October 2023
+    clause: 2.3.193
+    req_ids: []
+    page: 39
+  answer_points:
+  - It is the risk that is still there once the risk reduction measures have been carried out.
+  - The definition is taken over from ISO 17666 and is held in the ECSS glossary rather than in the risk management
+    standard.
+  kind_note: definition (glossary entry)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: msu-02
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: lookup
+  names_standard: false
+  question: By which project milestone must the supplier have the product tree finalised, and when does it have
+    to be first established?
+  expected:
+  - doc_id: ECSS-M-ST-10C
+    issue: Rev.1
+    cover_issue: Third issue, Revision 1, 6 March 2009
+    clause: '5.3'
+    req_ids:
+    - 5.3b
+    page: 33
+  answer_points:
+  - The product tree is established at the start of phase B.
+  - It is finalised no later than the PDR.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: msu-03
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: lookup
+  names_standard: false
+  question: A supplier wants to implement a major change to a configuration item. Does the customer have to approve
+    it first, and how does that differ for a minor change?
+  expected:
+  - doc_id: ECSS-M-ST-40C
+    issue: Rev.1
+    cover_issue: Third issue, Revision 1, 6 March 2009
+    clause: 5.3.2.2
+    req_ids:
+    - 5.3.2.2a
+    - 5.3.2.2b
+    page: 40
+  answer_points:
+  - A class 1 change (or major departure) needs customer approval before it is implemented.
+  - A class 2 change (or minor departure) is implemented after the supplier's own approval, and the customer is
+    informed.
+  kind_note: requirement (shall)
+  review: hand-checked against the source page
+- id: msu-04
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: lookup
+  names_standard: true
+  question: What does ECSS-M-ST-80 require to happen to the residual risks left at the end of a risk management
+    cycle?
+  expected:
+  - doc_id: ECSS-M-ST-80C
+    issue: ''
+    cover_issue: Third issue, 31 July 2008
+    clause: 7.2.10
+    req_ids:
+    - 7.2.10a
+    page: 28
+  answer_points:
+  - Residual risks are submitted for acceptance to the management level named in the risk management plan.
+  - The aim is formal acceptance of the residual risks at that level.
+  kind_note: requirement (shall)
+  review: hand-checked against the source page
+- id: msu-05
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: numeric
+  names_standard: false
+  question: For a planetary protection case with no mission-specific numerical limit, what probability of contaminating
+    a protected Solar system body with viable terrestrial organisms is allowed, and over what time span?
+  expected:
+  - doc_id: ECSS-U-ST-20C
+    issue: ''
+    cover_issue: First issue, 1 August 2019
+    clause: 5.2.3
+    req_ids:
+    - 5.2.3a
+    page: 22
+  answer_points:
+  - The probability must not exceed 1x10^-3.
+  - The period is 50 years after the mission arrives at the protected body.
+  - It applies except where the standard gives other numerical requirements.
+  kind_note: requirement (shall)
+  review: hand-checked against the source page
+- id: msu-06
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: lookup
+  names_standard: true
+  question: Under ECSS-M-ST-60, what must a supplier on a cost reimbursement contract provide as the original baseline
+    cost plan, and how is it broken down and used?
+  expected:
+  - doc_id: ECSS-M-ST-60C
+    issue: ''
+    cover_issue: Third issue, 31 July 2008
+    clause: 9.3.1.1
+    req_ids:
+    - 9.3.1.1a
+    - 9.3.1.1b
+    - 9.3.1.1c
+    page: 41
+  answer_points:
+  - The supplier delivers the OBCP, covering itself and its suppliers, to the customer for approval, using the cost
+    reimbursement DRD.
+  - It is broken down by the cost categories of the cost breakdown structure.
+  - It is the reference for all control work packages.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: msu-07
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: numeric
+  names_standard: false
+  question: For a launch vehicle upper stage left in LEO, what cumulative collision probability limit and orbit
+    lifetime does the ECSS adoption of the ISO debris mitigation standard impose on debris left in orbit?
+  expected:
+  - doc_id: ECSS-U-AS-10C
+    issue: Rev.2
+    cover_issue: First issue, Revision 2, 9 February 2024
+    clause: '3'
+    req_ids: []
+    page: 8
+  expected_tables:
+  - ECSS-U-AS-10C|Table 3-1
+  answer_points:
+  - Orbit lifetime must be under 25 years if released into or crossing the LEO protected region within 100 years.
+  - The cumulative collision probability with objects larger than 1 cm until re-entry must be below 10^-3 (an ECSS-added
+    condition).
+  - Debris must also stay out of the GEO protected region for at least 100 years.
+  kind_note: modification of ISO 24113 clause 7.1.1.3, given in Table 3-1 of the adoption notice
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: msu-08
+  area: ECSS-M/S/U/P (management, system, sustainability)
+  type: not_covered
+  names_standard: false
+  question: What mass margin percentage should a launcher programme hold on dry mass at PDR and at CDR?
+  expected: []
+  answer_points:
+  - None of the management, system or sustainability standards of this area gives mass margin percentages.
+  kind_note: not covered (grep for mass margin, dry mass and margin in the area found nothing)
+  review: checked against all parsed documents (keyword sweep)
+- id: qpa-01
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: lookup
+  names_standard: false
+  question: Who is allowed to close out a nonconformance report, and what extra step is needed before a major one
+    can be closed?
+  expected:
+  - doc_id: ECSS-Q-ST-10-09C
+    issue: Rev.1
+    cover_issue: Rev.1, 1 March 2018
+    clause: 5.4.2
+    req_ids:
+    - 5.4.2b
+    - 5.4.2c
+    page: 20
+  answer_points:
+  - The supplier's product assurance representative closes out the NCR.
+  - For a major NCR, the close-out may happen only after the customer's PA has endorsed it.
+  - Close-out also needs verified actions, completed inspections/tests and approved waivers (5.4.2a).
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qpa-02
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: lookup
+  names_standard: false
+  question: In an FMEA, how do I label a failure mode whose worst effect is category 3 but only happens after all
+    redundant units have failed? What suffixes exist and when must the severity be assigned?
+  expected:
+  - doc_id: ECSS-Q-ST-30-02C
+    issue: ''
+    cover_issue: 6 March 2009
+    clause: '4.2'
+    req_ids:
+    - 4.2a
+    - 4.2b
+    - 4.2d
+    page: 15
+  expected_tables:
+  - ECSS-Q-ST-30-02C|Table 4-1
+  answer_points:
+  - Every failure mode gets a severity category, assigned without crediting existing compensating provisions.
+  - 'The category number is followed by a suffix: SH for safety hazards, R for redundancy, SP for single point failures.'
+  - A redundancy case such as category 3 after loss of all redundant items is written 3R; SH is placed before the
+    other suffixes.
+  kind_note: requirement (shall); suffix rule d and Table 4-1 on p.16
+  review: hand-checked against the source page
+- id: qpa-03
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: numeric
+  names_standard: false
+  question: What derating factor applies to relay contact current when the load is a motor and no motor-load rating
+    is specified? What about an inductive load and a filament load?
+  expected:
+  - doc_id: ECSS-Q-ST-30-11C
+    issue: Rev.2
+    cover_issue: Rev.2, 23 June 2021
+    clause: 6.25.2
+    req_ids:
+    - 6.25.2a
+    page: 65
+  expected_tables:
+  - ECSS-Q-ST-30-11C|Table 6-24
+  answer_points:
+  - 'Motor load: 50 % of the specified motor load rating, or 20 % of the resistive-load rating if none is specified.'
+  - 'Inductive load: 50 % of the inductive rating if specified, otherwise 40 % of the resistive rating.'
+  - 'Filament load: 10 % of the resistive-load rating.'
+  kind_note: requirement (shall) pointing to Table 6-24 on p.66
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qpa-04
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: lookup
+  names_standard: false
+  question: What is the required order of precedence for hazard control measures once a hazard cannot be eliminated
+    or minimized, and what is the basic safety requirement for controlling most hazards?
+  expected:
+  - doc_id: ECSS-Q-ST-40C
+    issue: Rev.1
+    cover_issue: Rev.1, 15 February 2017
+    clause: 6.3.3.4.1
+    req_ids:
+    - 6.3.3.4.1b
+    - 6.3.3.4.2a
+    page: 31
+  answer_points:
+  - 'Control measures are applied in order: design selection, automatic safety devices, warning devices, special
+    procedures.'
+  - Failure tolerance is the basic safety requirement used to control most hazards.
+  - 'Overall sequence before control: hazard elimination, then minimization, then control (6.3.3.1a).'
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qpa-05
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: lookup
+  names_standard: true
+  question: What does ECSS-Q-ST-10-04 require the supplier to do when identifying critical items and where must
+    they be listed?
+  expected:
+  - doc_id: ECSS-Q-ST-10-04C
+    issue: ''
+    cover_issue: 31 July 2008
+    clause: 5.2.3.1
+    req_ids:
+    - 5.2.3.1a
+    - 5.2.3.1b
+    - 5.2.3.1c
+    page: 15
+  answer_points:
+  - Critical items are identified from the project documentation and the critical-item definition.
+  - For each critical item the nature of its criticality is identified.
+  - Each critical item is entered in the critical items list (CIL) in the format of Annex A.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qpa-06
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: lookup
+  names_standard: false
+  question: We plan to use an off-the-shelf unit in our payload. When must the plan for selecting and qualifying
+    such items be submitted to the customer?
+  expected:
+  - doc_id: ECSS-Q-ST-20-10C
+    issue: ''
+    cover_issue: 8 October 2010
+    clause: 5.1.1
+    req_ids:
+    - 5.1.1a
+    - 5.1.1b
+    page: 13
+  answer_points:
+  - A dedicated OTS plan is established following the DRD in Annex A.
+  - The supplier submits it with the proposal, and at the latest by the system SRR.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qpa-07
+  area: ECSS-Q PA management, QA, dependability, safety
+  type: definition
+  names_standard: true
+  question: How does ECSS-Q-ST-30 define criticality, and how does it differ from the criticality of a failure mode?
+  expected:
+  - doc_id: ECSS-Q-ST-30C
+    issue: Rev.1
+    cover_issue: Rev.1, 15 February 2017
+    clause: 3.2.1
+    req_ids: []
+    page: 11
+  answer_points:
+  - Criticality classifies a function, software, hardware or operation by the severity of the consequences of its
+    potential failures.
+  - It considers severity only.
+  - The criticality of a failure mode or risk also takes the likelihood of occurrence into account.
+  kind_note: definition
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qmp-01
+  area: ECSS-Q EEE components, materials and processes
+  type: numeric
+  names_standard: false
+  question: What minimum outgassing screening limits for RML and CVCM do I have to meet when selecting a material
+    for spacecraft hardware, and when may a material with a higher total mass loss still be accepted?
+  expected:
+  - doc_id: ECSS-Q-ST-70-02C
+    issue: ''
+    cover_issue: 15 November 2008
+    clause: 5.5.3.1
+    req_ids:
+    - 5.5.3.1a
+    page: 26
+  answer_points:
+  - 'Minimum screening parameters: RML below 1,0 % and CVCM below 0,10 %'
+  - Optical devices or their vicinity can need more stringent limits (note)
+  - Materials with TML above 1,0 % but RML below 1,0 % are acceptable to the customer under the water-absorption
+    conditions of 5.5.3.3 (no equipment below -100 degC, fast water desorption, no high voltage, dry gas purge)
+  kind_note: requirement for 5.5.3.1a; acceptance of high-TML materials is a recommendation (should) in 5.5.3.3
+  review: hand-checked against the source page
+- id: qmp-02
+  area: ECSS-Q EEE components, materials and processes
+  type: numeric
+  names_standard: false
+  question: We want to reuse total-dose test data for a bipolar linear IC. What conditions must that TID test data
+    satisfy for us to accept it, including the maximum dose rate?
+  expected:
+  - doc_id: ECSS-Q-ST-60-15C
+    issue: Rev.1
+    cover_issue: First issue, Revision 1, 20 March 2025
+    clause: '5.1'
+    req_ids:
+    - 5.1g
+    page: 19
+  answer_points:
+  - Test method is one of three named ones (ESCC 22900 or method 1019 of MIL-STD-883 / MIL-STD-750)
+  - Devices containing bipolar transistors tested at a dose rate below 360 rad/h
+  - Test parts made with the same technology as flight parts (process, diffusion mask, wafer fab)
+  - Test bias conditions at least as severe as the application
+  kind_note: requirement
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qmp-03
+  area: ECSS-Q EEE components, materials and processes
+  type: lookup
+  names_standard: true
+  question: In ECSS-Q-ST-60-13 on commercial EEE components, under what conditions do I have to apply the outgassing
+    test to a commercial part?
+  expected:
+  - doc_id: ECSS-Q-ST-60-13C
+    issue: Rev.2
+    cover_issue: First issue, Revision 2, 30 April 2025
+    clause: '8.2'
+    req_ids:
+    - 8.2e
+    page: 57
+  answer_points:
+  - The test applies only if all three conditions hold
+  - The part package is based on organic material
+  - A single part weighs more than 100 mg
+  - The test is required by the user programme or for critical applications
+  kind_note: requirement (marked New in Rev.2; referenced as Note (d) in the procurement test tables)
+  review: hand-checked against the source page
+- id: qmp-04
+  area: ECSS-Q EEE components, materials and processes
+  type: numeric
+  names_standard: false
+  question: For a stress-corrosion evaluation, below what sheet thickness are aluminium alloys of moderate stress-corrosion
+    resistance exempt from the evaluation form, and does the same exemption apply to non-structural electrical wire?
+  expected:
+  - doc_id: ECSS-Q-ST-70-36C
+    issue: ''
+    cover_issue: 6 March 2009
+    clause: 5.2.3.2
+    req_ids:
+    - 5.2.3.2a
+    - 5.2.3.2b
+    page: 12
+  expected_tables:
+  - ECSS-Q-ST-70-36C|Table 5-2
+  answer_points:
+  - Sheet of the Table 5-2 aluminium alloys thinner than 6,5 mm (0,250 inch) does not need a stress-corrosion evaluation
+    form (SCEF per Annex C)
+  - Exempt too - alloys used only electrically and not structurally (wiring, thermocouples, windings) are also exempt
+  kind_note: requirement
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qmp-05
+  area: ECSS-Q EEE components, materials and processes
+  type: numeric
+  names_standard: false
+  question: A batch of epoxy adhesive has passed its shelf life. How long can the shelf life be extended after the
+    first and the second re-certification?
+  expected:
+  - doc_id: ECSS-Q-ST-70-22C
+    issue: ''
+    cover_issue: 31 July 2008
+    clause: 4.1.4
+    req_ids:
+    - 4.1.4a
+    page: 10
+  answer_points:
+  - First re-certification by relevant tests; if successful, shelf life is extended by half of the initial shelf
+    life
+  - Second re-certification is decided case by case (product, application, storage, user experience)
+  - If the second one succeeds, the extension is half of the first extension
+  - Batches awaiting results are kept separately and labelled as suspended (4.1.4c)
+  kind_note: requirement
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: qmp-07
+  area: ECSS-Q EEE components, materials and processes
+  type: numeric
+  names_standard: false
+  question: How long can an EEE part sit in storage after its original date code before it must be relifed, and
+    what is the latest time after the date code by which it must be mounted?
+  expected:
+  - doc_id: ECSS-Q-ST-60-14C
+    issue: Rev.1 Corr.1
+    cover_issue: Rev. 1 Corrigendum 1, 2 March 2020 (First issue, Revision 1)
+    clause: '5'
+    req_ids:
+    - 5d
+    - 5f
+    page: 18
+  expected_tables:
+  - ECSS-Q-ST-60-14C|Table 5-1
+  answer_points:
+  - T1 = 7 years from the original date code is the maximum storage with no relifing control
+  - T2 = 15 years is the maximum time between original date code and mounting
+  - After a relifing control a further dT of 4 years of storage is allowed, repeatable once
+  - The manufacturer's maximum lifetime limit takes precedence; once started, all relifing tests must be completed
+    within six weeks
+  kind_note: requirement; the numbers are in Table 5-1 on p.19
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: sw-01
+  area: ECSS software (E-40, Q-80)
+  type: lookup
+  names_standard: false
+  question: Our flight software has a low-criticality housekeeping component that shares memory with a high-criticality
+    control component, and we cannot rule out that it corrupts the control component. What criticality category
+    must the housekeeping component be given, and how can the problem be avoided by design?
+  expected:
+  - doc_id: ECSS-Q-ST-80C
+    issue: Rev.2
+    cover_issue: Third issue, Revision 2, 30 April 2025
+    clause: 6.2.2.10
+    req_ids:
+    - 6.2.2.10a
+    page: 44
+  answer_points:
+  - If failure propagation or shared resources cannot be prevented from letting a component cause failures in a
+    higher-criticality one, all components involved get the highest criticality category among them.
+  - So the housekeeping component is classified at the category of the control component.
+  - A note says design measures such as separate hardware platforms, process isolation or no shared memory (segregation
+    and partitioning) can prevent the propagation.
+  kind_note: requirement (shall), with an informative note
+  review: hand-checked against the source page
+- id: sw-02
+  area: ECSS software (E-40, Q-80)
+  type: numeric
+  names_standard: true
+  question: In ECSS-E-ST-40, what code coverage must the supplier verify for category A and category B software
+    (statement, decision, modified condition and decision), and what extra coverage applies at object code level?
+  expected:
+  - doc_id: ECSS-E-ST-40C
+    issue: Rev.1
+    cover_issue: Third issue, Revision 1, 30 April 2025
+    clause: 5.8.3.5
+    req_ids:
+    - 5.8.3.5b
+    - 5.8.3.5e
+    page: 75
+  answer_points:
+  - 'Category A: 100% statement, decision and modified condition and decision coverage on source code.'
+  - 'Category B: 100% statement and decision coverage; the modified condition and decision value is to be agreed
+    with the customer (TBA).'
+  - 'Categories C and D: values are to be agreed with the customer (TBA), measured as per ECSS-Q-ST-80 clause 6.3.5.2.'
+  - If source to object code traceability cannot be verified, 100% object code coverage is additionally required
+    for category A; not applicable to B, C, D.
+  kind_note: requirement (shall); the coverage numbers are in an unnumbered table inside the requirement text
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: sw-03
+  area: ECSS software (E-40, Q-80)
+  type: lookup
+  names_standard: true
+  question: What must the software verification plan (SVerP) in the ECSS-E-ST-40 DRD say about how verification
+    of manually written code differs from automatically generated code?
+  expected:
+  - doc_id: ECSS-E-ST-40C
+    issue: Rev.1
+    cover_issue: Third issue, Revision 1, 30 April 2025
+    clause: I.2.1<6.1>
+    req_ids:
+    - I.2.1<6.1>b
+    page: 157
+  answer_points:
+  - The SVerP must treat the activities for manually generated code and for automatically generated code separately.
+  - It must also cover the verification activities of every software item (item a of the same DRD section).
+  kind_note: DRD expected-response requirement (Annex I, normative); the DRD sections are printed as <6.1> with
+    lettered items, the ID I.2.1<6.1>b follows the convention used in the standards' own change logs
+  review: hand-checked against the source page
+- id: sw-04
+  area: ECSS software (E-40, Q-80)
+  type: lookup
+  names_standard: false
+  question: We want to skip the software-level criticality classification and just keep the system-level category
+    for our whole software product. Is that acceptable, and what does it imply for the project requirements?
+  expected:
+  - doc_id: ECSS-Q-HB-80-03A
+    issue: ''
+    cover_issue: First issue, 26 January 2012
+    clause: 5.2.3.3
+    req_ids: []
+    page: 21
+  answer_points:
+  - The handbook says the supplier may decide to skip software-level classification and the work to prevent propagation
+    between categories, keeping the system-level category for the whole product.
+  - This choice can be agreed with the customer.
+  - It is only acceptable if the requirements for critical software are applied to the entire software product.
+  kind_note: handbook guidance
+  review: hand-checked against the source page
+- id: sw-05
+  area: ECSS software (E-40, Q-80)
+  type: lookup
+  names_standard: false
+  question: When does a software development or verification tool have to be qualified at all, for example a code
+    checker that we use instead of manual inspection?
+  expected:
+  - doc_id: ECSS-Q-HB-80-01A
+    issue: ''
+    cover_issue: First issue, 5 December 2011
+    clause: '6.1'
+    req_ids: []
+    page: 26
+  answer_points:
+  - Qualification is needed when the tool's results are the sole evidence that software requirements are met; if
+    its output is verified by other means (e.g. manual inspection) it does not need qualification.
+  - 'A tool needs qualification only if all three answers are yes: it can introduce or fail to detect an error,
+    its output is not later verified, and it eliminates, reduces or automates a project process.'
+  - This applies regardless of whether it is a development, verification or validation tool.
+  kind_note: handbook guidance
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: sw-06
+  area: ECSS software (E-40, Q-80)
+  type: definition
+  names_standard: false
+  question: In the ECSS simulation modelling platform standard, how are simulation time and mission time defined,
+    and how is mission time related to epoch time?
+  expected:
+  - doc_id: ECSS-E-ST-40-07C
+    issue: Rev.1
+    cover_issue: First issue, Revision 1, 5 August 2025
+    clause: 5.1.2
+    req_ids:
+    - 5.1.2a
+    - 5.1.2b
+    page: 39
+  answer_points:
+  - Simulation time is a non-negative duration that starts at 0 when the Building state begins and advances only
+    while Executing, on restore, or via the time keeper's set-simulation-time call.
+  - Mission time is a duration equal to epoch time minus the mission start time, initialised to 0 at the start of
+    Building.
+  - Mission time advances with epoch time, only while the environment is in Executing, and is stored and restored
+    with the simulation state.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: sw-07
+  area: ECSS software (E-40, Q-80)
+  type: not_covered
+  names_standard: false
+  question: Which MISRA C rule set does ECSS mandate for flight software coding, and which rules may be waived for
+    category B software?
+  expected: []
+  answer_points:
+  - The loaded software standards do not name a MISRA rule set; they only require project coding standards to be
+    defined and followed.
+  kind_note: no document in the area answers this
+  review: checked against all parsed documents (keyword sweep)
+- id: esys-01
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: applicability
+  names_standard: false
+  question: Which standard sets the requirements for thermal vacuum testing of flight equipment, and what chamber
+    pressure must the equipment be tested at?
+  expected:
+  - doc_id: ECSS-E-ST-10-03C
+    issue: Rev.1
+    cover_issue: Rev.1, 31 May 2022
+    clause: 5.5.4.2
+    req_ids:
+    - 5.5.4.2a
+    - 5.5.4.2b
+    page: 82
+  answer_points:
+  - The Testing standard ECSS-E-ST-10-03 covers it, in the thermal tests clause for equipment.
+  - Thermal vacuum testing is required for equipment that operates in the space vacuum environment at any time of
+    its life.
+  - The equipment is tested at 10^-5 hPa or lower pressure.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: esys-02
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: numeric
+  names_standard: true
+  question: In ECSS-E-ST-10-03, what random vibration level and minimum duration per axis apply to qualification
+    testing of space segment equipment?
+  expected:
+  - doc_id: ECSS-E-ST-10-03C
+    issue: Rev.1
+    cover_issue: Rev.1, 31 May 2022
+    clause: 4.5.2
+    req_ids:
+    - 4.5.2f
+    page: 37
+  expected_tables:
+  - ECSS-E-ST-10-03C|Table 5-2
+  answer_points:
+  - 'Table 5-2 row 5: the maximum expected PSD spectrum plus 3 dB.'
+  - Duration is 2 minutes, applied on each of the 3 orthogonal axes.
+  - If the launcher authority specifies a margin above 3 dB, that higher margin applies; table durations are minimum
+    values.
+  kind_note: requirement (shall) pointing to a table
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: esys-03
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: lookup
+  names_standard: true
+  question: What verification methods does ECSS-E-ST-10-02 allow, and what extra assessment is needed when a requirement
+    is verified only by analysis or review of design?
+  expected:
+  - doc_id: ECSS-E-ST-10-02C
+    issue: Rev.1
+    cover_issue: Second issue, Revision 1, 1 February 2018
+    clause: 5.2.2.1
+    req_ids:
+    - 5.2.2.1a
+    - 5.2.2.1d
+    - 5.2.2.1e
+    page: 15
+  answer_points:
+  - 'Four methods: test (including demonstration), analysis (including similarity), review-of-design and inspection.'
+  - A requirement verified only by analysis or review-of-design needs a risk assessment in the verification plan,
+    rating its mission impact as major or minor.
+  - Where the impact is major, risk mitigation planning goes into the verification plan.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: esys-04
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: numeric
+  names_standard: false
+  question: What maximum DC resistance and loop inductance are allowed for bonding an electronics box to the spacecraft
+    structure, and between the box bonding stud and its connector housings?
+  expected:
+  - doc_id: ECSS-E-ST-20-07C
+    issue: Rev.2
+    cover_issue: Rev.2, 3 January 2022
+    clause: 4.2.11.2
+    req_ids:
+    - 4.2.11.2d
+    - 4.2.11.2e
+    - 4.2.11.2g
+    page: 24
+  answer_points:
+  - 'Stud to nearby local structure grounding point: DC resistance below 5 mOhm.'
+  - 'Loop inductance between the stud and the nearby structure: below 30 nH.'
+  - 'Stud to each connector housing: DC resistance below 10 mOhm (g is on the next page, p.25).'
+  kind_note: requirement (shall); item g is on p.25
+  review: hand-checked against the source page
+- id: esys-05
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: lookup
+  names_standard: false
+  question: Can an on-board automatic FDIR procedure disable the retrigger function of a retriggerable current limiter
+    that powers an essential load such as the receiver?
+  expected:
+  - doc_id: ECSS-E-ST-20-20C
+    issue: ''
+    cover_issue: First issue, 15 April 2016
+    clause: 5.2.6.4.1
+    req_ids:
+    - 5.2.6.4.1a
+    page: 26
+  answer_points:
+  - 'No: for an RLCL feeding an essential load the disable command may only come from ground.'
+  - A ground command does not need a dedicated discrete line, but it must not be issued by an automatic procedure
+    such as FDIR.
+  - 'Related: the retrigger function is enabled by default (5.2.6.3.1a).'
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: esys-06
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: lookup
+  names_standard: false
+  question: What does the requirements-specification standard demand regarding traceability of each technical requirement?
+  expected:
+  - doc_id: ECSS-E-ST-10-06C
+    issue: ''
+    cover_issue: Third issue, 6 March 2009
+    clause: 8.2.3
+    req_ids:
+    - 8.2.3a
+    - 8.2.3b
+    - 8.2.3c
+    page: 25
+  answer_points:
+  - Every technical requirement is under configuration management.
+  - Every requirement is traceable backwards to its source (parent) requirement.
+  - Every requirement is also traceable forwards to where it is implemented.
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: esys-07
+  area: ECSS-E system engineering, verification, testing, electrical
+  type: lookup
+  names_standard: true
+  question: According to the ECSS TRL guidelines handbook (ECSS-E-HB-11), what TRL should a critical technology
+    normally have reached before the project enters the detailed definition phase C?
+  expected:
+  - doc_id: ECSS-E-HB-11A
+    issue: ''
+    cover_issue: First issue, 1 March 2017
+    clause: '6.4'
+    req_ids: []
+    page: 36
+  answer_points:
+  - Normal practice is to reach TRL 6 before phase C.
+  - Entering phase C with technologies below TRL 6 needs a specific project decision, taken at the system-level
+    PDR (phase B to C).
+  - Handbook guidance, not a requirement.
+  kind_note: handbook guidance
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: emech-01
+  area: 'ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion'
+  type: numeric
+  names_standard: false
+  question: I am sizing a gimbal actuator and must apply the minimum uncertainty factors to the resistive torque
+    contributors. What factor applies to friction if I use theoretical values, and what if the friction is based
+    on measurements?
+  expected:
+  - doc_id: ECSS-E-ST-33-01C
+    issue: Rev.2
+    cover_issue: Revision 2, 1 March 2019
+    clause: 4.7.5.3.1
+    req_ids:
+    - 4.7.5.3.1b
+    - 4.7.5.3.1c
+    page: 30
+  expected_tables:
+  - ECSS-E-ST-33-01C|Table 4-2
+  answer_points:
+  - The minimum uncertainty factor on the friction contributor is 3 when theoretical values are used.
+  - It may be reduced to 1,5 when the worst-case friction is based on measurements made with a customer-approved
+    test procedure.
+  - The factors multiply each resistive contributor over all mission-phase worst cases before the overall motorization
+    factor is applied.
+  review: hand-checked against the source page
+- id: emech-02
+  area: 'ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion'
+  type: lookup
+  names_standard: false
+  question: How many steady-state cases must a spacecraft thermal balance test include, and when do I have to add
+    a transient case?
+  expected:
+  - doc_id: ECSS-E-ST-31C
+    issue: ''
+    cover_issue: 15 November 2008
+    clause: 4.5.3.1
+    req_ids:
+    - 4.5.3.1g
+    - 4.5.3.1h
+    page: 34
+  answer_points:
+  - Two different steady-state test cases are required.
+  - A transient case is added for items whose behaviour is sensitive to dynamic effects.
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: emech-03
+  area: 'ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion'
+  type: numeric
+  names_standard: true
+  question: What minimum no-fire rating does ECSS-E-ST-33-11 require for a 1 W / 1 A no-fire initiator, and with
+    what firing probability and confidence?
+  expected:
+  - doc_id: ECSS-E-ST-33-11C
+    issue: Rev.1
+    cover_issue: Revision 1, 1 June 2017
+    clause: 4.11.2.2
+    req_ids:
+    - 4.11.2.2a
+    - 4.11.2.2b
+    page: 43
+  expected_tables:
+  - ECSS-E-ST-33-11C|Table 4-4
+  answer_points:
+  - Minimum no-fire rating is 1 A (current) or 1 W (power), applied for five minutes.
+  - Firing probability at that level must be below 0,001 at 95 % confidence.
+  - The device must still function to its requirements after the no-fire exposure (4.11.2.2c).
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: emech-04
+  area: 'ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion'
+  type: lookup
+  names_standard: true
+  question: What does ECSS-E-ST-35 require regarding the leakage budget of a spacecraft propulsion system?
+  expected:
+  - doc_id: ECSS-E-ST-35C
+    issue: Rev.1
+    cover_issue: Revision 1, 6 March 2009
+    clause: 4.5.11.4
+    req_ids:
+    - 4.5.11.4a
+    - 4.5.11.4b
+    page: 36
+  answer_points:
+  - The expected leakage of each fluid in the propulsion system must be determined by analysis.
+  - Where fluids dilute, ventilate or purge areas that could reach hazardous concentrations from leaks, those fluid
+    amounts must be included in the budget.
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: emech-05
+  area: 'ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion'
+  type: lookup
+  names_standard: false
+  question: For a crewed module's life support system, what must be specified and controlled for trace gases and
+    odour in the cabin atmosphere?
+  expected:
+  - doc_id: ECSS-E-ST-34C
+    issue: ''
+    cover_issue: 31 July 2008
+    clause: 4.4.2.7.1
+    req_ids:
+    - 4.4.2.7.1a
+    - 4.4.2.7.1b
+    page: 20
+  answer_points:
+  - Trace gas partial pressures in the accessible volume must be kept below specified SMAC values for various exposure
+    periods.
+  - Threshold values for odour in the atmosphere must be specified.
+  - Removal of trace gases must be provided at a rate that keeps them below the thresholds (4.4.2.7.2).
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: emech-06
+  area: 'ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion'
+  type: numeric
+  names_standard: true
+  question: In the ECSS thermal analysis handbook (ECSS-E-HB-31-03), what typical uncertainty is suggested for the
+    thermal conductivity of composite materials and for unit-to-structure contact resistance backed by conductance
+    tests, in later project phases?
+  expected:
+  - doc_id: ECSS-E-HB-31-03A
+    issue: ''
+    cover_issue: 15 November 2016
+    clause: '6.5'
+    req_ids: []
+    page: 41
+  expected_tables:
+  - ECSS-E-HB-31-03A|Table 6-2
+  answer_points:
+  - 'Thermal conductivity of composites: typically plus or minus 30 %.'
+  - 'Contact resistance for units supported by conductance tests: plus or minus 25 %.'
+  - The values are for phase B and phase C/D and are a starting point, not backed by rigorous characterisation tests.
+  kind_note: handbook guidance
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: eops-01
+  area: ECSS-E communications, control, ground systems and operations, security
+  type: numeric
+  names_standard: false
+  question: What frequency stability must a spacecraft transmitter meet for an X-band deep-space downlink in the
+    8 400 - 8 450 MHz band, and over what period must it hold?
+  expected:
+  - doc_id: ECSS-E-ST-50-05C
+    issue: Rev.2
+    cover_issue: Second issue, Revision 2, 4 October 2011
+    clause: 5.2.1
+    req_ids:
+    - 5.2.1a
+    page: 25
+  expected_tables:
+  - ECSS-E-ST-50-05C|Table 5-3
+  answer_points:
+  - The carrier instability limit for the 8 400 - 8 450 MHz band is plus or minus 2 x 10^-5
+  - It applies under all conditions and for the whole lifetime of the spacecraft
+  - The table row holding this band (shared with 2 290 - 2 300 MHz and 31.8 - 32.3 GHz) also sets a tighter short-term
+    figure, 1.5 x 10^-6 over any 15 h once 4 h of warm-up have passed, at a fixed transmitter temperature
+  kind_note: requirement (shall), value in Table 5-3
+  review: 'hand-checked: the three deep-space bands share one ruled row on page 25 (round 11, after the answer eval)'
+- id: eops-03
+  area: ECSS-E communications, control, ground systems and operations, security
+  type: lookup
+  names_standard: true
+  question: In ECSS-E-ST-60-30, what must the AOCS software let the ground do with the autonomous FDIR monitoring
+    and actions?
+  expected:
+  - doc_id: ECSS-E-ST-60-30C
+    issue: ''
+    cover_issue: First issue, 30 August 2013
+    clause: 5.1.2.1
+    req_ids:
+    - 5.1.2.1e
+    page: 22
+  answer_points:
+  - Ground command can disable or enable any autonomous AOCS FDIR monitoring or action function
+  - Ground command can also modify the parameters of the FDIR monitoring and actions
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: eops-04
+  area: ECSS-E communications, control, ground systems and operations, security
+  type: lookup
+  names_standard: false
+  question: How many separate command actions are needed to execute a safety-critical function on a spacecraft,
+    and what about register loads of critical data?
+  expected:
+  - doc_id: ECSS-E-ST-70-11C
+    issue: ''
+    cover_issue: Second issue, 31 July 2008
+    clause: 5.5.2
+    req_ids:
+    - 5.5.2b
+    - 5.5.2c
+    page: 28
+  answer_points:
+  - At least two separate command actions for mission-critical and safety-critical functions (e.g. arm then execute)
+  - Critical or vital register load commands need a separate execute command so the loaded data can be checked first
+  kind_note: requirement (shall)
+  review: hand-checked against the source page
+- id: eops-05
+  area: ECSS-E communications, control, ground systems and operations, security
+  type: lookup
+  names_standard: true
+  question: Under ECSS-E-ST-80, when must penetration tests be performed, and what does the standard say about who
+    performs them?
+  expected:
+  - doc_id: ECSS-E-ST-80C
+    issue: ''
+    cover_issue: First issue, 1 July 2024
+    clause: 5.4.5
+    req_ids:
+    - 5.4.5a
+    - 5.4.5b
+    - 5.4.5c
+    page: 46
+  answer_points:
+  - Independent penetration tests during development, as part of qualification, before acceptance and during operation
+  - Independent means testers not involved in design, development or implementation of the system
+  - The level of independence of the team is agreed with the customer; the team needs skills fitting the asset sensitivity
+  kind_note: requirement (shall)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: eops-06
+  area: ECSS-E communications, control, ground systems and operations, security
+  type: lookup
+  names_standard: false
+  question: When does the space communication system have to offer telecommand encryption rather than only authentication?
+  expected:
+  - doc_id: ECSS-E-ST-50C
+    issue: Rev.2
+    cover_issue: Second issue, Revision 2, 5 December 2024
+    clause: 5.4.6
+    req_ids:
+    - 5.4.6a
+    page: 37
+  answer_points:
+  - Encryption services are required when the security requirements cannot be met by command authentication alone
+  - Authentication and encryption may be provided at upper layers or in the data link protocol sub-layer (e.g. the
+    SDLS option)
+  kind_note: requirement (shall); related 5.4.5 requires only authorized sources to be executed
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: eops-07
+  area: ECSS-E communications, control, ground systems and operations, security
+  type: not_covered
+  names_standard: false
+  question: Which cryptographic algorithm and minimum key length must be used to protect telecommand uplinks on
+    a LEO satellite?
+  expected: []
+  answer_points:
+  - The loaded standards require authentication or encryption where needed but name no algorithm and set no key
+    length
+  kind_note: not covered; grep of ECSS-E-ST-50C, ECSS-E-ST-80C, ECSS-E-ST-70-11C and ECSS-E-ST-70-41C for algorithm,
+    cipher and key length found nothing
+  review: checked against all parsed documents (keyword sweep)
+- id: neng-01
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: numeric
+  names_standard: true
+  question: Under NASA-STD-4003, what is the maximum dc resistance allowed across each joint in a Class R (radio
+    frequency) bond path to structure?
+  expected:
+  - doc_id: NASA-STD-4003A
+    issue: w/Change 1
+    cover_issue: Approved 2013-02-05, w/Change 1, revalidated 2026-03-13
+    clause: 4.1.4
+    req_ids:
+    - EBR 22
+    page: 19
+  answer_points:
+  - The dc resistance across each joint in a Class R bond path must not exceed 2.5 milliohms
+  - The Class R requirement is aimed at a low-impedance path at radio frequencies, so inductance and overall impedance
+    must also be kept low
+  review: hand-checked against the source page
+- id: neng-02
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: lookup
+  names_standard: false
+  question: Can we show by analysis alone that our LEO solar array and power system will not arc or drain large
+    parasitic plasma currents, or is a test needed?
+  expected:
+  - doc_id: NASA-STD-4005A
+    issue: w/Change 1
+    cover_issue: Approved 2016-02-01, w/Change 1 revalidated with administrative/editorial changes, 2021-11-17
+    clause: 4.1.7.2
+    req_ids:
+    - SCR 14
+    page: 21
+  - doc_id: NASA-STD-4005A
+    issue: w/Change 1
+    cover_issue: Approved 2016-02-01, w/Change 1 revalidated with administrative/editorial changes, 2021-11-17
+    clause: 4.1.7.1
+    req_ids:
+    - SCR 13
+    page: 21
+  answer_points:
+  - Verification of arc prevention and of limiting parasitic plasma currents must never rely on analysis only
+  - Testing in a simulated LEO plasma environment under worst-case operating conditions is required
+  - Compliance with the LEO charging requirements is always verified by test; an ESD engineer should review the
+    design early
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: neng-03
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: lookup
+  names_standard: true
+  question: According to NASA-HDBK-4002, what incident internal electron flux is treated as the rough threshold
+    below which internal charging problems are rare, and how firmly founded is that number?
+  expected:
+  - doc_id: NASA-HDBK-4002B
+    issue: ''
+    cover_issue: Approved 2022-06-07, superseding NASA-HDBK-4002A
+    clause: 4.1.7
+    req_ids: []
+    page: 34
+  answer_points:
+  - About 0.1 pA/cm2; below this few if any internal charging problems were seen (roughly 2e10 e/cm2 in 10 hours)
+  - The value is based on experience (CRRES data confirmed by others), not on physics
+  - Highly resistive materials in cold conditions, or newer sensitive circuits, can see problems at lower flux,
+    so further test or analysis is needed there
+  kind_note: handbook guidance
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: neng-05
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: numeric
+  names_standard: true
+  question: In NASA-STD-3001 Volume 2, what A-weighted noise ceilings apply at the crew's ears during launch and
+    entry, and during a launch abort?
+  expected:
+  - doc_id: NASA-STD-3001 Vol 2
+    issue: Rev.F
+    cover_issue: Revision F, approved 2026-07-14
+    clause: 6.6.1.2
+    req_ids:
+    - V2 6074
+    page: 93
+  - doc_id: NASA-STD-3001 Vol 2
+    issue: Rev.F
+    cover_issue: Revision F, approved 2026-07-14
+    clause: 6.6.1.3
+    req_ids:
+    - V2 6075
+    page: 93
+  answer_points:
+  - 'Launch and entry: combined level at the crew''s ears limited to 105 dBA (excluding impulse noise)'
+  - 'Launch abort: limited to 115 dBA (excluding impulse noise)'
+  - Hearing protection or headsets may be credited if planned and approved
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: neng-06
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: numeric
+  names_standard: false
+  question: We are planning a helium tracer leak test of a pressurized unit. What minimum tracer concentration is
+    needed at potential leak paths, and how small a leak must the chosen method be able to detect relative to the
+    allowable leakage rate?
+  expected:
+  - doc_id: NASA-STD-7012A
+    issue: ''
+    cover_issue: Approved 2023-02-22, superseding NASA-STD-7012 w/Change 1
+    clause: 4.3.2
+    req_ids:
+    - LTR 13
+    page: 21
+  - doc_id: NASA-STD-7012A
+    issue: ''
+    cover_issue: Approved 2023-02-22, superseding NASA-STD-7012 w/Change 1
+    clause: 4.2.1
+    req_ids:
+    - LTR 6
+    page: 16
+  answer_points:
+  - Tracer gas concentration must be at least 5 percent by volume at all points of potential leak paths
+  - The method must detect leakage rates at or below half of the maximum allowable leakage rate (MALR)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: neng-07
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: lookup
+  names_standard: true
+  question: NASA-STD-7009 requires models to be verified and validated. What must we do if an analysis uses a model
+    outside its permissible uses or outside the domains of verification and validation?
+  expected:
+  - doc_id: NASA-STD-7009B
+    issue: ''
+    cover_issue: Approved 2024-03-05, superseding NASA-STD-7009A w/Change 1
+    clause: 4.3.1.5
+    req_ids:
+    - M&S 26
+    page: 31
+  answer_points:
+  - Either keep the use within the permissible uses and the V&V domains, or placard the model and its results with
+    a warning
+  - The warning states which limit was exceeded, by how much, and an assessment of the consequences for the results
+  review: hand-checked against the source page
+- id: neng-08
+  area: NASA engineering standards and handbooks (1000-7000 series)
+  type: lookup
+  names_standard: false
+  question: Our primary command uplink is encrypted. What protection must the backup command link have at a minimum?
+  expected:
+  - doc_id: NASA-STD-1006A
+    issue: ''
+    cover_issue: Approved 2022-07-15, supersedes NASA-STD-1006 w/Change 1
+    clause: 4.1.2
+    req_ids:
+    - SSPR 2
+    page: 10
+  answer_points:
+  - If the primary command link is encrypted, any backup command link must at least use authentication
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: nsma-01
+  area: NASA safety and mission assurance (8700 series)
+  type: numeric
+  names_standard: false
+  question: For orbital debris limitation, what probability ceiling must a spacecraft or launch vehicle upper stage
+    meet for accidental explosion during deployment and mission operations in Earth or lunar orbit, and how is it
+    shown?
+  expected:
+  - doc_id: NASA-STD-8719.14C
+    issue: ''
+    cover_issue: Approved 2021-11-05 (supersedes NASA-STD-8719.14B)
+    clause: 4.4.2.1.2
+    req_ids:
+    - Requirement 4.4-1
+    page: 30
+  answer_points:
+  - The integrated probability of explosion over all credible failure modes must be below 0.001 for each spacecraft
+    and each launch vehicle orbital stage
+  - Small particle impacts are excluded from this probability
+  - The project must demonstrate it by failure mode and effects analysis, probabilistic risk assessment or other
+    suitable analysis
+  review: hand-checked against the source page
+- id: nsma-03
+  area: NASA safety and mission assurance (8700 series)
+  type: numeric
+  names_standard: false
+  question: What is the minimum tensile pull strength that a crimped connection on a 20 AWG copper stranded conductor
+    must withstand in the crimp pull test, and what counts as a failure?
+  expected:
+  - doc_id: NASA-STD-8739.4A
+    issue: ''
+    cover_issue: Change 4, approved 2016-06-30
+    clause: 12.3.5
+    req_ids:
+    - 12.3.5.c(3)
+    page: 60
+  expected_tables:
+  - NASA-STD-8739.4A|Table 12-1
+  answer_points:
+  - Minimum crimp tensile strength for 20 AWG is 92 N (21 lbf)
+  - Wire pull out, wire breaks at the crimp or contact rupture occurring below the minimum value are failures
+  - Values apply to copper and high-strength copper alloy stranded conductors (Table 12-1, page 61)
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: nsma-04
+  area: NASA safety and mission assurance (8700 series)
+  type: lookup
+  names_standard: true
+  question: 'What does NASA-STD-8739.10 require regarding derating of EEE parts: who performs the analysis, what
+    happens to a part that misses the derating limits, and what is prohibited outright?'
+  expected:
+  - doc_id: NASA-STD-8739.10
+    issue: ''
+    cover_issue: Approved 2017-06-13
+    clause: 5.3.1
+    req_ids:
+    - 5.3.1.2
+    - 5.3.1.3
+    - 5.3.1.4
+    - 5.3.1.5
+    page: 20
+  answer_points:
+  - Project documentation specifies derating requirements for all EEE part types
+  - The design organization performs the derating analysis and submits it for project or Center review and approval
+  - A part not meeting derating requirements needs extra review and approval before use in flight hardware
+  - Using parts whose predicted worst-case parameters exceed the manufacturer's absolute design limits is prohibited
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: nsma-05
+  area: NASA safety and mission assurance (8700 series)
+  type: lookup
+  names_standard: false
+  question: At a project milestone review, what must the project show about reliability and maintainability activities,
+    and whose concurrence is needed?
+  expected:
+  - doc_id: NASA-STD-8729.1A
+    issue: ''
+    cover_issue: Approved 2017-06-13 (supersedes NASA-STD-8729.1)
+    clause: 5.2.2
+    req_ids:
+    - 5.2.2a
+    - 5.2.2b
+    - 5.2.2c
+    page: 17
+  answer_points:
+  - The project presents evidence or R&M results with concurrence from the SMA Technical Authority
+  - The project shows its R&M objectives and strategies were handled as the plan foresees
+  - R&M products are at appropriate maturity and meet applicable standards
+  - Related technical risks are identified and judged acceptable
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: nsma-07
+  area: NASA safety and mission assurance (8700 series)
+  type: numeric
+  names_standard: true
+  question: Under NASA-STD-8739.6, how long must a supplier keep workmanship training records, and how recent must
+    an operator's or inspector's training be?
+  expected:
+  - doc_id: NASA-STD-8739.6B
+    issue: ''
+    cover_issue: Approved 2021-02-04 (supersedes NASA-STD-8739.6A with Change 1)
+    clause: '5.4'
+    req_ids:
+    - 5.4.1
+    - 5.4.2
+    - 5.5.1a
+    page: 21
+  answer_points:
+  - Training records are retained by the supplier for at least five years
+  - Evidence of training within the prior 24 months must be available to project personnel and in audits
+  - Operators and inspectors must complete initial training or retraining within 24 months of the prior training
+  review: 'auto-checked: clause and item letters or tags printed on the stated page'
+- id: x-01
+  area: cross-family comparison
+  type: compare
+  names_standard: false
+  question: Compare how the ECSS and NASA fracture control standards require fasteners in fracture-critical or safe-life
+    applications to be inspected.
+  expected:
+  - doc_id: ECSS-E-ST-32-01C
+    issue: Rev.2
+    cover_issue: Third issue Rev.2, 30 July 2021
+    clause: '8.8'
+    req_ids:
+    - 8.8f
+    page: 79
+  - doc_id: NASA-STD-5019A
+    issue: w/Change 4
+    cover_issue: w/Change 4, approved 2024-07-29, revalidated 2025-09-05
+    clause: 7.2.8
+    req_ids:
+    - FCR 11 / 7.2.8.c
+    page: 71
+  answer_points:
+  - 'ECSS: eddy current inspection of shank, head fillet and threads'
+  - 'NASA: eddy current inspection or proof test'
+  review: orchestrator; IDs from reviewed questions, cover dates read
+- id: x-02
+  area: cross-family comparison
+  type: compare
+  names_standard: true
+  question: Compare what ECSS-E-ST-32-01 and NASA-STD-5019 require of the remaining structure for a part to be accepted
+    as fail-safe.
+  expected:
+  - doc_id: ECSS-E-ST-32-01C
+    issue: Rev.2
+    cover_issue: Third issue Rev.2, 30 July 2021
+    clause: 6.3.3
+    req_ids:
+    - 6.3.3b
+    - 6.3.3c
+    page: 35
+  - doc_id: NASA-STD-5019A
+    issue: w/Change 4
+    cover_issue: w/Change 4, approved 2024-07-29, revalidated 2025-09-05
+    clause: 6.2.3
+    req_ids:
+    - FCR 8 / 6.2.3.a
+    - FCR 8 / 6.2.3.c
+    page: 46
+  answer_points:
+  - 'ECSS: remaining structure carries limit loads x 1.0 (metallic, glass) or x 1.15 (composite, bonded, sandwich)'
+  - 'ECSS: no catastrophic release of fragments'
+  - 'NASA: no catastrophic hazard on loss of a load path; remaining structure carries the redistributed loads to
+    end of mission'
+  review: orchestrator; IDs from reviewed questions, cover dates read
+- id: x-03
+  area: cross-family comparison
+  type: compare
+  names_standard: false
+  question: How do the NASA payload vibroacoustic test standard and the ECSS testing standard extend qualification
+    test durations for hardware that will be reflown?
+  expected:
+  - doc_id: NASA-STD-7001C
+    issue: ''
+    cover_issue: Revision C, approved 2026-07-14
+    clause: 4.4.3.2.2
+    req_ids:
+    - PVTR 44
+    page: 26
+  - doc_id: ECSS-E-ST-10-03C
+    issue: Rev.1
+    cover_issue: Third issue Rev.1, 31 May 2022
+    clause: 5.5.2.3
+    req_ids:
+    - 5.5.2.3f
+    page: 74
+  answer_points:
+  - 'NASA-STD-7001C: at least 2 + 0.5N minutes for N reflights'
+  - 'ECSS-E-ST-10-03C: Table 5-2 duration per axis plus 50 seconds per additional flight'
+  review: orchestrator; IDs from reviewed questions, cover dates read
+- id: x-04
+  area: revision
+  type: revision
+  names_standard: true
+  question: What does ECSS-Q-ST-80C Rev.1 require for the criticality classification of software?
+  asked_issue: Rev.1
+  expected:
+  - doc_id: ECSS-Q-ST-80C
+    issue: Rev.2
+    cover_issue: Third issue Rev.2, 30 April 2025
+    clause: 6.2.2.1
+    req_ids:
+    - 6.2.2.1a
+    page: 42
+  answer_points:
+  - states that the loaded issue is Rev.2, not Rev.1
+  - does not present Rev.2 text as Rev.1 text
+  review: orchestrator; IDs from reviewed questions, cover dates read
+- id: x-05
+  area: revision
+  type: revision
+  names_standard: true
+  question: Which ultimate design factor does NASA-STD-5001A give for metallic structure verified by prototype test?
+  asked_issue: ''
+  asked_doc: NASA-STD-5001A
+  expected:
+  - doc_id: NASA-STD-5001B
+    issue: w/Change 3
+    cover_issue: Revision B w/Change 3, 2022-10-24
+    clause: 4.2.1
+    req_ids:
+    - FSR 24
+    page: 17
+  answer_points:
+  - states that revision A is not loaded and the loaded revision is B w/Change 3
+  - does not present revision B values as revision A values
+  review: orchestrator; IDs from reviewed questions, cover dates read
+- id: x-06
+  area: revision
+  type: revision
+  names_standard: true
+  question: In ECSS-E-ST-10-03C Rev.2, what margin applies to the acoustic qualification level?
+  asked_issue: Rev.2
+  expected:
+  - doc_id: ECSS-E-ST-10-03C
+    issue: Rev.1
+    cover_issue: Third issue Rev.1, 31 May 2022
+    clause: 4.5.2
+    req_ids:
+    - 4.5.2f
+    page: 37
+  answer_points:
+  - states that the loaded issue is Rev.1; no Rev.2 is loaded
+  review: orchestrator; IDs from reviewed questions, cover dates read
+- id: x-07
+  area: NASA procedural requirements
+  type: lookup
+  names_standard: true
+  question: What does NPR 7150.2 require for the classification of software?
+  expected:
+  - doc_id: NPR 7150.2D
+    issue: ''
+    cover_issue: 'Effective Date: March 08, 2022'
+    clause: 3.5.1
+    req_ids:
+    - SWE-020
+    page: 24
+  answer_points:
+  - classification is the project manager's task, for every system and subsystem that has software
+  - the class is the highest one that applies, from the six classes (A to F) of Appendix D
+  - cites NPR 7150.2D, SWE-020
+  review: 'orchestrator, 10 Nov 2026: NPR downloaded; clause, tag and page read from the source (was not_covered
+    while no NPR was in the folder)'
+- id: x-08
+  area: NASA procedural requirements
+  type: lookup
+  names_standard: true
+  question: Which key decision points does NPR 7120.5 define for a space flight project life cycle?
+  expected:
+  - doc_id: NPR 7120.5F
+    issue: ''
+    cover_issue: 'Effective Date: August 03, 2021'
+    clause: 2.2.7
+    req_ids:
+    - 2.2.7
+    page: 27
+  answer_points:
+  - the KDPs to pass are those drawn in the life-cycle figure of the program or project type
+  - at a KDP the Decision Authority judges whether the work is ready for its next phase
+  review: 'orchestrator, 10 Nov 2026: NPR downloaded; clause and page read from the source (was not_covered while
+    no NPR was in the folder)'
+  kind_note: descriptive NPR paragraph (no shall)
+- id: x-09
+  area: outside the corpus
+  type: not_covered
+  names_standard: true
+  question: What acoustic qualification margin does SMC-S-016 require for unit-level testing?
+  expected: []
+  answer_points:
+  - says SMC-S-016 is not an ECSS or NASA standard in the loaded documents and gives no value
+  review: checked against all parsed documents (keyword sweep)
+- id: x-10
+  area: outside the corpus
+  type: not_covered
+  names_standard: false
+  question: Which export control licence do we need to ship a star tracker to a non-European customer?
+  expected: []
+  answer_points:
+  - says the loaded standards do not cover export control licensing
+  review: orchestrator; not a subject of ECSS or NASA technical standards
+- id: x-11
+  area: NASA procedural requirements
+  type: not_covered
+  names_standard: true
+  question: What does NPR 2810.1 require for system security plans?
+  expected: []
+  answer_points:
+  - says NPR 2810.1 is not among the loaded documents and gives no requirement from it
+  review: orchestrator; NPR 2810.1 was not downloaded

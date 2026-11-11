@@ -4,9 +4,11 @@
 
 An MCP server (and a thin optional agent) that answers questions about **ECSS** and **NASA** space standards with
 **exact, requirement-level citations**: every result names the document, issue and requirement ID, or the answer is
-"not covered". You bring the standards; nothing from them is stored in this repository. It is aimed at launcher and
-payload-fairing structures first (factors of safety, fracture control, loads, shock, vibroacoustics) and is built to
-grow to the whole ECSS and NASA set.
+"not covered". You bring the standards; nothing from them is stored in this repository. It started with launcher and
+payload-fairing structures (factors of safety, fracture control, loads, shock, vibroacoustics), where its parsing is
+hand-verified, and now loads every ECSS branch (management, product assurance, engineering, sustainability, system)
+and the NASA standards, handbooks and procedural requirements. Each record carries a parse tier, so you can tell
+hand-checked documents from automatically parsed ones.
 
 > **Independent project.** Not affiliated with or endorsed by the European Space Agency (ESA), the ECSS Secretariat
 > or NASA. The ECSS, ESA and NASA names and the names of their standards belong to their owners and are used here
@@ -129,8 +131,13 @@ claude mcp add space-standards --env SPACESTD_DOCS=/abs/path/to/documents -- /ab
 | `get_references` | Standards and clauses a requirement points to |
 | `compare_topic` | One topic searched separately in each standard, grouped ECSS / NASA, with a coverage rating per standard |
 | `get_section_outline` | A standard's table of contents; for one clause its record IDs and tables (no requirement text) |
+| `find_standards` | Which loaded standards treat a topic: documents ranked, with their best-matching sections |
 
-Every record carries its `kind` (requirement, recommendation, permission, guidance, deleted) and a `citation`.
+The full interface (arguments, result fields, the signals for "not covered" and for a wrong revision) is in
+[docs/TOOLS.md](https://github.com/manojknaikade/space-standards-mcp/blob/main/docs/TOOLS.md).
+
+Every record carries its `kind` (requirement, recommendation, permission, guidance, definition, deleted), a
+`citation`, its `issue` and `issue_date`.
 
 ### Optional: hybrid search and the agent
 

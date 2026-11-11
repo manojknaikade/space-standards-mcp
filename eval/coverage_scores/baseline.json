@@ -1,0 +1,1378 @@
+{
+ "summary": {
+  "total": 51.1,
+  "questions": 69,
+  "covered": {
+   "n": 59,
+   "S": 0.746,
+   "C": 0.669,
+   "L": 0.712,
+   "R": 0.0,
+   "tables": 0.818,
+   "false_none": 0
+  },
+  "not_covered": {
+   "n": 7,
+   "N": 0.286
+  },
+  "revision": {
+   "n": 3,
+   "W": 0.0
+  },
+  "edition_complete": 0.607,
+  "by_area": {
+   "ECSS software (E-40, Q-80)": [
+    45.7,
+    7
+   ],
+   "ECSS-E communications, control, ground systems and operations, security": [
+    66.7,
+    6
+   ],
+   "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion": [
+    80.0,
+    6
+   ],
+   "ECSS-E system engineering, verification, testing, electrical": [
+    75.0,
+    7
+   ],
+   "ECSS-M/S/U/P (management, system, sustainability)": [
+    0.0,
+    8
+   ],
+   "ECSS-Q EEE components, materials and processes": [
+    70.8,
+    6
+   ],
+   "ECSS-Q PA management, QA, dependability, safety": [
+    63.6,
+    7
+   ],
+   "NASA engineering standards and handbooks (1000-7000 series)": [
+    72.1,
+    7
+   ],
+   "NASA procedural requirements": [
+    100.0,
+    2
+   ],
+   "NASA safety and mission assurance (8700 series)": [
+    0.0,
+    5
+   ],
+   "cross-family comparison": [
+    74.2,
+    3
+   ],
+   "outside the corpus": [
+    0.0,
+    2
+   ],
+   "revision": [
+    0.0,
+    3
+   ]
+  }
+ },
+ "k": 8,
+ "scores": {
+  "msu-01": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-S-ST-00-01C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "2.3.193"
+     ]
+    }
+   ],
+   "type": "definition",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-02": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-M-ST-10C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.3b"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-03": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-M-ST-40C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.3.2.2a",
+      "5.3.2.2b"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-04": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-M-ST-80C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "7.2.10a"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-05": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-U-ST-20C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.2.3a"
+     ]
+    }
+   ],
+   "type": "numeric",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-06": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-M-ST-60C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "9.3.1.1a",
+      "9.3.1.1b",
+      "9.3.1.1c"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-07": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-U-AS-10C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "3"
+     ]
+    }
+   ],
+   "T": 0.0,
+   "type": "numeric",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "msu-08": {
+   "N": 0.0,
+   "score": 0.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "ECSS-M/S/U/P (management, system, sustainability)"
+  },
+  "qpa-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-10-09C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qpa-02": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-30-02C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "lookup",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qpa-03": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-30-11C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qpa-04": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-40C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qpa-05": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-10-04C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qpa-06": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.2,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-20-10C",
+     "S": false,
+     "C": false,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qpa-07": {
+   "S": 1.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.25,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-30C",
+     "S": true,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "3.2.1"
+     ]
+    }
+   ],
+   "type": "definition",
+   "area": "ECSS-Q PA management, QA, dependability, safety"
+  },
+  "qmp-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-70-02C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "ECSS-Q EEE components, materials and processes"
+  },
+  "qmp-02": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-60-15C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "ECSS-Q EEE components, materials and processes"
+  },
+  "qmp-03": {
+   "S": 1.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.25,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-60-13C",
+     "S": true,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "8.2e"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-Q EEE components, materials and processes"
+  },
+  "qmp-04": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-70-36C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-Q EEE components, materials and processes"
+  },
+  "qmp-05": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-70-22C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "ECSS-Q EEE components, materials and processes"
+  },
+  "qmp-07": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-60-14C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-Q EEE components, materials and processes"
+  },
+  "sw-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-ST-80C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "sw-02": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-40C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "sw-03": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-40C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "sw-04": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-HB-80-03A",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.2.3.3"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "sw-05": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "ECSS-Q-HB-80-01A",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "6.1"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "sw-06": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-40-07C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "definition",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "sw-07": {
+   "N": 0.0,
+   "score": 0.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "ECSS software (E-40, Q-80)"
+  },
+  "esys-01": {
+   "S": 1.0,
+   "C": 0.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.45,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-10-03C",
+     "S": true,
+     "C": false,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "applicability",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "esys-02": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-10-03C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "esys-03": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-10-02C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "esys-04": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-20-07C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "esys-05": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-20-20C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "esys-06": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-10-06C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "esys-07": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-HB-11A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E system engineering, verification, testing, electrical"
+  },
+  "emech-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-33-01C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion"
+  },
+  "emech-02": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-31C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion"
+  },
+  "emech-03": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-33-11C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion"
+  },
+  "emech-04": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-35C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion"
+  },
+  "emech-05": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-34C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion"
+  },
+  "emech-06": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-HB-31-03A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-E mechanical: thermal, structures, mechanisms, ECLS, propulsion"
+  },
+  "eops-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-50-05C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "T": 1.0,
+   "type": "numeric",
+   "area": "ECSS-E communications, control, ground systems and operations, security"
+  },
+  "eops-03": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-60-30C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E communications, control, ground systems and operations, security"
+  },
+  "eops-04": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-70-11C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E communications, control, ground systems and operations, security"
+  },
+  "eops-05": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-80C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E communications, control, ground systems and operations, security"
+  },
+  "eops-06": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-50C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "ECSS-E communications, control, ground systems and operations, security"
+  },
+  "eops-07": {
+   "N": 0.0,
+   "score": 0.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "ECSS-E communications, control, ground systems and operations, security"
+  },
+  "neng-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-4003A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "neng-02": {
+   "S": 1.0,
+   "C": 0.5,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.625,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-4005A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    },
+    {
+     "doc_id": "NASA-STD-4005A",
+     "S": true,
+     "C": false,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "neng-03": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "NASA-HDBK-4002B",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "neng-05": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-3001 Vol 2",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    },
+    {
+     "doc_id": "NASA-STD-3001 Vol 2",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "neng-06": {
+   "S": 1.0,
+   "C": 0.5,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.625,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-7012A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    },
+    {
+     "doc_id": "NASA-STD-7012A",
+     "S": true,
+     "C": false,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "numeric",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "neng-07": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.6,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-7009B",
+     "S": true,
+     "C": true,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "M&S 26"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "neng-08": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-1006A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "lookup",
+   "area": "NASA engineering standards and handbooks (1000-7000 series)"
+  },
+  "nsma-01": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-8719.14C",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "Requirement 4.4-1"
+     ]
+    }
+   ],
+   "type": "numeric",
+   "area": "NASA safety and mission assurance (8700 series)"
+  },
+  "nsma-03": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-8739.4A",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "12.3.5.c(3)"
+     ]
+    }
+   ],
+   "T": 0.0,
+   "type": "numeric",
+   "area": "NASA safety and mission assurance (8700 series)"
+  },
+  "nsma-04": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-8739.10",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.3.1.2",
+      "5.3.1.3",
+      "5.3.1.4",
+      "5.3.1.5"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "NASA safety and mission assurance (8700 series)"
+  },
+  "nsma-05": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-8729.1A",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.2.2a",
+      "5.2.2b",
+      "5.2.2c"
+     ]
+    }
+   ],
+   "type": "lookup",
+   "area": "NASA safety and mission assurance (8700 series)"
+  },
+  "nsma-07": {
+   "S": 0.0,
+   "C": 0.0,
+   "L": 0.0,
+   "R": 0.0,
+   "score": 0.0,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-8739.6B",
+     "S": false,
+     "C": false,
+     "L": 0.0,
+     "R": false,
+     "lookup_miss": [
+      "5.4.1",
+      "5.4.2",
+      "5.5.1a"
+     ]
+    }
+   ],
+   "type": "numeric",
+   "area": "NASA safety and mission assurance (8700 series)"
+  },
+  "x-01": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-32-01C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    },
+    {
+     "doc_id": "NASA-STD-5019A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "compare",
+   "area": "cross-family comparison"
+  },
+  "x-02": {
+   "S": 1.0,
+   "C": 1.0,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.8,
+   "detail": [
+    {
+     "doc_id": "ECSS-E-ST-32-01C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    },
+    {
+     "doc_id": "NASA-STD-5019A",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "compare",
+   "area": "cross-family comparison"
+  },
+  "x-03": {
+   "S": 1.0,
+   "C": 0.5,
+   "L": 1.0,
+   "R": 0.0,
+   "score": 0.625,
+   "detail": [
+    {
+     "doc_id": "NASA-STD-7001C",
+     "S": true,
+     "C": true,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    },
+    {
+     "doc_id": "ECSS-E-ST-10-03C",
+     "S": true,
+     "C": false,
+     "L": 1.0,
+     "R": false,
+     "lookup_miss": []
+    }
+   ],
+   "type": "compare",
+   "area": "cross-family comparison"
+  },
+  "x-04": {
+   "W": 0.0,
+   "score": 0.0,
+   "search_flag": false,
+   "lookup_flag": false,
+   "type": "revision",
+   "area": "revision"
+  },
+  "x-05": {
+   "W": 0.0,
+   "score": 0.0,
+   "search_flag": false,
+   "lookup_flag": false,
+   "type": "revision",
+   "area": "revision"
+  },
+  "x-06": {
+   "W": 0.0,
+   "score": 0.0,
+   "search_flag": false,
+   "lookup_flag": false,
+   "type": "revision",
+   "area": "revision"
+  },
+  "x-07": {
+   "N": 1.0,
+   "score": 1.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "NASA procedural requirements"
+  },
+  "x-08": {
+   "N": 1.0,
+   "score": 1.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "NASA procedural requirements"
+  },
+  "x-09": {
+   "N": 0.0,
+   "score": 0.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "outside the corpus"
+  },
+  "x-10": {
+   "N": 0.0,
+   "score": 0.0,
+   "coverage": "(no signal)",
+   "type": "not_covered",
+   "area": "outside the corpus"
+  }
+ }
+}

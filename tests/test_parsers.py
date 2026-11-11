@@ -963,7 +963,9 @@ def test_ecss_level3_size_is_the_commonest_h13a():
         L("a. Alpha items shall be listed."),
     ])
     reqs, _ = parse_ecss_lines(lines, "ECSS-E-ST-99C", "Rev.1")
-    assert [r.req_id for r in reqs] == ["9.1.1a", "9.1.2a", "9.1.3.2a"]
+    assert [r.req_id for r in reqs if r.kind != "definition"] == ["9.1.1a", "9.1.2a", "9.1.3.2a"]
+    assert [(r.req_id, r.text) for r in reqs if r.kind == "definition"] == [
+        ("3.2.1", "widget"), ("3.2.2", "gadget"), ("3.2.3", "gizmo")]
 
 
 def test_ecss_drd_heading_with_plain_brackets_h13b():
@@ -1080,3 +1082,121 @@ def test_nasa_toc_page_without_bold_headings_h20():
     ]), 2)
     reqs, _ = parse_nasa_lines(toc + body, "NASA-HDBK-9982", "", handbook=True)
     assert [r.req_id for r in reqs] == ["WDG 1"]
+
+
+def test_ecss_definitions_contents_lines_and_unnumbered_chapter():
+    """Terms under a 'Terms ...' section are definition records; a contents line is no heading; a chapter
+    title printed without its number joins the path of its first clause; parents follow the clause number."""
+    lines = lay([
+        H("Annex A (informative) Invented annex ........ 40", size=12.0),  # contents
+        H("Annex B (normative) Another invented annex", size=12.0),  # contents, wrapped: no dot leader
+        H("3 Terms, definitions and abbreviated terms", size=22.0),
+        H("3.1 Terms from other standards", size=16.0),
+        L("a. For the purpose of this Standard, the terms of another document apply."),
+        H("3.2 Terms specific to the present standard", size=16.0),
+        H("3.2.1 widget", size=11.0),
+        L("invented part that does an invented thing"),
+        L("NOTE A widget is not a gadget."),
+        H("3.2.2 gadget", size=11.0),
+        L("invented part of another kind"),
+        H("3.3 Abbreviated terms", size=16.0),
+        L("WGT widget"),
+        H("Invented chapter title", size=22.0),  # its number, 5, is not in the text layer
+        H("5.1 Scope of work", size=16.0),
+        L("a. The supplier shall list the widgets."),
+        H("Annex A (informative)", size=22.0),
+        H("A.1 Overview", size=16.0),
+        L("a. Widgets can be listed in any order."),
+    ])
+    reqs, _ = parse_ecss_lines(lines, "ECSS-E-ST-99C", "Rev.1")
+    assert [(r.req_id, r.kind) for r in reqs] == [
+        ("3.2.1", "definition"), ("3.2.2", "definition"), ("5.1a", "requirement"), ("A.1a", "guidance")]
+    assert reqs[0].text == "widget\ninvented part that does an invented thing"
+    assert reqs[0].notes == ["A widget is not a gadget."]
+    assert reqs[0].heading_path == ["3", "3.2 Terms specific to the present standard", "3.2.1 widget"]
+    assert reqs[2].heading_path == ["5 Invented chapter title", "5.1 Scope of work"]
+    assert reqs[3].heading_path[0].startswith("Annex A (informative)") and "...." not in " ".join(reqs[3].heading_path)
+
+
+def test_ecss_unlettered_requirements_under_machine_ids():
+    """A standard whose requirements are paragraphs under their machine IDs (no letters): '<clause> req N'."""
+    body = [H("4 Requirements", size=22.0), H("4.1 General", size=16.0)]
+    for n in range(1, 7):
+        body += [L(f"ECSS-E-ST-99_00100{n:02d}"), L(f"The supplier shall do invented thing {n}.")]
+    body += [L("NOTE An invented note.")]
+    reqs, _ = parse_ecss_lines(lay(body), "ECSS-E-ST-99C", "")
+    assert [r.req_id for r in reqs] == [f"4.1 req {n}" for n in range(1, 7)]
+    assert reqs[0].machine_id == "ECSS-E-ST-99_0010001" and reqs[5].notes == ["An invented note."]
+    # a lettered standard keeps its rule: text under a machine ID that is not an item is not a requirement
+    lettered = [H("4 Requirements", size=22.0), H("4.1 General", size=16.0)]
+    for n in range(1, 7):
+        lettered += [L(f"ECSS-E-ST-99_00100{n:02d}"), L(f"{'abcdef'[n - 1]}. The supplier shall do invented thing {n}.")]
+    lettered += [L("ECSS-E-ST-99_0010007"), L("Invented table body text.")]
+    reqs, _ = parse_ecss_lines(lay(lettered), "ECSS-E-ST-99C", "")
+    assert [r.req_id for r in reqs] == [f"4.1{c}" for c in "abcdef"]
+
+
+def test_npr_parser():
+    """NODIS layout: page headers name the part, numbered paragraphs are records, a tag at the end is the ID."""
+    from spacestd.npr_parser import parse_npr_lines
+
+    lines = lay([
+        L("NPR 9150.2D -- TOC Page 1 of 9", size=9.0),
+        L("Chapter 1. Invented introduction"),
+        L("NPR 9150.2D -- Preface Page 2 of 9", size=9.0),
+        H("Preface", size=19.0),
+        H("P.1 Purpose", size=13.0),
+        L("a. This directive sets invented requirements."),
+        L("b. It may be tailored."),
+        L("NPR 9150.2D -- Chapter2 Page 3 of 9", size=9.0),
+        H("Chapter 2. Invented roles", size=19.0),
+        H("2.1 Roles", size=13.0),
+        L("Invented prose that introduces the roles."),
+        L("2.1.1 The project manager shall keep an invented plan. [XQR-012]"),
+        L("Note: The plan can be short."),
+        L("2.1.2 The project manager shall record:"),
+        L("a. The first invented item."),
+        L("b. The second invented item."),
+        L("2.1.3 The team is responsible for an invented thing."),
+        L("NPR 9150.2D -- AppendixA Page 9 of 9", size=9.0),
+        H("Appendix A. Definitions", size=19.0),
+        L("Widget. An invented part."),
+    ])
+    reqs, unparsed = parse_npr_lines(lines, "NPR 9150.2D", "")
+    assert [(r.req_id, r.clause, r.kind) for r in reqs] == [
+        ("P.1a", "P.1", "guidance"), ("P.1b", "P.1", "permission"), ("2.1 guidance 1", "2.1", "guidance"),
+        ("XQR-012", "2.1.1", "requirement"), ("2.1.2", "2.1.2", "requirement"), ("2.1.3", "2.1.3", "guidance"),
+        ("A guidance 1", "A", "guidance")]
+    assert reqs[3].notes == ["The plan can be short."]
+    assert reqs[3].heading_path == ["Chapter 2 Invented roles", "2.1 Roles"]
+    assert reqs[4].text.split("\n") == ["The project manager shall record:", "a. The first invented item.",
+                                         "b. The second invented item."]
+    assert unparsed == []
+
+
+def test_npr_last_paragraph_before_an_appendix_keeps_its_kind():
+    """The record open when an appendix starts belongs to the chapter: 'should' stays a recommendation."""
+    from spacestd.npr_parser import parse_npr_lines
+
+    lines = lay([
+        L("NPR 9150.2D -- Chapter2 Page 3 of 9", size=9.0),
+        H("Chapter 2. Invented roles", size=19.0),
+        H("2.1 Roles", size=13.0),
+        L("2.1.1 The project manager shall keep an invented plan."),
+        L("2.1.2 The team should keep an invented log."),
+        L("NPR 9150.2D -- AppendixA Page 9 of 9", size=9.0),
+        H("Appendix A. Definitions", size=19.0),
+        L("Widget. An invented part that should be small."),
+    ])
+    reqs, _ = parse_npr_lines(lines, "NPR 9150.2D", "")
+    assert [(r.req_id, r.kind) for r in reqs] == [("2.1.1", "requirement"), ("2.1.2", "recommendation"),
+                                                  ("A guidance 1", "guidance")]
+
+
+def test_ecss_chapter_title_without_number_is_used_once():
+    """A chapter title printed without its number names the first clause's chapter only; a later chapter whose
+    heading was not read gets its bare number, not the earlier title."""
+    body = [H("Invented chapter", size=24.0), H("5.1 First", size=16.0), L("a. The supplier shall do invented thing 1."),
+            H("6.1 Next", size=16.0), L("a. The supplier shall do invented thing 2.")]
+    reqs, _ = parse_ecss_lines(lay(body), "ECSS-E-ST-99C", "")
+    assert [r.heading_path for r in reqs] == [["5 Invented chapter", "5.1 First"], ["6", "6.1 Next"]]

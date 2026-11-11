@@ -666,12 +666,18 @@ Still open: 5020B Table 8 (Appendix example: box without inner rules + uncaption
   upper-case rule had started the body on a contents line, which brought in a stray record `9` and sections 1–3;
   the body now starts at section 4 (still `checked`). Wave 2: 26 verified / 103 checked / 38 unchecked (was 100 / 41).
 
-### H21 · Handbook headings without numbers in the text layer, set in a display font (NASA-HDBK-4007A; open)
+### H21 · Handbook headings without numbers in the text layer, set in a display font (NASA-HDBK-4007A; parked)
 
 Word's automatic heading numbers are not in the text layer, and the headings are set in a different, non-bold
 display font at 14–16 pt; numbered headings appear only in the contents. No bold numbered heading exists, so the
 body starts at line 0 and the prose becomes unparsed fragments (626 after H20). Same idea as ECSS H1: rebuild the
 numbers from the contents order, keyed on size or font change at the left margin. Not fixture-tested yet.
+- Tried and parked (round 10, closed PR #99): the contents page has no numbers either above level 4. Levels 1–3
+  are unnumbered titles at two indents (level 1 at the margin, levels 2 and 3 both at the deeper indent), and only
+  the level-4 entries carry literal numbers. Rebuilding from the contents therefore found only the 24 level-4
+  entries: the body started at the first of them, sections 1 to 6.3 were lost, and up to about 4,800 words fell
+  under one ID. A fix would have to count entries by indent and weight, with the level-4 numbers as checkpoints.
+  Not worth it for one handbook: 4007A stays `unchecked`.
 
 ### H22 · Generic font names (NASA-STD-3001 Vol 1; open)
 
@@ -682,14 +688,66 @@ font name is generic, infer the role per font from use (the font whose lines mos
 heading font; the one whose paragraphs start `[Rationale` is the guidance font), or read the embedded font
 program's weight class (needs fontTools). Medical standard, outside the structures scope: low priority.
 
-### H23 · Stub PDF (NASA-HDBK-2203; not a parser fault)
+### H23 · Stub PDF (NASA-HDBK-2203; not a parser fault; excluded)
 
 One page with 24 characters of text: the file is a placeholder, not the handbook. Candidate for the corpus
-exclusions rather than a fix.
+exclusions rather than a fix. Excluded 15 Oct (round 10) with the new `exclude:` key in `documents/corpus.yaml`.
 
-### H24 · NASA 28xx imagery / audio-video standards (STD-2818, 2821, 2822; owner decision)
+### H24 · NASA 28xx imagery / audio-video standards (STD-2818, 2821, 2822; excluded)
 
 Mixed heading styles (bold and regular top-level headings in one document, `1.0 Title:` annex headings), numbered
 paragraphs without `shall` (guidelines), and in 2822 requirement IDs of the form `RQ_nnn` at the start of a
 paragraph. Most unparsed text is prose that is correctly not a requirement. These are IT / media standards outside
-the engineering scope of ADR-0004; proposed: leave them out of the corpus instead of adding rules for them.
+the engineering scope of ADR-0004; proposed: leave them out of the corpus instead of adding rules for them. Owner's decision 15 Oct (round 10):
+excluded (`exclude:` in `documents/corpus.yaml`); 163 documents load.
+
+
+## Round 11 (10 Nov 2026) · full-corpus fixes
+
+### H25 · Contents lines as headings, parents that do not match the clause (fixed)
+
+22 documents, 5,478 records had a table-of-contents line (dot leaders, a page number) or a stale chapter in
+`heading_path`. Two causes: an `Annex X (normative|informative) …` line of the contents is set bold at heading
+size and was taken as the annex heading before the body began; and in documents whose chapter number is not in
+the text layer (ECSS-Q-ST-80C: the title is two 22 pt lines, the digit is absent) the level-1 entry was never
+replaced. Rules now: an annex line counts only once a body chapter has started, or at chapter size, and never
+with a dot leader; the parents of a numeric clause are the clauses its number names (anything else in their
+place becomes the bare number); a chapter-size title without a number is kept and joins the path when the
+chapter's first clause arrives.
+
+### H26 · Terms and definitions (fixed)
+
+Clauses 1 to 3 were skipped, so no definition was a record (87 clause-3 records in the whole corpus, none in
+ECSS-Q-ST-80C; the glossary ECSS-S-ST-00-01C had 0 records). Now a numbered term below a section whose title
+says "terms" or "definitions" (not "abbreviated", "other standards", "nomenclature", "conventions") is one
+record of kind `definition`: ID and clause = the term's number, text = the term, a line break, its definition;
+NOTEs attached. Term numbers run to three digits in the glossary (2.3.250). A term number met before the
+section itself (change log) is replaced by the later one.
+
+### H27 · Requirements without letters (ECSS-Q-ST-60C Rev.4, ECSS-Q-ST-70-61C; fixed)
+
+These standards print each requirement as a paragraph under its machine ID, with no letter: 92 % and 89 % of
+the body was unparsed. When most machine IDs of a document are followed by plain text rather than a lettered
+item, each such paragraph is a record `<clause> req N` (the N-th in its clause, the convention of the untagged
+NASA standards) with its `machine_id`. Lettered documents keep the old rule (text under a machine ID that is
+not an item is a table or figure body). Hand-check on the PDF: pending.
+
+### H28 · NASA Procedural Requirements (new parser)
+
+NODIS prints every NPR alike: a page header names the part (TOC, Preface, ChapterN, AppendixX), headings are
+bold, requirements are numbered paragraphs, some ending in a tag (`[SWE-144]`). `npr_parser.py`: the contents
+part is skipped; a numbered paragraph is one record (ID = the tag at its end when there is exactly one, else the
+paragraph number; `clause` = the paragraph number); lettered items stay inside it; a lettered item directly
+under a heading (Preface) is `<section><letter>`; `Note:` attaches; other prose is `<section> guidance N`.
+Appendix text is guidance unless it says "shall". Tables come from the generic PDF table extraction and are not
+hand-checked. All NPRs are `unchecked` until the health report is run on them.
+
+### Open after round 11
+
+- ECSS-Q-ST-60-13C Rev.2 prints its requirements inside ruled boxes (`8.2a` in a cell): the page text is taken
+  as table area, 0 records. Needs a table-rows-to-records rule in `pdf_extract.py`.
+- NASA-STD-8739.4A: third-level paragraphs (`12.3.5.c(3)`) fall under `12.3 req N`.
+- ECSS-Q-ST-30-11C Rev.2: derating tables 6-1, 6-2 and 6-17 have no text layer.
+- Draft or expired files in the folder are not marked: ECSS-S-ST-00-02C (DRAFT1), NASA-STD-8719.29 (baseline
+  draft), NASA-HDBK-8739.18 (expired 2013). NASA-STD-8719.17 is catalogued `Rev.C` from its cover while the
+  file is revision D.

@@ -273,3 +273,58 @@ def test_requirements_matrix_rows_are_not_indexed():
     hits = idx.search_hits("zebra panels inspected", limit=5)
     assert hits[0].requirement.req_id == "DSR 1" and hits[0].table is None
     assert idx.search_hits("zebra struts listed", limit=5)[0].requirement.kind == "table"  # untagged rows still indexed
+
+
+def test_external_standards_and_unmatched_designations():
+    """Signals a client can rely on when declining: another body's standard named in the question, and an
+    acronym or designation that no hit contains. Loaded document names and plain words are not flagged."""
+    from pathlib import Path
+
+    from spacestd import tools
+    from spacestd.loaders import load_folder
+
+    idx = StandardsIndex(load_folder(Path(__file__).parent / "fixtures"))
+    out = tools.search_requirements(idx, "What review margin does SMC-S-016 require for software plans?")
+    assert out["external_standards"] == ["SMC-S-016"] and any("SMC-S-016" in n for n in out["notes"])
+    weak = tools.search_requirements(idx, "software development plan for XQZT units")
+    assert weak["coverage"] == "weak" and weak["unmatched_terms"] == ["XQZT"]
+    fine = tools.search_requirements(idx, "software development plan content")
+    assert "coverage" not in fine and "unmatched_terms" not in fine and "external_standards" not in fine
+    none = tools.search_requirements(idx, "zzqx wwvy")
+    assert none["coverage"] == "none" and none["results"] == []
+
+
+def test_find_standards_ranks_documents():
+    from pathlib import Path
+
+    from spacestd import tools
+    from spacestd.loaders import load_folder
+
+    idx = StandardsIndex(load_folder(Path(__file__).parent / "fixtures"))
+    out = tools.find_standards(idx, "software development plan")
+    assert out["count"] >= 1 and out["documents"][0]["matching_records"] >= 1
+    top = out["documents"][0]
+    assert {"doc_id", "issue", "title", "score", "tier", "top_sections"} <= set(top)
+    assert all({"clause", "heading", "citation", "kind"} == set(s) for s in top["top_sections"])
+    assert "text" not in str(top["top_sections"])  # sections name records, they do not quote them
+    assert tools.find_standards(idx, "zzqx wwvy")["coverage"] == "none"
+    assert tools.find_standards(idx, "  ")["found"] is False
+
+
+def test_compare_topic_picks_documents_on_a_large_corpus():
+    """Without doc_ids, a corpus above COMPARE_DOCS documents is compared on its best matches per family, not
+    with one section per loaded document."""
+    def doc(doc_id, text):
+        return Document(doc_id, "", doc_id, f"{doc_id}.txt",
+                        [Requirement(doc_id, "", "4.1a", "4.1", text, ["4 Requirements", "4.1 General"])])
+
+    docs = [doc(f"ECSS-E-ST-99-{n:02d}C", "The supplier shall paint the bracket.") for n in range(1, 9)]
+    docs += [doc("ECSS-E-ST-99-50C", "Venting of the enclosure shall be analysed."),
+             doc("NASA-STD-9050A", "Venting of the enclosure shall be verified by test."),
+             doc("NASA-STD-9051A", "The supplier shall paint the bracket.")]
+    out = StandardsIndex(docs).compare_topic("venting of the enclosure")
+    assert [d["doc_id"] for d in out["documents"]][:1] == ["ECSS-E-ST-99-50C"]
+    assert "NASA-STD-9050A" in {d["doc_id"] for d in out["documents"]} and len(out["documents"]) <= 6
+    assert out["documents_chosen"] == "top matches per family"
+    asked = StandardsIndex(docs).compare_topic("venting", ["ECSS-E-ST-99-01", "NASA-STD-9050"])
+    assert [d["doc_id"] for d in asked["documents"]] == ["ECSS-E-ST-99-01C", "NASA-STD-9050A"] and "documents_chosen" not in asked

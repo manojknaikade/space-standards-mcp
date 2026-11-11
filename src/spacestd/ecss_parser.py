@@ -17,6 +17,15 @@ Rules (docs/PARSING_NOTES.md):
   (or of one of its parents) is a heading too (H7, E-HB-32-24A level-4 headings);
 - body text that becomes no record (prose paragraphs between headings and lists) is returned as
   unparsed fragments, like the NASA parser, and the body's word count goes into `stats` (H6).
+- a table-of-contents line is no heading: an 'Annex X (...)' line counts only once the body has started or
+  when it is set at chapter size; a heading's parents in `heading_path` are the clauses its number names
+  ('5', '5.1' for 5.1.2), so a stray line can never sit above it. A chapter title printed without its number
+  (the number is not in the text layer) is kept and joins the path when the chapter's first clause arrives;
+- terms and definitions (clause 3 of a standard, clause 2 of the glossary): each numbered term under a
+  'Terms ...' section is one record of kind 'definition' (ID = the term's clause number; text = the term, then
+  its definition; NOTEs attached);
+- a requirement printed without a letter, as a paragraph under its machine ID (ECSS-Q-ST-60C), is a record
+  '<clause> req N' (the N-th such paragraph of the clause), like the untagged NASA standards;
 - handbooks (`handbook=True`, set by the loaders from the doc_id, A5): that prose is kept instead, as one `guidance` record per numbered
   section (req_id = the clause number, paragraphs separated by newlines); no fragments are left over.
 """
@@ -44,7 +53,11 @@ TABLE_REF_RE = re.compile(r"\b(?i:tables?)\s+([A-Z]?\d+-\d+|\d+)")
 STALE_REF_RE = re.compile(r"\b1\.1\.1(?:\.\d{1,2})?[a-z]{0,3}\b")
 DELETED_RE = re.compile(r"[<>]{2}\s*deleted", re.I)  # '>>deleted>>' is a source typo (10-03C)
 CAN_RE = re.compile(r"\bcan(?:not)?\b", re.I)
-EQ_NUMBER_RE = re.compile(r"^[\d\s.]*$")  # a 'title' of digits only: an equation number printed twice ('2 2')
+EQ_NUMBER_RE = re.compile(r"^[\d\s.]*$")
+# section titles in clauses 1-3 whose numbered sub-clauses are terms with their definitions
+TERM_CLAUSE_RE = re.compile(r"^(\d{1,2}\.\d{1,2}\.\d{1,3})\s+(\S.*)$")  # the glossary runs to 2.3.251
+TERMS_RE = re.compile(r"\bterms?\b|\bdefinitions?\b", re.I)
+NOT_TERMS_RE = re.compile(r"abbreviat|other standards|other documents|nomenclature|convention|symbols", re.I)  # a 'title' of digits only: an equation number printed twice ('2 2')
 
 
 def classify(text: str, informative: bool) -> str:
@@ -116,12 +129,16 @@ class _Builder:
         self.inferred = False
         self.glossary = False  # handbook: inside a glossary chapter (terms become records)
         self.terms: set[str] = set()
+        self.chapter_title = ""  # a chapter title printed without its number, until its first clause arrives
+        self.in_terms = False  # inside a 'Terms ...' section of clauses 1-3
+        self.defining = False  # the current record is a definition
+        self.para_count: Counter = Counter()  # unlettered requirement paragraphs per clause
 
     def finish(self) -> None:
         req = self.current
         if req is not None:
             req.text = req.text.strip()
-            req.kind = classify(req.text, self.informative or self.handbook)
+            req.kind = "definition" if self.defining else classify(req.text, self.informative or self.handbook)
             joined = " ".join([req.text, *req.notes])
             req.references = find_references(joined)
             req.tables = list(dict.fromkeys(f"Table {m}" for m in TABLE_REF_RE.findall(req.text)))
@@ -132,11 +149,27 @@ class _Builder:
                     req.flags.append(flag)
         self.current = self.section = self.last = None
         self.in_note = False
+        self.defining = False
 
     def heading(self, clause: str, title: str, level: int, style: tuple | None = None) -> None:
         self.finish()
         self.clause = clause
-        self.path = self.path[: level - 1] + [f"{clause} {title}".strip()]
+        parents = self.path[: level - 1]
+        if re.fullmatch(r"\d{1,2}(?:\.\d{1,2})+", clause):
+            # the parents are the clauses the number names; anything else in their place (a contents line, the
+            # previous chapter when this chapter's heading was not read) is replaced by the bare number
+            parts = clause.split(".")
+            for k in range(min(level - 1, len(parts) - 1)):
+                want = ".".join(parts[: k + 1])
+                have = parents[k] if k < len(parents) else ""
+                if have.split(" ")[0] != want:
+                    fixed = f"{want} {self.chapter_title}".strip() if k == 0 else want
+                    if k == 0:
+                        self.chapter_title = ""  # used once: a later chapter must not inherit it
+                    parents = parents[:k] + [fixed] + parents[k + 1:]
+        if level == 1 or "." not in clause:
+            self.chapter_title = ""
+        self.path = parents + [f"{clause} {title}".strip()]
         self.pending_mid = ""
         self.inferred = False
         if re.fullmatch(r"[A-Z0-9]\d?(?:\.\d{1,2})+", clause):
@@ -181,6 +214,27 @@ class _Builder:
         if self.inferred:
             self.current.flags.append("inferred clause number")
         self.pending_mid = ""
+        self.reqs.append(self.current)
+
+    def start_para(self, text: str, page: int | None) -> None:
+        """A requirement printed as a paragraph under its machine ID, without a letter."""
+        self.finish()
+        self.para_count[self.clause] += 1
+        req_id = f"{self.clause} req {self.para_count[self.clause]}"
+        self.seen.add(req_id)
+        self.current = Requirement(self.doc_id, self.issue, req_id, self.clause, text, list(self.path),
+                                   machine_id=self.pending_mid, page=page)
+        self.pending_mid = ""
+        self.reqs.append(self.current)
+
+    def start_definition(self, term: str, page: int | None) -> None:
+        """A numbered term of a 'Terms ...' section: the heading is the term, the lines below define it."""
+        req_id = self.clause
+        if req_id in self.seen:  # the term's number was met before the section itself (change log, foreword):
+            self.reqs = [r for r in self.reqs if not (r.kind == "definition" and r.req_id == req_id)]  # keep the later
+        self.seen.add(req_id)
+        self.current = Requirement(self.doc_id, self.issue, req_id, self.clause, term, list(self.path), page=page)
+        self.defining = True
         self.reqs.append(self.current)
 
     def start_term(self, term: str, text: str, page: int | None) -> None:
@@ -261,7 +315,9 @@ def parse_ecss_lines(lines: list[Line], doc_id: str, issue: str, *, recompute_le
         if ln.size >= body_size - 0.9 and (ln.bold >= 0.6 or heading_font(ln)) and DRD_RE.match(ln.text):
             return True
         # five-level clause headings: slightly larger, non-bold, in the heading font (32-01: ArialMT 11)
-        return heading_font(ln) and bool(CLAUSE_RE.match(ln.text)) and not equation_number(ln)
+        if heading_font(ln) and bool(CLAUSE_RE.match(ln.text)) and not equation_number(ln):
+            return True
+        return b.in_terms and heading_font(ln) and ln.is_bold and bool(TERM_CLAUSE_RE.match(ln.text))
 
     def level4_size(ln: Line) -> bool:
         """A bold heading-font line smaller than the numbered level-3 headings: level 4 by size (H13a)."""
@@ -323,7 +379,17 @@ def parse_ecss_lines(lines: list[Line], doc_id: str, issue: str, *, recompute_le
         if not any(is_heading(ln) and body_start(ln) for ln in lines):
             min_chapter = 1
 
+    # a document whose requirements are paragraphs under their machine IDs, not lettered items (Q-ST-60C):
+    # most machine IDs are followed by plain text. In a lettered document such text is a table or figure body.
+    after_mid = Counter()
+    for k, ln in enumerate(lines):
+        if MACHINE_ID_RE.match(ln.text):
+            nxt = next((x.text for x in lines[k + 1:k + 4] if x.text), "")
+            after_mid["item" if ITEM_RE.match(nxt) else "caption" if CAPTION_RE.match(nxt) else "plain"] += 1
+    unlettered = not handbook and after_mid["plain"] > 2 * after_mid["item"] and after_mid["plain"] >= 5
+
     active = False
+    seen_body = False  # a body chapter has started: annex headings after it are real, not contents lines
     i = 0
     n = len(lines)
     while i < n:
@@ -367,12 +433,14 @@ def parse_ecss_lines(lines: list[Line], doc_id: str, issue: str, *, recompute_le
                 j += 1
             head = " ".join(parts)
             i = j
-            m = CLAUSE_RE.match(head)
+            m = CLAUSE_RE.match(head) or (TERM_CLAUSE_RE.match(head) if b.in_terms else None)
             a = ANNEX_RE.match(head)
             ac = ANNEX_CLAUSE_RE.match(head)
             if head.lower().startswith("bibliography"):
                 b.finish()
                 active = False
+            elif a and ("...." in head or not (seen_body or ln.size >= body_size + 6)):
+                pass  # a contents line
             elif a:
                 active = True
                 b.finish()  # close the last record under the previous informative/normative flag
@@ -384,11 +452,23 @@ def parse_ecss_lines(lines: list[Line], doc_id: str, issue: str, *, recompute_le
                 clause = m.group(1)
                 chapter = int(clause.split(".")[0])
                 if chapter >= min_chapter:
-                    active = True
+                    active = seen_body = True
                     b.finish()
                     b.informative = False
+                    b.in_terms = False
                 elif "." not in clause:
                     active = False
+                if chapter < min_chapter and not handbook:
+                    # terms and definitions: numbered terms below a 'Terms ...' section are definition records
+                    b.finish()
+                    depth = clause.count(".") + 1
+                    if depth <= 2:
+                        b.in_terms = depth == 2 and bool(TERMS_RE.search(m.group(2))) and not NOT_TERMS_RE.search(m.group(2))
+                        if b.in_terms:
+                            b.heading(clause, m.group(2), depth)
+                    elif b.in_terms and not m.group(2).rstrip().endswith((".", ":", ";")):
+                        b.heading(clause, m.group(2), depth)
+                        b.start_definition(m.group(2).strip(), ln.page)
                 if active:
                     b.heading(clause, m.group(2), clause.count(".") + 1, style(ln))
                     b.base_clause = clause
@@ -403,10 +483,24 @@ def parse_ecss_lines(lines: list[Line], doc_id: str, issue: str, *, recompute_le
                 b.heading(f"{base}<{d.group(1)}>", d.group(2) or "", len(base.split(".")) + 1 + d.group(1).count("."))
             elif b.glossary and active:
                 b.finish()  # letter-group heading ('A', 'B', ...): not a clause
+            elif ln.size >= body_size + 8 and not head[:1].isdigit() and len(head) < 200:
+                b.chapter_title = head  # a chapter title whose number is not in the text layer
             continue
 
         i += 1
         if not active:
+            d = b.current if b.defining else None
+            if d is None or ln.size < body_size - 1.5 or MACHINE_ID_RE.match(text):
+                continue
+            note = NOTE_RE.match(text)
+            if note:
+                d.notes.append(note.group(2) or "")
+                b.in_note, b.note_x = True, ln.x0
+            elif b.in_note and ln.x0 >= b.note_x - 3:
+                d.notes[-1] = _join(d.notes[-1], text)
+            else:
+                b.in_note = False
+                d.text = f"{d.text}\n{text}" if "\n" not in d.text else _join(d.text, text)
             continue
 
         mid = MACHINE_ID_RE.match(text)
@@ -451,6 +545,10 @@ def parse_ecss_lines(lines: list[Line], doc_id: str, issue: str, *, recompute_le
                 new = ln.page == 0 or (last is not None and last.page == ln.page and ln.top - last.bottom > 0.6 * ln.size)
                 req.text = f"{req.text}\n{text}" if new or _is_list(text, req.text) else _join(req.text, text)
             b.last = ln
+            continue
+        if req is None and b.pending_mid and unlettered and not NOTE_RE.match(text):
+            flush()
+            b.start_para(text, ln.page)  # a requirement without a letter, under its machine ID
             continue
         if req is None:  # descriptive clause text: an unparsed paragraph (H6)
             last = frag[-1] if frag else None

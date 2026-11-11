@@ -324,6 +324,8 @@ and the public repository has no PRs and nothing under `documents/` but the READ
   README install section from PyPI (#94) shipped in v0.2.3 (release commit 65c7f33, GitHub Release v0.2.3; 0.2.3 on PyPI after the owner's approval). MCP registry: owner
   logged in (`mcp-publisher login github`), `io.github.manojknaikade/space-standards-mcp` 0.2.3 published from the
   public tag v0.2.3, listed as active. Open, 👤: the post (docs/ANNOUNCEMENT_DRAFT.md).*
+  *v0.2.4 (round 10): release commit ff13fbb, GitHub Release → 0.2.4 on PyPI (owner approval); registry 0.2.4
+  published from the public tag (active, latest). Open, 👤: the post.*
 
 ## After going public
 
@@ -344,10 +346,15 @@ Then issue diffing and tailoring matrices (ROADMAP Phase 4).
   fixed (#95): 6024 / 4002B / 1005 now `checked`; wave 2 26 / 103 / 38. Open: H21 4007A unnumbered display-font
   headings, H22 3001 Vol 1 generic font names, H23 2203 stub, H24 28xx out of scope (owner), 6033; then the ECSS
   valid-ID and ragged-table groups.*
-- [ ] **Wave 2 B5 👤** about 10 new eval questions for wave 2.
+  *Round 10 (parked): H23 / H24 excluded by the owner (`exclude:` key in `corpus.yaml`, #100; 163 documents load).
+  H21 tried (#99, closed): 4007A's contents carry no numbers above level 4, so the rebuild lost most of the body;
+  parked in PARSING_NOTES. Not done and parked with the project pause: H21, H22 (3001 Vol 1), 6033, the ECSS
+  valid-ID group (E-HB-10-02A, E-HB-40A, E-ST-50-11C, E-ST-40C) and the ragged-table group (E-HB-31-01 parts,
+  E-ST-70-31C, E-ST-50-13C). These documents load with tier `unchecked`, so their numbers carry the check flag.*
+- [x] **Wave 2 B5 👤** about 10 new eval questions for wave 2.
   *Drafted 15 Oct (round 9, #93): w2-001 … w2-010 (`review: pending`), wave-2 `checked` sources, IDs and tables
   checked with the tools; w2-006 trimmed to no record-text numbers. Retrieval on the 9 scored: recall@5 0.91,
-  @20 0.94; the old 63 unchanged. Open, 👤: owner review.*
+  @20 0.94; the old 63 unchanged. Reviewed 15 Oct (round 10, owner): all ok (#100).*
 
 ## Order at a glance
 
@@ -379,4 +386,7 @@ Open work from 10 Oct, as rounds:
   Actions v7 (#85, #86); v0.2.2 released to the public repository.
 - **Round 9 (15 Oct):** PyPI live (0.2.2, 0.2.3) and MCP registry listing (0.2.3); wave 2 B5 drafted (#93); B2 diagnosis and H20 (#95);
   README PyPI install (#94); v0.2.3 (#96).
-- **Next:** the post (owner), B5 review (owner), wave 2 B2 continued.
+- **Round 10 (15 Oct, last round before the pause):** B5 reviewed (all ok); H23 / H24 excluded with the new
+  `corpus.yaml` `exclude:` key (#100); H21 tried and parked (#99 closed); v0.2.4 released (PyPI, MCP registry).
+- **Paused 15 Oct 2026.** Open, 👤: the post (D3). Parked: wave 2 B2 (rest), the API answer pair, waves 3–4,
+  Phase 4 diffing / tailoring. To resume, use the generic orchestrator prompt in docs/SESSION_PROMPTS.md.
